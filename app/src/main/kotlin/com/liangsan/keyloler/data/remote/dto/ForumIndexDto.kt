@@ -6,19 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ForumIndexDto(
     @SerialName("catlist")
-    val categoryList: List<CategoryList>,
+    val category: List<Category>,
     @SerialName("forumlist")
-    val forumList: List<ForumList>,
+    val forum: List<Forum>,
 ) {
     @Serializable
-    data class CategoryList(
+    data class Category(
         val fid: String,
         val name: String,
         val forums: List<String>
     )
 
     @Serializable
-    data class ForumList(
+    data class Forum(
         val fid: String,
         val name: String,
         val threads: String,
@@ -28,6 +28,6 @@ data class ForumIndexDto(
         val description: String?,
         val icon: String?,
         @SerialName("sublist")
-        val subList: List<ForumList>?
+        val subList: List<Forum>?
     )
 }

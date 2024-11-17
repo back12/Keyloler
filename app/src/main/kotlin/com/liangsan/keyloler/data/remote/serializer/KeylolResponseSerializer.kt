@@ -1,5 +1,6 @@
-package com.liangsan.keyloler.data.remote.dto
+package com.liangsan.keyloler.data.remote.serializer
 
+import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException

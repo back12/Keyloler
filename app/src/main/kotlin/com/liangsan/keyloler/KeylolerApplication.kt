@@ -6,6 +6,11 @@ import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
+import com.liangsan.keyloler.di.dataModule
+import com.liangsan.keyloler.di.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class KeylolerApplication : Application(), ImageLoaderFactory {
@@ -13,6 +18,14 @@ class KeylolerApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
+        startKoin {
+            // Log Koin into Android logger
+            androidLogger()
+            // Reference Android context
+            androidContext(this@KeylolerApplication)
+            // Load modules
+            modules(dataModule + viewModelModule)
+        }
     }
 
     override fun newImageLoader(): ImageLoader {
