@@ -1,0 +1,198 @@
+package com.liangsan.keyloler.presentation.search_index.index
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.liangsan.keyloler.R
+import com.liangsan.keyloler.domain.model.Forum
+import com.liangsan.keyloler.domain.model.ForumCategory
+import com.liangsan.keyloler.domain.utils.Result
+import com.liangsan.keyloler.presentation.utils.bottomBarPadding
+import com.liangsan.keyloler.presentation.utils.getString
+import com.liangsan.keyloler.presentation.utils.onTap
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun IndexScreen(modifier: Modifier = Modifier, viewModel: IndexViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    IndexScreenContent(
+        modifier = modifier.safeDrawingPadding(),
+        state = state,
+        onSearch = {
+//            TODO()
+        },
+        onForumClick = {
+
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun IndexScreenContent(
+    modifier: Modifier = Modifier,
+    state: IndexState,
+    onSearch: () -> Unit,
+    onForumClick: (Forum) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .bottomBarPadding()
+    ) {
+        item {
+            TopAppBar(
+                title = {
+                    Text(getString(R.string.search), style = MaterialTheme.typography.titleLarge)
+                }
+            )
+        }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 12.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerHighest,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .onTap(onSearch)
+                    .padding(vertical = 6.dp, horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.round_search_24),
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(getString(R.string.search_placeholder_text))
+            }
+        }
+
+        itemsIndexed(
+            state.forumCategoryList,
+            key = { _, item -> item.category.fcid }
+        ) { index, (category, forum) ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                ForumCategoryItem(
+                    modifier = Modifier.animateItem(),
+                    category = category,
+                    forum = forum,
+                    onForumClick = onForumClick
+                )
+                AnimatedVisibility(
+                    index == 0 && state.loadingState == Result.Loading,
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut() + slideOutVertically()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth()
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ForumCategoryItem(
+    modifier: Modifier = Modifier,
+    category: ForumCategory,
+    forum: List<Forum>,
+    onForumClick: (Forum) -> Unit
+) {
+    Column(modifier = modifier) {
+        Text(
+            category.name,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(Modifier.height(6.dp))
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(4.dp)) {
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                forum.forEach {
+                    ForumItem(forum = it, onForumClick = { onForumClick(it) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ForumItem(modifier: Modifier = Modifier, forum: Forum, onForumClick: () -> Unit) {
+    Surface(
+        modifier = modifier.clickable(onClick = onForumClick),
+        color = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .heightIn(min = 40.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            forum.icon?.let {
+                AsyncImage(model = it, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+            }
+            Column(verticalArrangement = Arrangement.SpaceAround) {
+                Text(forum.name, style = MaterialTheme.typography.titleSmall)
+                forum.description?.let {
+                    Text(it, style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        }
+    }
+}

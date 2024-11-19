@@ -1,0 +1,139 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b6ec925d48453e9ce4d7bc3aeae13a6d",
+    "entities": [
+      {
+        "tableName": "ForumEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fid` INTEGER NOT NULL, `name` TEXT NOT NULL, `threads` INTEGER NOT NULL, `posts` INTEGER NOT NULL, `todayPosts` INTEGER NOT NULL, `description` TEXT, `icon` TEXT, `subList` TEXT, PRIMARY KEY(`fid`))",
+        "fields": [
+          {
+            "fieldPath": "fid",
+            "columnName": "fid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "threads",
+            "columnName": "threads",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "posts",
+            "columnName": "posts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "todayPosts",
+            "columnName": "todayPosts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "subList",
+            "columnName": "subList",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ForumCategoryEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fcid` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`fcid`))",
+        "fields": [
+          {
+            "fieldPath": "fcid",
+            "columnName": "fcid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fcid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ForumCategoryCrossRef",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fcid` INTEGER NOT NULL, `fid` INTEGER NOT NULL, PRIMARY KEY(`fcid`, `fid`))",
+        "fields": [
+          {
+            "fieldPath": "fcid",
+            "columnName": "fcid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fid",
+            "columnName": "fid",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fcid",
+            "fid"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ForumCategoryCrossRef_fid",
+            "unique": false,
+            "columnNames": [
+              "fid"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ForumCategoryCrossRef_fid` ON `${TABLE_NAME}` (`fid`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b6ec925d48453e9ce4d7bc3aeae13a6d')"
+    ]
+  }
+}

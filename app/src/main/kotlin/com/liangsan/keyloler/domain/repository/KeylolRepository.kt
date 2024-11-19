@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface KeylolRepository {
 
-    fun CoroutineScope.fetchForumIndex(): Flow<Result<Boolean>>
+    fun fetchForumIndex(scope: CoroutineScope, refresh: Boolean = false): Flow<Result<Boolean>>
 
     fun getForumIndex(): Flow<ForumWithCategoryList>
 }
