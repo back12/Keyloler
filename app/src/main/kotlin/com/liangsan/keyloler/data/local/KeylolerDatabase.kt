@@ -5,8 +5,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.liangsan.keyloler.data.local.converter.ForumEntityListConverter
 import com.liangsan.keyloler.data.local.dao.ForumDao
+import com.liangsan.keyloler.data.local.dao.SearchHistoryDao
 import com.liangsan.keyloler.data.local.entity.ForumCategoryEntity
 import com.liangsan.keyloler.data.local.entity.ForumEntity
+import com.liangsan.keyloler.data.local.entity.SearchHistoryEntity
 import com.liangsan.keyloler.data.local.relation.ForumCategoryCrossRef
 
 @Database(
@@ -14,6 +16,7 @@ import com.liangsan.keyloler.data.local.relation.ForumCategoryCrossRef
         ForumEntity::class,
         ForumCategoryEntity::class,
         ForumCategoryCrossRef::class,
+        SearchHistoryEntity::class
     ],
     version = 1,
     exportSchema = true
@@ -24,4 +27,6 @@ import com.liangsan.keyloler.data.local.relation.ForumCategoryCrossRef
 abstract class KeylolerDatabase : RoomDatabase() {
 
     abstract fun forumDao(): ForumDao
+
+    abstract fun searchHistoryDao(): SearchHistoryDao
 }

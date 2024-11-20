@@ -6,7 +6,7 @@ import com.liangsan.keyloler.data.mapper.toEntity
 import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.domain.model.ForumWithCategoryList
-import com.liangsan.keyloler.domain.repository.KeylolRepository
+import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
 import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-class KeylolRepositoryImpl(
+class ForumCategoryRepositoryImpl(
     database: KeylolerDatabase,
     private val networkService: KeylolerService
-) : KeylolRepository {
+) : ForumCategoryRepository {
 
     private val forumDao = database.forumDao()
 

@@ -1,10 +1,12 @@
 package com.liangsan.keyloler.presentation.search_index.index
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -45,34 +50,41 @@ import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.ForumCategory
 import com.liangsan.keyloler.domain.utils.Result
+import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
+import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
-import com.liangsan.keyloler.presentation.utils.getString
-import com.liangsan.keyloler.presentation.utils.onTap
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun IndexScreen(modifier: Modifier = Modifier, viewModel: IndexViewModel = koinViewModel()) {
+fun IndexScreen(
+    modifier: Modifier = Modifier,
+    viewModel: IndexViewModel = koinViewModel(),
+    onSearchClick: () -> Unit,
+    onForumClick: (Forum) -> Unit
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     IndexScreenContent(
         modifier = modifier.safeDrawingPadding(),
         state = state,
-        onSearch = {
-//            TODO()
-        },
-        onForumClick = {
-
-        }
+        onSearchClick = onSearchClick,
+        onForumClick = onForumClick
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalSharedTransitionApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 private fun IndexScreenContent(
     modifier: Modifier = Modifier,
     state: IndexState,
-    onSearch: () -> Unit,
+    onSearchClick: () -> Unit,
     onForumClick: (Forum) -> Unit
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -81,30 +93,44 @@ private fun IndexScreenContent(
         item {
             TopAppBar(
                 title = {
-                    Text(getString(R.string.search), style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        stringResource(R.string.search),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 }
             )
         }
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .padding(horizontal = 12.dp)
-                    .background(
-                        MaterialTheme.colorScheme.surfaceContainerHighest,
-                        shape = RoundedCornerShape(4.dp)
+        stickyHeader {
+            with(sharedTransitionScope) {
+                Row(
+                    modifier = Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "search_bar"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(horizontal = 12.dp)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(bottom = 8.dp)
+                        .background(
+                            MaterialTheme.colorScheme.surfaceContainerHighest,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .clickable(onClick = onSearchClick)
+                        .padding(vertical = 6.dp, horizontal = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.round_search_24),
+                        contentDescription = null
                     )
-                    .onTap(onSearch)
-                    .padding(vertical = 6.dp, horizontal = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.round_search_24),
-                    contentDescription = null
-                )
-                Spacer(Modifier.width(12.dp))
-                Text(getString(R.string.search_placeholder_text))
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        stringResource(R.string.search_placeholder_text),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
@@ -183,10 +209,13 @@ private fun ForumItem(modifier: Modifier = Modifier, forum: Forum, onForumClick:
                 .heightIn(min = 40.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            forum.icon?.let {
-                AsyncImage(model = it, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-            }
+            AsyncImage(
+                model = forum.icon ?: R.drawable.forum,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(Modifier.width(8.dp))
             Column(verticalArrangement = Arrangement.SpaceAround) {
                 Text(forum.name, style = MaterialTheme.typography.titleSmall)
                 forum.description?.let {

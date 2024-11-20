@@ -15,9 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.liangsan.keyloler.presentation.main.navigation.TopLevelDestination
-import com.liangsan.keyloler.presentation.utils.getString
 
 val bottomBarHeight = 66.dp
 
@@ -41,7 +41,7 @@ fun BottomNavBar(
                 .heightIn(min = bottomBarHeight)
         ) {
             destinations.forEach {
-                val label = getString(it.name)
+                val label = stringResource(it.name)
                 NavigationBarItem(
                     modifier = Modifier
                         .heightIn(min = bottomBarHeight)

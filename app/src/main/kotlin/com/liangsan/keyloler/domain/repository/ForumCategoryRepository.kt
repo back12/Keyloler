@@ -5,7 +5,7 @@ import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-interface KeylolRepository {
+interface ForumCategoryRepository {
 
     fun fetchForumIndex(scope: CoroutineScope, refresh: Boolean = false): Flow<Result<Boolean>>
 

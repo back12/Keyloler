@@ -30,6 +30,7 @@ class KeylolerApplication : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
+            .crossfade(true)
             .memoryCache {
                 MemoryCache.Builder(this)
                     .maxSizePercent(0.1)

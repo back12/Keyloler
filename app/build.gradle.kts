@@ -66,6 +66,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.timber)
     implementation(libs.coil.kt.compose)
+    implementation(libs.kotlinx.datetime)
     // navigation compose
     implementation(libs.androidx.navigation.compose)
     // koin
