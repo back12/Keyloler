@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -50,7 +51,11 @@ fun BottomNavBar(
                         Text(text = label)
                     },
                     icon = {
-                        Icon(painter = painterResource(it.icon), contentDescription = label)
+                        Icon(
+                            painter = painterResource(it.icon),
+                            contentDescription = label,
+                            modifier = Modifier.size(24.dp)
+                        )
                     },
                     selected = isSelected(it),
                     onClick = {

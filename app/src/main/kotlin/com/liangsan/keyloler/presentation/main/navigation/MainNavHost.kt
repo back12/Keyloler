@@ -4,11 +4,14 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.liangsan.keyloler.presentation.login.LoginScreen
+import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
@@ -49,6 +52,16 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                             SearchScreen(onNavigateUp = navHostController::navigateUp)
                         }
                     }
+                }
+
+                composable<TopLevelDestination.User> {
+                    LaunchedEffect(Unit) {
+                        navHostController.navigate(LoginDestination.Login())
+                    }
+                }
+
+                composable<LoginDestination.Login> {
+                    LoginScreen(onNavigateUp = navHostController::navigateUp)
                 }
             }
         }
