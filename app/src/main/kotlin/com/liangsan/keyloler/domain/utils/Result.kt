@@ -8,7 +8,17 @@ package com.liangsan.keyloler.domain.utils
  */
 sealed class Result<out D> {
     data class Success<out D>(val data: D) : Result<D>()
-    data class Error(val error: String?) : Result<Nothing>()
+    data class Error(val error: String? = null, val throwable: Throwable? = null) :
+        Result<Nothing>() {
+        override fun toString(): String {
+            return when {
+                error != null -> error
+                throwable != null -> throwable.toString()
+                else -> "Error, no message."
+            }
+        }
+    }
+
     data object Loading : Result<Nothing>()
 
     fun isSuccessful() = this is Success

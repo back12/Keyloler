@@ -63,7 +63,11 @@ fun LoginScreen(
         modifier = modifier,
         state = state,
         onNavigateUp = onNavigateUp,
-        onChangeLoginMethod = viewModel::changeLoginMethod
+        onChangeLoginMethod = viewModel::changeLoginMethod,
+        onUsernameChange = viewModel::setUsername,
+        onPasswordChange = viewModel::setPassword,
+        onPhoneChange = viewModel::setPhone,
+        onCodeChange = viewModel::setCode
     )
 }
 
@@ -73,7 +77,11 @@ private fun LoginScreenContent(
     modifier: Modifier = Modifier,
     state: LoginState,
     onNavigateUp: () -> Unit,
-    onChangeLoginMethod: () -> Unit
+    onChangeLoginMethod: () -> Unit,
+    onUsernameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
+    onCodeChange: (String) -> Unit,
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -111,10 +119,25 @@ private fun LoginScreenContent(
                     .imePadding()
                     .padding(horizontal = 12.dp, vertical = 24.dp)
             ) {
-                AnimatedContent(state.loginMethod, label = "LoginMethodChangeAnimation") {
+                AnimatedContent(
+                    state.loginMethod,
+                    contentKey = {
+                        it::class   // Change content only when the class change, not when the value change.
+                    },
+                    label = "LoginMethodChangeAnimation"
+                ) {
                     when (it) {
-                        LoginState.LoginMethod.Password -> LoginByPasswordPart(onChangeLoginMethod = onChangeLoginMethod)
-                        LoginState.LoginMethod.PhoneVerification -> LoginByPhonePart(
+                        is LoginState.LoginMethod.Password -> LoginByPasswordPart(
+                            loginByPassword = it,
+                            onChangeUsername = onUsernameChange,
+                            onChangePassword = onPasswordChange,
+                            onChangeLoginMethod = onChangeLoginMethod
+                        )
+
+                        is LoginState.LoginMethod.PhoneVerification -> LoginByPhonePart(
+                            loginByPhone = it,
+                            onChangePhone = onPhoneChange,
+                            onChangeCode = onCodeChange,
                             onChangeLoginMethod = onChangeLoginMethod
                         )
                     }
@@ -125,22 +148,29 @@ private fun LoginScreenContent(
 }
 
 @Composable
-private fun LoginByPhonePart(modifier: Modifier = Modifier, onChangeLoginMethod: () -> Unit) {
-    var phone by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
+private fun LoginByPhonePart(
+    modifier: Modifier = Modifier,
+    loginByPhone: LoginState.LoginMethod.PhoneVerification,
+    onChangePhone: (String) -> Unit,
+    onChangeCode: (String) -> Unit,
+    onChangeLoginMethod: () -> Unit
+) {
     Column(
         modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
+            value = loginByPhone.phone,
+            onValueChange = onChangePhone,
             label = {
                 Text(stringResource(R.string.phone_number))
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
+            ),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(12.dp))
@@ -149,14 +179,14 @@ private fun LoginByPhonePart(modifier: Modifier = Modifier, onChangeLoginMethod:
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
-                value = code,
-                onValueChange = { code = it },
+                value = loginByPhone.code,
+                onValueChange = onChangeCode,
                 label = {
                     Text(stringResource(R.string.phone_verification_code))
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier.weight(1f)
@@ -205,9 +235,13 @@ private fun LoginByPhonePart(modifier: Modifier = Modifier, onChangeLoginMethod:
 }
 
 @Composable
-private fun LoginByPasswordPart(modifier: Modifier = Modifier, onChangeLoginMethod: () -> Unit) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+private fun LoginByPasswordPart(
+    modifier: Modifier = Modifier,
+    loginByPassword: LoginState.LoginMethod.Password,
+    onChangeUsername: (String) -> Unit,
+    onChangePassword: (String) -> Unit,
+    onChangeLoginMethod: () -> Unit
+) {
     var showPlainPassword by remember { mutableStateOf(false) }
     Column(
         modifier = modifier.padding(24.dp),
@@ -215,26 +249,26 @@ private fun LoginByPasswordPart(modifier: Modifier = Modifier, onChangeLoginMeth
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = loginByPassword.username,
+            onValueChange = onChangeUsername,
             label = {
                 Text(stringResource(R.string.password_login_placeholder))
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(12.dp))
         CompositionLocalProvider(LocalClipboardManager provides NoCopyPasteClipboardManager) {
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = loginByPassword.password,
+                onValueChange = onChangePassword,
                 label = {
                     Text(stringResource(R.string.password))
                 },
                 singleLine = true,
                 visualTransformation = if (showPlainPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
                 ),

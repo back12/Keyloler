@@ -35,7 +35,11 @@ class ForumCategoryRepositoryImpl(
                 }
             }
 
-            val response = networkService.getForumIndex()
+            val response = networkService.getForumIndex().getOrElse {
+                emit(Result.Error(throwable = it))
+                return@flow
+            }
+
             if (response is KeylolResponse.Error) {
                 emit(Result.Error(response.error))
                 return@flow

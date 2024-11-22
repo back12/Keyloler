@@ -11,8 +11,8 @@ import kotlinx.coroutines.withContext
 
 class KeylolerService(private val httpClient: HttpClient) {
 
-    suspend fun getForumIndex(): KeylolResponse<ForumIndexDto> =
-        withContext(Dispatchers.IO) {
+    suspend fun getForumIndex(): Result<KeylolResponse<ForumIndexDto>> =
+        safeApiCall {
             httpClient.get(ForumIndex()).body()
         }
 }

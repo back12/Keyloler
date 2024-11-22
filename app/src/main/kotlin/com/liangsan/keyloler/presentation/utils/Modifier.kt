@@ -19,6 +19,14 @@ import com.liangsan.keyloler.presentation.main.component.bottomBarHeight
 
 fun Modifier.bottomBarPadding() = this.windowInsetsPadding(WindowInsets(bottom = bottomBarHeight))
 
+fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}
+
 fun Modifier.onTap(onClick: () -> Unit) =
     this.clickable(
         interactionSource = null,
