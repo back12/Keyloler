@@ -11,10 +11,17 @@
     <string name="login">登录</string>
     <string name="navigate_up">返回上一级</string>
     <string name="password_login_placeholder">用户名/手机号/Email</string>
+    <string name="password_login_placeholder_error">请输入用户名/手机号/Email</string>
     <string name="password">密码</string>
+    <string name="password_error">请输入密码</string>
     <string name="login_by_phone">通过手机验证码登录</string>
     <string name="login_by_password">通过账号密码登录</string>
     <string name="phone_verification_code">短信验证码</string>
+    <string name="phone_verification_code_error">请输入短信验证码</string>
     <string name="get_phone_verification_code">获取短信验证码</string>
     <string name="phone_number">手机号码</string>
+    <string name="phone_number_error">请输入手机号码</string>
+    <string name="logo">论坛图标</string>
+    <string name="secure_code">验证码</string>
+    <string name="secure_code_error">请输入验证码</string>
 </resources>

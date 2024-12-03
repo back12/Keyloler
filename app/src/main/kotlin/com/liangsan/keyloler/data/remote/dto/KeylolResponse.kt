@@ -10,7 +10,9 @@ sealed interface KeylolResponse<out T> {
     @Serializable
     data class Success<out T>(
         @SerialName("Variables")
-        val variables: T
+        val variables: T,
+        @SerialName("Message")
+        val message: Message?
     ) : KeylolResponse<T>
 
     @Serializable
@@ -18,3 +20,11 @@ sealed interface KeylolResponse<out T> {
         val error: String
     ) : KeylolResponse<Nothing>
 }
+
+@Serializable
+data class Message(
+    @SerialName("messageval")
+    val messageVal: String,
+    @SerialName("messagestr")
+    val messageStr: String
+)

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.google.protobuf)
 }
 
 android {
@@ -26,6 +27,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -48,6 +52,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+    }
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -58,6 +77,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.animation.graphics.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,7 +87,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.timber)
     implementation(libs.coil.kt.compose)
+    implementation(libs.coil.kt.network.ktor)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.constraintlayout.compose)
     // navigation compose
     implementation(libs.androidx.navigation.compose)
     // koin
@@ -90,4 +112,8 @@ dependencies {
     // paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
+    // html parser
+    implementation(libs.ksoup.lite)
+    // protobuf
+    implementation(libs.protobuf.kotlin.lite)
 }

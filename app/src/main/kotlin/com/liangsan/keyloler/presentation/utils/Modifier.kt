@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import com.liangsan.keyloler.presentation.main.component.bottomBarHeight
 
-fun Modifier.bottomBarPadding() = this.windowInsetsPadding(WindowInsets(bottom = bottomBarHeight))
+fun Modifier.bottomBarPadding(show: Boolean = true) =
+    this.windowInsetsPadding(WindowInsets(bottom = if (show) bottomBarHeight else 0.dp))
 
 fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
     return if (condition) {

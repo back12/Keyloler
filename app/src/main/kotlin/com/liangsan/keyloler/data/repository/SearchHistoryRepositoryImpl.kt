@@ -1,6 +1,5 @@
 package com.liangsan.keyloler.data.repository
 
-import android.util.Log
 import com.liangsan.keyloler.data.local.KeylolerDatabase
 import com.liangsan.keyloler.data.mapper.toDomain
 import com.liangsan.keyloler.data.mapper.toEntity
@@ -10,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class SearchHistoryRepositoryImpl(
     database: KeylolerDatabase
@@ -31,7 +29,6 @@ class SearchHistoryRepositoryImpl(
     }
 
     override suspend fun deleteSearchHistory(searchHistory: SearchHistory) {
-        Log.e("TAG", searchHistory.toString(), )
         withContext(Dispatchers.IO) {
             dao.deleteSearchHistory(searchHistory.toEntity())
         }

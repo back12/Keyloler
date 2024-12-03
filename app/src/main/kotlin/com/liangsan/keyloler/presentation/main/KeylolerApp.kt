@@ -3,6 +3,7 @@ package com.liangsan.keyloler.presentation.main
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -11,26 +12,29 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.main.component.BottomNavBar
 import com.liangsan.keyloler.presentation.main.navigation.MainNavHost
 import com.liangsan.keyloler.presentation.utils.KeylolerDestination
-import com.liangsan.keyloler.presentation.utils.LocalSnackbarScope
-import com.liangsan.keyloler.presentation.utils.SnackbarScope
+import com.liangsan.keyloler.presentation.utils.SnackbarController
 import com.liangsan.keyloler.presentation.utils.Zero
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
-import com.liangsan.keyloler.presentation.utils.conditional
 import com.liangsan.keyloler.presentation.utils.isTopLevelDestinationInHierarchy
-import com.liangsan.keyloler.presentation.utils.onTopBarNavigate
+import com.liangsan.keyloler.presentation.utils.topLevelNavigate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koin.compose.KoinContext
 
 @Composable
 fun KeylolerApp() {
@@ -45,36 +49,52 @@ fun KeylolerApp() {
             currentBackStackEntry?.toRoute<KeylolerDestination>()?.showBottomNav == true
         }
     }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    val scope = rememberCoroutineScope()
-    val snackbarScope = remember { SnackbarScope(snackbarHostState, scope) }
+    LaunchedEffect(lifecycleOwner.lifecycle) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            SnackbarController.events.collect { event ->
+                withContext(Dispatchers.Main.immediate) {
+                    snackbarHostState.currentSnackbarData?.dismiss()
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { data ->
-                    SwipeToDismissBox(
-                        state = rememberSwipeToDismissBoxState(
-                            confirmValueChange = {
-                                data.dismiss(); true
-                            }
-                        ),
-                        backgroundContent = {}
-                    ) {
-                        Snackbar(
-                            snackbarData = data,
-                        )
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.actionLabel,
+                        withDismissAction = event.withDismissAction,
+                        duration = event.duration
+                    ).also {
+                        event.onResult?.invoke(it)
                     }
-                },
-                modifier = Modifier.conditional(showBottomBar) {
-                    this.bottomBarPadding()
                 }
-            )
-        },
-        contentWindowInsets = WindowInsets.Zero
-    ) { innerPadding ->
-        CompositionLocalProvider(LocalSnackbarScope provides snackbarScope) {
+            }
+        }
+    }
+    KoinContext {
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = { data ->
+                        SwipeToDismissBox(
+                            state = rememberSwipeToDismissBoxState(
+                                confirmValueChange = {
+                                    data.dismiss(); true
+                                }
+                            ),
+                            backgroundContent = {}
+                        ) {
+                            Snackbar(
+                                snackbarData = data,
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .imePadding()
+                        .bottomBarPadding(showBottomBar)
+                )
+            },
+            contentWindowInsets = WindowInsets.Zero
+        ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,7 +108,7 @@ fun KeylolerApp() {
                     modifier = Modifier.align(Alignment.BottomCenter),
                     visible = showBottomBar,
                     isSelected = currentBackStackEntry::isTopLevelDestinationInHierarchy,
-                    onNavigate = navHostController::onTopBarNavigate
+                    onNavigate = navHostController::topLevelNavigate
                 )
             }
         }

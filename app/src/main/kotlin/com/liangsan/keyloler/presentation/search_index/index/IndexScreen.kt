@@ -37,7 +37,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,14 +45,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.ForumCategory
 import com.liangsan.keyloler.domain.utils.Result
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
-import com.liangsan.keyloler.presentation.utils.LocalSnackbarScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import org.koin.androidx.compose.koinViewModel
 
@@ -64,16 +62,7 @@ fun IndexScreen(
     onSearchClick: () -> Unit,
     onForumClick: (Forum) -> Unit
 ) {
-    val snackbarScope = LocalSnackbarScope.current
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(state.loadingState) {
-        if (state.loadingState is Result.Error) {
-            snackbarScope.launch {
-                showSnackbar((state.loadingState as Result.Error).toString())
-            }
-        }
-    }
 
     IndexScreenContent(
         modifier = modifier.safeDrawingPadding(),

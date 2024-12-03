@@ -6,6 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
@@ -25,6 +26,8 @@ val ktorHttpClient = HttpClient(CIO) {
             Timber.e(exception)
         }
     }
+
+    install(HttpCookies)
 
     install(Resources)
 
