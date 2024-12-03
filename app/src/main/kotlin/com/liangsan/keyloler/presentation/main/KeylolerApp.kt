@@ -12,28 +12,23 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.main.component.BottomNavBar
 import com.liangsan.keyloler.presentation.main.navigation.MainNavHost
 import com.liangsan.keyloler.presentation.utils.KeylolerDestination
+import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
 import com.liangsan.keyloler.presentation.utils.SnackbarController
 import com.liangsan.keyloler.presentation.utils.Zero
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.isTopLevelDestinationInHierarchy
 import com.liangsan.keyloler.presentation.utils.topLevelNavigate
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.koin.compose.KoinContext
 
 @Composable
@@ -49,24 +44,17 @@ fun KeylolerApp() {
             currentBackStackEntry?.toRoute<KeylolerDestination>()?.showBottomNav == true
         }
     }
-    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(lifecycleOwner.lifecycle) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            SnackbarController.events.collect { event ->
-                withContext(Dispatchers.Main.immediate) {
-                    snackbarHostState.currentSnackbarData?.dismiss()
+    ObserveAsEvents(flow = SnackbarController.events) { event ->
+        snackbarHostState.currentSnackbarData?.dismiss()
 
-                    snackbarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = event.actionLabel,
-                        withDismissAction = event.withDismissAction,
-                        duration = event.duration
-                    ).also {
-                        event.onResult?.invoke(it)
-                    }
-                }
-            }
+        snackbarHostState.showSnackbar(
+            message = event.message,
+            actionLabel = event.actionLabel,
+            withDismissAction = event.withDismissAction,
+            duration = event.duration
+        ).also {
+            event.onResult?.invoke(it)
         }
     }
     KoinContext {

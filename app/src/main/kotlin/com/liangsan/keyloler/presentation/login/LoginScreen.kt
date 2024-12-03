@@ -67,15 +67,23 @@ import coil3.request.ImageRequest
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.LoginResult
 import com.liangsan.keyloler.presentation.utils.NoCopyPasteClipboardManager
+import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.event) { event ->
+        when (event) {
+            LoginEvent.LoginSucceed -> onNavigateToHome()
+        }
+    }
 
     LoginScreenContent(
         modifier = modifier,

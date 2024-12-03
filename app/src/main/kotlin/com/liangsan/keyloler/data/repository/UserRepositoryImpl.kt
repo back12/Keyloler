@@ -14,8 +14,7 @@ class UserRepositoryImpl(context: Application) : UserRepository {
         return dataStore.data
     }
 
-    // Update every field of user data every time
-    override suspend fun updateUserData(userData: UserData) {
-        dataStore.updateData { userData }
+    override suspend fun updateUserData(block: suspend (userData: UserData) -> UserData) {
+        dataStore.updateData(block)
     }
 }

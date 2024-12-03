@@ -4,7 +4,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,6 +16,7 @@ import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDes
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
+import com.liangsan.keyloler.presentation.utils.topLevelNavigate
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -59,7 +59,12 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 }
 
                 composable<LoginDestination.Login> {
-                    LoginScreen(onNavigateUp = navHostController::navigateUp)
+                    LoginScreen(
+                        onNavigateUp = navHostController::navigateUp,
+                        onNavigateToHome = {
+                            navHostController.topLevelNavigate(TopLevelDestination.Home)
+                        }
+                    )
                 }
             }
         }

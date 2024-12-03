@@ -7,5 +7,5 @@ interface UserRepository {
 
     fun getUserData(): Flow<UserData>
 
-    suspend fun updateUserData(userData: UserData)
+    suspend fun updateUserData(block: suspend (userData: UserData) -> UserData)
 }

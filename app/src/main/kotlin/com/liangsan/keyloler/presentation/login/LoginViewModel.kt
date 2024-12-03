@@ -3,11 +3,14 @@ package com.liangsan.keyloler.presentation.login
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.liangsan.keyloler.data.preferences.UserData
 import com.liangsan.keyloler.domain.model.LoginResult
 import com.liangsan.keyloler.domain.repository.LoginRepository
+import com.liangsan.keyloler.domain.repository.UserRepository
 import com.liangsan.keyloler.domain.utils.data
 import com.liangsan.keyloler.presentation.utils.SnackbarController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,21 +18,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 class LoginViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
-
     val state: StateFlow<LoginState> = _state.asStateFlow()
+
+    private val _event = Channel<LoginEvent>()
+    val event = _event.receiveAsFlow()
 
     companion object {
         const val USERNAME = "username"
@@ -41,6 +50,7 @@ class LoginViewModel(
 
     init {
         observeSavedState()
+        observeLoginSuccess()
     }
 
     fun changeLoginMethod() {
@@ -54,6 +64,9 @@ class LoginViewModel(
     }
 
     fun login() {
+        if (state.value.result is LoginResult.Success) {
+            return
+        }
         state.value.fields.let { fields ->
             when (fields) {
                 is LoginState.LoginFields.Password -> {
@@ -186,6 +199,23 @@ class LoginViewModel(
                     SnackbarController.showSnackbar(it)
                 }
             }
+        }
+    }
+
+    private fun observeLoginSuccess() {
+        viewModelScope.launch {
+            state.map { it.result }
+                .filter { it is LoginResult.Success }
+                .collectLatest { result ->
+                    result as LoginResult.Success
+                    userRepository.updateUserData {
+                        UserData.newBuilder()
+                            .setUid(result.uid)
+                            .setLoginTime(Clock.System.now().toEpochMilliseconds())
+                            .build()
+                    }
+                    _event.send(LoginEvent.LoginSucceed)
+                }
         }
     }
 
