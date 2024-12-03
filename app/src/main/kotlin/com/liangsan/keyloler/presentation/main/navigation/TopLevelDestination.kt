@@ -19,13 +19,13 @@ sealed class TopLevelDestination(
     data object SearchIndex : TopLevelDestination(R.string.search, R.drawable.round_search_24)
 
     @Serializable
-    data object User: TopLevelDestination(R.string.user, R.drawable.rounded_account_circle_24)
+    data object Profile: TopLevelDestination(R.string.user, R.drawable.rounded_account_circle_24)
 
     companion object {
         fun toList() = listOf(
             Home,
             SearchIndex,
-            User
+            Profile
         )
     }
 }

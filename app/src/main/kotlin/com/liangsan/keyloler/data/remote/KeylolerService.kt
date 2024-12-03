@@ -47,7 +47,7 @@ class KeylolerService(private val httpClient: HttpClient) {
                 .bodyAsText().contains("succeed")
         }
 
-    suspend fun secureWebLogin(secCode: String, loginParam: LoginParam): Result<Boolean> =
+    suspend fun secureWebLogin(secCode: String, loginParam: LoginParam): Result<String> =
         safeApiCall {
             httpClient.submitForm(
                 url = httpClient.href(WebLogin(loginParam.loginHash)),
@@ -60,7 +60,7 @@ class KeylolerService(private val httpClient: HttpClient) {
                     append("handlekey", "login")
                     append("cookietime", "2592000")
                 }
-            ).bodyAsText().contains("succeed")
+            ).bodyAsText()
         }
 
     suspend fun getForumIndex(): Result<KeylolResponse<ForumIndexDto>> =

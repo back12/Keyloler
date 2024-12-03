@@ -54,10 +54,8 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     }
                 }
 
-                composable<TopLevelDestination.User> {
-                    LaunchedEffect(Unit) {
-                        navHostController.navigate(LoginDestination.Login())
-                    }
+                composable<TopLevelDestination.Profile> {
+
                 }
 
                 composable<LoginDestination.Login> {

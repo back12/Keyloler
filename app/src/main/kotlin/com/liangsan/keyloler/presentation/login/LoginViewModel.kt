@@ -116,6 +116,7 @@ class LoginViewModel(
                                 LoginResult.Cause.WrongPassword -> null
 
                                 // create a new session with previous auth value
+                                LoginResult.Cause.NoUidFound,
                                 LoginResult.Cause.WrongSecureCode -> createLoginSecureSession(
                                     it.session!!.loginParam.auth,
                                     it.session.key
@@ -174,6 +175,9 @@ class LoginViewModel(
 
                     LoginResult.Cause.WrongSecureCode ->
                         SnackbarController.showSnackbar("验证码填写错误")
+
+                    LoginResult.Cause.NoUidFound ->
+                        SnackbarController.showSnackbar("登陆失败，未找到uid")
                 }
             }
 
@@ -218,9 +222,9 @@ class LoginViewModel(
                             }
                         }
                     }
-                }.collectLatest { method ->
+                }.collectLatest { fields ->
                     _state.update {
-                        it.copy(fields = method)
+                        it.copy(fields = fields)
                     }
                 }
         }

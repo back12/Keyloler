@@ -33,7 +33,12 @@ class LoginRepositoryImpl(
             response as KeylolResponse.Success
             when (response.message?.messageVal) {
                 "login_succeed" -> {
-                    emit(LoginResult.Success(response.message.messageStr))
+                    emit(
+                        LoginResult.Success(
+                            uid = response.variables.memberUid,
+                            msg = response.message.messageStr
+                        )
+                    )
                 }
 
                 "login_seccheck2" -> {
@@ -107,13 +112,22 @@ class LoginRepositoryImpl(
     ): Flow<LoginResult> = flow {
         emit(LoginResult.Loading)
 
-        val secCodePassed = service.secureWebLogin(secCode, loginParam).getOrElse {
+        val result = service.secureWebLogin(secCode, loginParam).getOrElse {
             emit(LoginResult.Error(throwable = it))
             return@flow
         }
 
+        val secCodePassed = result.contains("succeed")
+
         if (secCodePassed) {
-            emit(LoginResult.Success("登陆成功"))
+            val uid = try {
+                val regex = "'uid':'(\\d+)'".toRegex()
+                regex.find(result)?.groupValues!![1]
+            } catch (e: NullPointerException) {
+                emit(LoginResult.Failed(LoginResult.Cause.NoUidFound))
+                return@flow
+            }
+            emit(LoginResult.Success(uid = uid, msg = "登陆成功"))
         } else {
             emit(LoginResult.Failed(LoginResult.Cause.WrongSecureCode))
         }
