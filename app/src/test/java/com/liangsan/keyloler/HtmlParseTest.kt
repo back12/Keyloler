@@ -830,10 +830,817 @@ class HtmlParseTest {
         val onclick = document.getElementsByClass("sec_button")[0].attribute("onclick")?.value
         val regex = "duceapp_updateseccode\\('([^']*)','([^']*)'\\)".toRegex()
         val groupValues = regex.find(onclick!!)?.groupValues!!
-        val formHash = document.getElementsByAttributeValue("name", "formhash")[0].attribute("value")?.value
+        val formHash =
+            document.getElementsByAttributeValue("name", "formhash")[0].attribute("value")?.value
         val (_, loginHash, ran) = groupValues
         assertEquals(loginHash, "LnM70")
         assertEquals(ran, "68638")
         assertEquals(formHash, "5be8682b")
+    }
+
+    @Test
+    fun parse_user_nickname() {
+        val html = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <!--<title>星鸢的个人资料 -  其乐 Keylol -  驱动正版游戏的引擎！</title>-->
+                <link rel="manifest" href="/site.webmanifest?v=12">
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=algn46e3Xp">
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=algn46e3Xp">
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=algn46e3Xp">
+                <link rel="mask-icon" href="/safari-pinned-tab.svg?v=algn46e3Xp" color="#66bbff">
+                <link rel="shortcut icon" href="/favicon.ico?v=algn46e3Xp">
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+                <meta name="apple-mobile-web-app-capable" content="yes">
+                <meta name="apple-mobile-web-app-title" content="其乐社区">
+                <link href="splashscreens/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+                <link href="splashscreens/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+                <link href="splashscreens/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+                <link href="splashscreens/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+                <link href="splashscreens/iphonexr_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+                <link href="splashscreens/iphonexsmax_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+                <meta name="application-name" content="其乐社区">
+                <meta name="msapplication-TileColor" content="#66bbff">
+                <meta name="theme-color" content="#55bbff">
+                <link href="https://keylol.com/forum.php?mod=rss" rel="alternate" type="application/rss+xml" title="Keylol RSS Feed" />
+                <link rel="search" type="application/opensearchdescription+xml" href="/content-search.xml" title="其乐社区">
+                <link rel="preconnect" href="https://hm.baidu.com">
+                <link rel="preconnect" href="https://cdn.jsdelivr.net">
+                <link rel="preconnect" href="https://www.google-analytics.com">
+                <link rel="preconnect" href="https://www.googletagmanager.com"><title>星鸢的个人资料 - 其乐 Keylol</title>
+                <meta name="keywords" content="星鸢的个人资料" />
+                <meta name="description" content="星鸢的个人资料 ,其乐 Keylol" />
+                <meta name="generator" content="Keylol X3.5" />
+                <meta name="author" content="Keylol.com & 其乐" />
+                <meta name="copyright" content="2004-2024 其乐 Keylol" />
+                <meta name="robots" content="noarchive">
+                <base href="https://keylol.com/" />
+                <script>
+                (function() {
+                if (!window.location.hostname.endsWith('k' + 'eylol.com'))
+                window.location = 'https://k' + 'eylol.com' + window.location.pathname;
+                })();
+                    </script><link rel="stylesheet" type="text/css" href="data/cache/style_7_common.css?emL" /><link rel="stylesheet" type="text/css" href="data/cache/style_7_home_space.css?emL" /><script type="text/javascript">var STYLEID = '7', STATICURL = 'static/', IMGDIR = 'static/image/common', VERHASH = 'emL', charset = 'utf-8', discuz_uid = '1056547', cookiepre = 'dz_2132_', cookiedomain = '', cookiepath = '/', showusercard = '1', attackevasive = '0', disallowfloat = 'login|newthread', creditnotice = '1|体力|点,3|蒸汽|克,4|动力|点,6|绿意|,8|可用改名次数|次', defaultstyle = '', REPORTURL = 'aHR0cHM6Ly9rZXlsb2wuY29tL3N1aWQtNTkzNjY3', SITEURL = 'https://keylol.com/', JSPATH = 'data/cache/', DYNAMICURL = '';</script>
+                <script src="data/cache/common.js?emL" type="text/javascript"></script>
+                <meta name="application-name" content="其乐 Keylol"/>
+                <meta name="msapplication-tooltip" content="其乐 Keylol"/><meta name="msapplication-task"
+                      content="name=社区;action-uri=https://keylol.com/forum.php;icon-uri=https://keylol.com/static/image/common/bbs.ico"/><link rel="stylesheet" id="css_widthauto" type="text/css" href="data/cache/style_7_widthauto.css?emL"/>
+                <script type="text/javascript">HTMLNODE.className += ' widthauto'</script><script src="data/cache/home.js?emL" type="text/javascript"></script><link rel="stylesheet" type="text/css" href="template/steamcn_metro/src/css/tiny-bootstrap.css"/>
+                <link rel="stylesheet" type="text/css" href="template/steamcn_metro/src/css/site.css?emL"/>
+                <link rel="stylesheet" type="text/css" href="template/steamcn_metro/src/css/new-style.css?emL"/>
+                <script src="template/steamcn_metro/src/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+                <script src="template/steamcn_metro/src/js/bootstrap-3.3.7.min.js" type="text/javascript"></script>
+                <script>jq = jQuery.noConflict();</script>
+                <script src="template/steamcn_metro/src/js/site.js?emL" type="text/javascript"></script><!--Append, Sing_did--><!--[if IE 6]>
+                <script src="template/steamcn_metro/src/js/iepngfix_tilebg.js" type="text/javascript"></script><![endif]-->
+                <style>    <!--
+                {
+                    loop ${'$'} _G [ 'setting' ] [ 'navs' ] ${'$'} nav
+                }
+                -->
+                .tiled-menu li#
+
+                ${'$'}
+                nav[navid] a {
+                    background-image: url(template/steamcn_metro/src/img/header/.png);
+                }
+
+                <!--
+                {
+                /
+                loop
+                }
+                -->
+                .tiled-menu li a {
+                    behavior: url(template/steamcn_metro/src/js/iepngfix.htc)
+                }</style><!--Append, Sing_did--></head>
+                <body id="nv_home"
+                      class="pg_space"
+                      onkeydown="if(event.keyCode==27) return false;">
+                <div id="append_parent"></div>
+                <div id="ajaxwaitid"></div>    <nav id="nav-menu" class="align-center">
+                    <ul>
+                        <li class="has-sub"><a href="javascript:void(0)"> <span>蒸汽</span> </a>
+                            <ul>
+                                <li><a href="f161-1"> <span>热点</span> </a></li>
+                                <li><a href="f319-1"> <span>福利</span> </a></li>
+                                <li><a href="f234-1"> <span>购物</span> </a></li>
+                                <li><a href="f271-1"> <span>慈善包</span> </a></li>
+                                <li><a href="f257-1"> <span>汉化</span> </a></li>
+                                <li><a href="f127-1"> <span>工具</span> </a></li>
+                                <li><a href="f235-1"> <span>成就</span> </a></li>
+                                <li><a href="f129-1"><span>互鉴</span></a></li>
+                                <li><a href="f254-1"><span>分享互赠</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub"><a href="javascript:void(0)"> <span>互助</span> </a>
+                            <ul>
+                                <li><a href="f301-1"> <span>平台技术</span> </a></li>
+                                <li><a href="f302-1"> <span>平台购物</span> </a></li>
+                                <li><a href="f304-1"> <span>其乐社区</span> </a></li>
+                                <li><a href="f318-1"> <span>资源索取</span> </a></li>
+                                <li><a href="f303-1" style="padding: 10px 10px; line-height: 20px;"> <span>游戏成就汉化</span> </a></li>
+                                <li><a href="f322-1" style="padding: 10px 10px; line-height: 20px;"> <span>软件硬件其他</span> </a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub"><a href="javascript:void(0)"> <span>平台</span> </a>
+                            <ul>
+                                <li><a href="f275-1"><span>主机</span></a></li>
+                                <li><a href="f328-1"><span>手游</span></a></li>
+                                <li><a href="f232-1"> <span>Origin</span> </a></li>
+                                <li><a href="f274-1"> <span>uPlay</span> </a></li>
+                                <li><a href="f276-1"> <span>GOG</span> </a></li>
+                                <li><a href="f345-1"> <span>战网</span> </a></li>
+                                <li><a href="f326-1"><span>Windows</span></a></li>
+                                <li><a href="f335-1"><span>Epic</span></a></li>
+                                <li><a href="f316-1"> <span>杉果</span> </a></li>
+                                <li><a href="f332-1"><span>方块</span></a></li>
+                                <li><a href="f325-1"><span>WeGame</span></a></li>
+                                <li><a href="f277-1"> <span>其他</span> </a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub"><a href="javascript:void(0)"> <span>休闲</span> </a>
+                            <ul>
+                                <li><a href="f148-1"> <span>水区</span> </a></li>
+                                <li><a href="f259-1"> <span>摄影旅游</span> </a></li>
+                                <li><a href="f273-1"> <span>美食烹饪</span> </a></li>
+                                <li><a href="f200-1"> <span>软硬兼施</span> </a></li>
+                                <li><a href="f330-1"> <span>开箱</span> </a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub"><a href="forum.php"> <span>游戏</span> </a>
+                            <ul>
+                                <!--<li class="dual-line"><a href="f251-1"><p>游戏综合</p>
+                                  <!--  <p>交换观点/资源</p></a></li> -->
+                                <li><a href="f251-1"><span>游戏综合</span></a></li>
+                                <li><a href="f305-1"><span>刀塔</span></a></li>
+                                <li><a href="f337-1"><span>明日方舟</span></a></li>
+                                <li><a href="f299-1"><span>反恐精英</span></a></li>
+                                <li><a href="f244-1"><span>威乐</span></a></li>
+                                <li><a href="f246-1"><span>艺电</span></a></li>
+                                <li><a href="f245-1"><span>育碧</span></a></li>
+                                <li><a href="f248-1"><span>动视暴雪</span></a></li>
+                                <li><a href="f339-1"><span>虚拟现实</span></a></li>
+                            </ul>
+                        </li>
+                                <!-- <li class="nav-logo"><a href="/"> <span>&nbsp;</span> </a></li> -->
+                        <li class="has-sub"></a>
+                        <li class="has-sub nav-forum"><a href="javascript:void(0)"> <span>服务</span> </a>
+                            <ul>
+                                <li><a href="f140-1"> <span>公告</span> </a></li>
+                                <li><a href="f197-1"> <span>反馈</span> </a></li>
+                                <li><a href="f238-1"> <span>活动</span> </a></li>
+                                <li><a href="steamcn_steam_connect-statistics.html"> <span>排行榜</span> </a></li>
+                                <li><a href="javascript:setcookie(`dark_mode`, 1-getcookie(`dark_mode`), 3600*24*365);location.reload();"> <span>夜间</span> </a></li>
+                                <li><a href="forum.php?mod=collection"> <span>淘帖</span> </a></li>
+                                <li><a href="misc.php?mod=tag"> <span>标签</span> </a></li>
+                                <li><a href="keylol_forum_subscription-threadlist.html"> <span>订阅</span> </a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub nav-keylol"><a href="https://store.steampowered.com/curator/9730205-Keylol-Player-Club/" target="_blank"> <span>评测</span> </a>
+                            <ul>
+                                <li class="dual-line"><a href="https://store.steampowered.com/curator/9730205-Keylol-Player-Club/" target="_blank"><p>其乐 Keylol 鉴赏家</p>
+                                    <p>游戏评测社区</p></a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub nav-7l"><a href="steamcn_gift-7l.html"> <span>赠楼</span> </a>
+                            <ul>
+                                <li class="dual-line"><a href="steamcn_gift-7l.html"><p>互赠平台</p>
+                                    <p>抽取正版游戏</p></a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub nav-trade"><a href="f201-1"> <span>交易</span> </a>
+                            <ul>
+                                <li class="dual-line"><a href="f201-1"><p>交易中心</p>
+                                    <p>便捷游戏市集</p></a></li>
+                            </ul>
+                        </li>
+                        <li class="has-sub nav-srcn nav-last"><a href="https://steamrepcn.com/" target="_blank"> <span>信誉</span> </a>
+                            <ul>
+                                <li class="dual-line"><a href="https://steamrepcn.com/" target="_blank"><p>SRCN</p>
+                                    <p>反诈骗数据库</p></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <header class="tb-container">
+                    <a id="nav-logo" href="/">
+                        <span>原蒸汽动力社区</span>
+                    </a>
+                    <section id="nav-additional" class="pull-right">
+                        <div id="nav-search-bar">
+                            <div class="search-bar" style="display: none;">
+                    <!-- <img src="template/steamcn_metro/src/img/common/nav-search.png"> -->
+                    <form class="search-bar-form" method="post" action="search.php?searchsubmit=yes" target="_blank">
+                        <input type="hidden" name="formhash" value="8b4647a7">
+                        <input type="hidden" name="srchtype" value="title">
+                        <input type="hidden" name="srhfid" value="0">
+                        <input type="hidden" name="srhlocality" value="home::space">
+                                <input class="search-box" type="search" name="srchtxt" placeholder="请输入搜索内容">
+                        <input type="hidden" name="mod" value="baidu">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-default" data-toggle="dropdown"><span>百度</span><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                                                                <li><a href="javascript:void(0)" data-mod="forum">帖子</a></li>
+                                                                                                                <li><a href="javascript:;" data-mod="collection">淘贴</a></li>                <li class="divider"></li>
+                                <li><a href="javascript:void(0)" class="search-bar-remember" data-mod="google">Google</a></li>
+                                <li><a href="javascript:void(0)" class="search-bar-remember" data-mod="baidu">百度</a></li>
+                                <li><a href="javascript:void(0)" class="search-bar-remember" data-mod="bing">必应</a></li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-default" type="submit" name="searchsubmit" value="true"></button>
+                    </form>
+                </div>
+                        </div>
+                        <div id="nav-user-action-bar">
+                            <ul class="list-inline">                              <span id="xunjie_attention_s"></span>                 <li><a class="btn btn-user-action"
+                                       href="home.php?mod=space&amp;do=pm"> 消息                        </a></li>
+                                <li>
+                                    <a class="btn btn-user-action"
+                                       href="home.php?mod=space&amp;do=notice"> 提醒                        </a></li>
+                                <li class="dropdown"><a href="suid-1056547"> <img class="avatar img-circle" src="https://keylol.com/uc_server/data/avatar/001/05/65/47_avatar_middle.jpg?ts=1696781036">
+                                </a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="home.php?mod=spacecp">设置</a></li>
+                                                                    <li><a href="connect.php?mod=config">绑定 QQ</a></li>                        <li class="divider"></li>                                                                                                    <li><a href="home.php?mod=space&do=friend" _style="background-image:url(https://keylol.com/static/image/feed/friend_b.png) !important">好友</a></li>                                                                                                                            <li><a href="forum.php?mod=guide&view=my" _style="background-image:url(https://keylol.com/static/image/feed/thread_b.png) !important">帖子</a></li>                                                                                                                            <li><a href="home.php?mod=space&do=favorite&type=thread">收藏</a></li>                                                                                                                            <li><a href="home.php?mod=magic" _style="background-image:url(https://keylol.com/static/image/feed/magic_b.png) !important">道具</a></li>                                                                                                                            <li><a href="home.php?mod=medal" _style="background-image:url(https://keylol.com/static/image/feed/medal_b.png) !important">勋章</a></li>                                                                                                                            <li><a href="forum.php?mod=collection&op=my" _style="background-image:url(https://keylol.com/static/image/feed/collection_b.png) !important">淘帖</a></li>                                                                                                                                                                                                                                                                            <li><a href="keylol_forum_subscription-threadlist.html">订阅</a></li>
+                                        <li class="divider"></li>
+                                                                                                                                        <li><a href="member.php?mod=logging&amp;action=logout&amp;formhash=8b4647a7">退出</a></li>
+                                    </ul>
+                                </li>                                                </ul>
+                        </div>
+                    </section>
+                </header>    <div class="floatcontainer doc_header wp cl">            <div class="index_navi">
+                        <div class="index_navi_left">
+                            <div class="index_left_title">
+                                <div>关注重点</div>
+                            </div>
+                            <div class="index_left_detail">                                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="t531046-1-1" target="_blank">SteamCN 新品牌其乐</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="t307370-1-1" target="_blank">社区帖子代码指南</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="https://keylol.com/t521974-1-1" target="_blank">Steam和社区脚本索引</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="https://keylol.com/t450232-1-1" target="_blank">【获得积分】用户组手册</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="https://keylol.com/t353357-1-1" target="_blank">慈善包购物手册</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="https://keylol.com/t803672-1-1" target="_blank">入库其他区的免费内容</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="https://keylol.com/t301016-1-1" target="_blank">ASF 挂卡配置与命令教程</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="https://keylol.com/t234499-1-1" target="_blank">SteamDB 使用指南</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="https://keylol.com/forum.php?mod=collection&action=view&ctid=72" target="_blank">Steam低价获取余额</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="t96430-1-1" target="_blank"> 赠楼使用手册</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="dot"></div>                                            <div><a href="https://keylol.com/t152125-1-1" target="_blank">可免费 +1</a></div>
+                                </div>                                    <div class="row_top">                                            <div class="blue_dot"></div>                                            <div><a href="https://keylol.com/t675265-1-1" target="_blank">Steam汉化补丁汇总</a></div>
+                                </div>                                                </div>
+                        </div>            <div class="index_navigation_mid rnd_ai_h" style="line-height:107px;height:107px"><a href="https://keylol.com/hello/518790" target="_blank"><img src="https://blob.keylol.com/forum/202412/02/191256uuxa33j0aqaxa7gw.jpg?a=a" height="107" width="240" border="0"></a></div>        <div class="index_navi_right">
+                            <div class="index_right_title">
+                                <div>站点公告</div>
+                            </div>
+                            <div class="index_right_detail">
+                                <div class="blue_dot"></div>
+                                <div><a href="/t273107-1-1" target="_blank">游戏开发和发行的咨询服务</a></div>
+                            </div>
+                            <div class="index_right_detail">
+                                <div class="dot" style="margin-top:3px;"></div>
+                                <div style="margin-top:-2px;"><a href="/t46755-1-1" target="_blank">其乐用户守则</a></div>
+                            </div>
+                            <div class="index_right_detail" style="margin-top:-5px;">
+                                <div class="dot"></div>
+                                <div><a href="/advertising_with_keylol_20210216.pdf?emL" target="_blank">在其乐投放广告</a></div>
+                            </div>
+                        </div>
+                    </div>            <div class="p_pop h_pop" id="mn_userapp_menu" style="display: none"></div>                        <style>
+                .html5video { width: 100%; height: 200px; overflow: hidden; max-width:690px; }
+                @media only screen and (min-width: 360px) {
+                .html5video { width: 100%; height: 160px; }
+                }
+                @media only screen and (min-width: 480px) {
+                .html5video { width: 90%; height: 300px; }
+                }
+                @media only screen and (min-width: 769px) {
+                .html5video { width: 80%; height: 360px; }
+                }
+                @media only screen and (min-width: 1200px) {
+                .html5video { /*width: 550px;*/ height: 400px; }
+                }
+                </style><link rel="stylesheet" href="https://keylol.com/source/plugin/steamcn_steam_connect/static/style.css"><script type='text/javascript' src='./source/plugin/sq_recent_smiles/js/jquery.cookie.js?emL'><script type='text/javascript' src='./source/plugin/sq_recent_smiles/js/json2.js?emL'></script><script type='text/javascript' src='./source/plugin/sq_recent_smiles/js/jquery.storageapi.min.js?emL'></script><script type='text/javascript' src='./source/plugin/sq_recent_smiles/js/recent_smiles.js?emL'></script><script type="text/javascript" charset="UTF-8" src="https://keylol.com/source/plugin/steamcn_lang/static/tongwen.js?emL_v2"></script>    </div>    <div id="wp" class="wp cl" style="min-width: 1206px;">
+                <div id="pt" class="bm cl">
+                <div class="z">
+                <a href="./" class="nvhm" title="首页">其乐 Keylol</a> <em>&rsaquo;</em>
+                <a href="suid-593667">星鸢</a> <em>&rsaquo;</em>
+                个人资料
+                </div>
+                </div>
+                <style id="diy_style" type="text/css"></style>
+                <div class="wp">
+                <!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+                </div><div id="uhd">
+                <div class="mn">
+                <ul>
+                <li class="addf">
+                <a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=593667&amp;handlekey=addfriendhk_593667" id="a_friend_li_593667" onclick="showWindow(this.id, this.href, 'get', 0);" class="xi2">加为好友</a>
+                </li>
+                <li class="pm2">
+                <a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_593667&amp;touid=593667&amp;pmid=0&amp;daterange=2" id="a_sendpm_593667" onclick="showWindow('showMsgBox', this.href, 'get', 0)" title="发送消息">发送消息</a>
+                </li>
+                </ul>
+                </div>
+                <div class="h cl">
+                <div class="icn avt"><a href="suid-593667"><img src="https://keylol.com/uc_server/data/avatar/000/59/36/67_avatar_small.jpg?ts=1695310525" onerror="this.onerror=null;this.src='https://keylol.com/uc_server/images/noavatar.svg'" alt="UID: 593667 " /></a></div>
+                <h2 class="mt">星鸢</h2>
+                <p>
+                <a href="https://keylol.com/?593667" class="xg1">https://keylol.com/?593667</a>
+                </p>
+                </div>
+
+                <ul class="tb cl" style="padding-left: 75px;">
+                <li><a href="home.php?mod=space&amp;uid=593667&amp;do=thread&amp;view=me&amp;from=space">主题</a></li>
+                <li class="a"><a href="home.php?mod=space&amp;uid=593667&amp;do=profile&amp;from=space">个人资料</a></li>
+                </ul>
+                </div>
+                <div id="ct" class="ct1 wp cl">
+                <div class="mn">
+                <!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+                <div class="bm bw0">
+                <div class="bm_c">
+                <div class="bm_c u_profile">
+
+                <div class="pbm mbm bbda cl" style="border-bottom: none; margin-bottom: initial !important; padding-bottom: initial !important;">
+                <h2 class="mbn">星鸢<span class="xw0">(UID: 593667)</span>
+                </h2>
+                <ul class="pf_l cl pbm mbm">
+                <li><em>邮箱状态</em>已验证</li>
+                </ul>
+                <ul>
+                <li><em class="xg1">个人签名&nbsp;&nbsp;</em><table><tr><td><strong>覆盖数码，科技，游戏，娱乐相关新闻和数据<br />
+                不定期发布文章<br />
+                </strong><img id="aimg_WpfRN" onclick="zoom(this, this.src, 0, 0, 1)" class="zoom" src="https://i.pinimg.com/originals/8c/c9/3d/8cc93d290995109bd07b29698ef1804b.gif" onmouseover="img_onmouseoverfunc(this)" onload="thumbImg(this)" border="0" alt="" style="" referrerpolicy="no-referrer" /></td></tr></table></li></ul>
+                <ul class="cl bbda pbm mbm">
+                <li>
+                <em class="xg2">统计信息</em>
+                <a href="home.php?mod=space&amp;uid=593667&amp;do=friend&amp;view=me&amp;from=space" target="_blank">好友数 6</a>
+                <span class="pipe">|</span><a href="home.php?mod=space&uid=593667&do=thread&view=me&type=reply&from=space" target="_blank">回帖数 5091</a>
+                <span class="pipe">|</span>
+                <a href="home.php?mod=space&uid=593667&do=thread&view=me&type=thread&from=space" target="_blank">主题数 1764</a>
+                </li>
+                </ul>
+                </div>
+                <div class="pbm mbm bbda cl">
+                <h2 class="mbn">勋章</h2>
+                <p class="md_ctrl">
+                <a href="home.php?mod=medal"><img src="static//image/common/medal_md2020_powerengine_lv4.png" alt="▘冲程循环 四重" id="md_79" onmouseover="showMenu({'ctrlid':this.id, 'menuid':'md_79_menu', 'pos':'12!'});" />
+                <img src="static//image/common/medal_md2016_H2O.png" alt="▘干渴水滴" id="md_55" onmouseover="showMenu({'ctrlid':this.id, 'menuid':'md_55_menu', 'pos':'12!'});" />
+                <img src="static//image/common/medal_md2016_SEV5.png" alt="▘片十字花瓣" id="md_54" onmouseover="showMenu({'ctrlid':this.id, 'menuid':'md_54_menu', 'pos':'12!'});" />
+                </a>
+                </p>
+                </div><div id="md_79_menu" class="tip tip_4" style="display: none;">
+                <div class="tip_horn"></div>
+                <div class="tip_c">
+                <h4>▘冲程循环 四重</h4>
+                <p>「动力」积分勋章第四个等级</p>
+                </div>
+                </div>
+                <div id="md_55_menu" class="tip tip_4" style="display: none;">
+                <div class="tip_horn"></div>
+                <div class="tip_c">
+                <h4>▘干渴水滴</h4>
+                <p>优质内容贡献者</p>
+                </div>
+                </div>
+                <div id="md_54_menu" class="tip tip_4" style="display: none;">
+                <div class="tip_horn"></div>
+                <div class="tip_c">
+                <h4>▘片十字花瓣</h4>
+                <p>在线时间(小时) ≥ 999   并且   在线时间(小时) / 主题数 ≤ 9.9</p>
+                </div>
+                </div>
+                <div class="pbm mbm bbda cl">
+                <h2 class="mbn">活跃概况</h2>
+                <ul>
+                <li><em class="xg1">用户组&nbsp;&nbsp;</em><span style="color:" class="xi2" onmouseover="showTip(this)" tip="积分 16014, 距离下一级还需 33986 积分"><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=37" target="_blank">旗舰会员</a></span> <img src="https://blob.keylol.com/common/usergroup/m7.png" alt="" class="vm" /> </li>
+                </ul>
+                <ul id="pbbs" class="pf_l">
+                <li><em>在线时间</em>3075 小时</li><li><em>注册时间</em>2017-12-4 02:58</li>
+                <li><em>最后访问</em>2024-12-6 12:51</li>
+                <li><em>IP 属地</em>美国</li>
+                <li><em>上次活动时间</em>2024-12-6 11:01</li><li><em>上次发表时间</em>2024-12-6 10:35</li><li><em>所在时区</em>(GMT -08:00) 太平洋时间(美国和加拿大), 提华纳</li>
+                </ul>
+                </div>
+                <div id="psts" class="cl">
+                <h2 class="mbn">统计信息</h2>
+                <ul class="pf_l">
+                <li><em>已用空间</em>   0 B </li>
+                <li><em>积分</em>16014</li><li><em>体力</em>14250 点</li>
+                <li><em>蒸汽</em>1226 克</li>
+                <li><em>动力</em>1138 点</li>
+                <li><em>绿意</em>0 </li>
+                <li><em>可用改名次数</em>0 次</li>
+                </ul>
+                </div>
+                <script>var sff_ka = document.createElement('li');sff_ka.innerHTML = '<em>最佳答案</em>6';document.querySelector('#psts > ul').appendChild(sff_ka);</script>
+                <div class="ptm mtm btda cl">
+                <h2 class="mbn">备注信息 - <a href="javascript:;" onclick="showWindow('freeaddon_remarks', 'plugin.php?id=freeaddon_remarks&uid=593667', 'get', 0);">修改备注信息</a></h2>
+                <ul id="pbbs" class="pf_l cl">
+                </ul>
+
+                <ul>
+                <li>
+                <em>详细备注</em><br>
+
+                </li>
+                </ul>
+                </div>
+                <br><div class='pbm mbm bbda cl'>
+                <h2 class='mbn'>赠楼信息</h2>
+                <ul class='pf_l'>
+                <li><em>创建</em><a href='https://keylol.com/plugin.php?id=steamcn_gift:search&q=593667&type=create'>0 ( &#36; 0 )</a></li>
+                <li><em>参加</em><a href='https://keylol.com/plugin.php?id=steamcn_gift:search&q=593667&type=enter'>0 ( &#36; 0 )</a></li>
+                <li><em>获赠</em><a href='https://keylol.com/plugin.php?id=steamcn_gift:search&q=593667&type=win'>0</a></li>
+                <li><em>Steam资料页</em><a href='https://steamcommunity.com/profiles/76561198342520744'>点此进入</a></li>
+                <li><em>赠楼率</em>0%</li>
+                <li><em>好评率</em>NA%</li>
+                <li><em>获赠率</em>0%</li>
+                <li><em>馈赠比</em>0%</li>
+                <li><em>赠出礼物份数</em>0</li>
+                </ul>
+                </div></div><!--[diy=diycontentbottom]--><div id="diycontentbottom" class="area"></div><!--[/diy]--></div>
+                </div>
+                </div>
+                </div>
+
+                <div class="wp mtn">
+                <!--[diy=diy3]--><div id="diy3" class="area"></div><!--[/diy]-->
+                </div>
+                </div>
+                <div class="rnd_ai_f"><a href="https://www.humblebundle.com/membership?utm_source=Keylol&utm_medium=Paid&utm_campaign=December_Choice24" target="_blank"><img src="https://blob.keylol.com/forum/202412/03/235950lfjvrbm6zz1fmrfr.jpg?a=a" height="120" width="1206" border="0"></a></div><div class="subforunm_foot">
+                <div class="subforunm_foot_bg"><img src="pic/foot_bg.png"></div>
+                <div class="subforunm_foot_banner">
+                <div class="subforunm_foot_text">
+                <div>　　作为民间站点，自 2004 年起为广大中文 Steam 用户提供技术支持与讨论空间。历经二十余载风雨，如今已发展为国内最大的正版玩家据点。</div>
+                </div>
+                <div class="subforunm_foot_text_bottom">
+                <div>
+                <div><br /><a href="forum.php?mod=guide&amp;view=newthread" title="列表模式 - 最新主题">列表模式</a> · <div class="wechat-hover-qrcode"><div class="qrcode"><img src="/template/steamcn_metro/src/img/wechat-qrcode-v2.jpg"></div><a href="/t326248-1-1" title="其乐社区官方微信公众号">微信公众号</a></div> · <a href="http://weibo.com/steamcn" target="_blank" title="其乐社区官方微博">微博</a> · <a href="https://space.bilibili.com/531279346" target="_blank" title="其乐茸茸">Bilibili频道</a> · <a href="//steamcommunity.com/groups/keylol-player-club" target="_blank" title="其乐社区官方 Steam 群组">Steam 群组</a> · <a href="http://tieba.baidu.com/f?ie=utf-8&amp;kw=keylol" target="_blank" title="百度 Keylol 贴吧">贴吧</a> · <a href="t8598-1-1" target="_blank" title="其乐社区官方 Q 群">QQ群</a>&nbsp;</div>
+                <div>Keylol 其乐 &copy;2004-2024 Chinese Steam User Fan Site.</div>
+                </div>
+                </div>
+                </div>
+                <script>var blocked_words = ["\/(GTA\\s?5|GTA\\s?V|\u4fa0\u76d7\u730e\u8f66\u624b\\s?5|\u4fa0\u76d7\u730e\u8f66\u624b\\s?V|\u4fe0\u76dc\u7375\u8eca\u624b\\s?5|271590|\u4fe0\u76dc\u7375\u8eca\u624b\\s?V|Grand Theft Auto V|\u6a2a\u884c\u9738\u9053\\s?5|\u4e09\u7537\u4e00\u72d7)\/i","\/(\u6218\u57304|\u6230\u57304|\u6218\u5730\u98ce\u4e914|\u6230\u5730\u98a8\u96f24|Battlefield\\s?4|1238860)\/i","\/(\u5947\u5f02\u4eba\u751f\u672c\u8272|\u5947\u7570\u4eba\u751f\u672c\u8272|\u5947\u5f02\u4eba\u751f\uff1a\u672c\u8272|\u5947\u7570\u4eba\u751f\uff1a\u672c\u8272|\u5947\u5f02\u4eba\u751f:\u672c\u8272|\u5947\u5f02\u4eba\u751f\\s?\u672c\u8272|936790|True\\s?colors|\u95ea\u70b9\u884c\u52a8|\u761f\u75ab\u516c\u53f8|246620|Plague\\s?Inc|\u5929\u671d\u4e0a\u56fd|\u82f1\u96c4\u5b66\u9662)\/i","\/(adult|Hentai|\u7ec5\u58eb|\u9a6c\u5934\u793e|subverse|R18|\u7eb3\u8fea\u4e9a\u4e4b\u5b9d|\u7eb3\u8fea\u4e9a|\u6da9\u60c5|\u8272\u60c5|\u60e9\u6212\u9b45\u9b54|\u9b45\u9b54)\/i","\/(\u4f2a\u5a18)\/i","\/(\u6b27\u9646\u98ce\u4e914|\u6b27\u9646\u98ce\u4e91IV|Europa\\s?Universalis\\s?4|Europa\\s?Universalis\\s?IV|EU4|\u6b27\u96464|236850)\/i","\/(\u94a2\u94c1\u96c4\u5fc33|\u94a2\u4e1d3|\u94a2\u94c1\u96c4\u5fc3III|Hearts\\s?of\\s?Iron\\s?III\\Hearts\\s?of\\s?Iron\\s?3|\u94a2\u94c1\u96c4\u5fc34|\u94a2\u4e1d4)\/i","\/(\u7ef4\u591a\u5229\u4e9a2|Victoria\\s?II|Victoria\\s?2|app\/42960)\/i","\/(\u6587\u660e\u65f6\u4ee32|Age\\s?of\\s?History\\s?II|Age\\s?of\\s?History\\s?2|603850)\/i","\/(\u5fc3\u8df3\u6587\u5b66\u90e8|\u5fc3\u8df3\u6587\u5b66\u4ff1\u4e50\u90e8|\u5fc3\u8df3\u6587\u5b66\u793e)\/i","\/((?<!The[ _])humankind|1124300|2229870|2732960)\/i","\/(Detention)\/i","\/(\u8fd4\u6821)\/i","\/(\u6bd2\u67ad|drug\\s?dealer)\/i","\/(t299037-1-1)\/i","\/(\u901a\u53e4\u65af|\u7981\u533a\u5b9e\u5f55)\/i","\/(\u68af\u5b50|\u9b54\u6cd5\u5de5\u5177|shadowsocks|v2ray|xray|iepl|iplc|\u6d41\u5a92\u4f53\u89e3\u9501|nexitelly|trojan|\u9178\u9178\u4e73|clashx|openclash|vmess|\u9632\u706b\u957f\u57ce|\u8f6f\u8def\u7531|\u88ab\u5899|\u8bf4\u9b54\u6cd5|\u4e0a\u7f51\u5de5\u5177|VPN|VPS|Telegram|ti\u5b50|\u4ee3\u7406|telegra|GFW)\/i","\/(\u8981\u9b54\u6cd5|\u5f00\u9b54\u6cd5|\u7528\u9b54\u6cd5|\u6302\u9b54\u6cd5|\u5f00\u4e86\u9b54\u6cd5|\u6302\u4e86\u9b54\u6cd5|\u5168\u9b54\u6cd5|\u79d1\u5b66\u4e0a\u7f51)\/i","\/(\u6709\u9b54\u6cd5|\u6709\u68af)\/i","\/(\u533a\u9b54\u6cd5)\/i","\/(\u9b54\u6cd5\u4e0a\u7f51|\u9b54\u6cd5\u8de8\u754c|\u7ffb\u5899|\u5168\u5c40\u9b54\u6cd5|\u722c\u5899|\u6302\u68af|\u5168\u5c40|\u7528\u9b54\u6cd5)\/i","\/(\u8282\u70b9)\/i","\/(\u673a\u573a)\/i","\/(\u7f8e\u5c11\u5973)\/i","\/(\u9ed1\u624b\u515a|mafia)\/i","\/(\u53bbDRM|\u5171\u515a|\u4e2d\u592e|\u5171\u4ea7|\u4e8c\u5341\u5927|\u4e60\u8fd1\u5e73|\u6253\u8840|\u7269\u8d28\u660e|\u751f\u52a8\u6d3b|\u6233\u529b|\u6253\u6c5f\u5c71)\/i","\/\\\/\\\/.*\\.?mmosvc\\.com\/i","\/(cdkeynogap)\/i","\/(cnbeta)\/i","\/(dick)\/i","\/(302\u5de5\u5177)\/i","\/(\u672c\u5730\u53cd\u4ee3)\/i","\/(OlduBil)\/i","\/(ChatGPT)\/i","\/(dlsite)\/i","\/(\u547d\u4ee4\u4e0e\u5f81\u670d\uff1a\u5c06\u519b)\/i","\/(\u547d\u4ee4\u4e0e\u5f81\u670d\uff1a\u5c06\u519b\u96f6\u70b9)\/i","\/(\u56fd\\\/\u6e2f\\\/\u53f0)\/i"]</script>
+                <link rel="stylesheet" type="text/css" href="source/plugin/xunjie_attention/template/xunjie_attention.css">
+                <div id="xunjie_attention_userlist" style="position:absolute;display:none;border:1px solid;min-width:0px;border-color:#DDD;background:#FEFEFE;width:220px;z-index:301;" onmouseleave="xunjie_attention_mOut(this);"></div>
+                <div id="xunjie_attention_show" style="position:absolute;display:none;border:1px solid;min-width:60px;border-color:#DDD;background:#FEFEFE;z-index:301;" onmouseleave="xunjie_attention_mOut(this);"></div>
+                <div id="xunjie_attention_w" style="display:none;"></div>
+                <script>
+                function xunjie_attention_getTop(e) {
+                var offset = e.offsetTop;
+                if(e.offsetParent != null) {
+                offset += xunjie_attention_getTop(e.offsetParent);
+                }         
+                return offset;
+                }
+                function xunjie_attention_getLeft(e) {
+                var offset = e.offsetLeft;
+                if(e.offsetParent != null) {
+                offset += xunjie_attention_getLeft(e.offsetParent);
+                } 
+                return offset;
+                } 
+                function xunjie_attention_follow(a, href) {
+                if(a == 1) {
+                document.getElementById('follow_a').href = href;
+                document.getElementById('follow_li').classList.remove('fo_add');
+                document.getElementById('follow_li').classList.add('fo_cancel');
+                }
+                if(a == 2) {
+                document.getElementById('follow_a').href = href;
+                document.getElementById('follow_li').classList.remove('fo_cancel');
+                document.getElementById('follow_li').classList.add('fo_add');
+                }
+                }
+                function xunjie_attention_mOver(div, id, link) {
+                document.getElementById(id).style.display = '';
+                document.getElementById(id).style.left = xunjie_attention_getLeft(div) + 'px';
+                document.getElementById(id).style.top = xunjie_attention_getTop(div) + div.offsetHeight + 0.3 + 'px';
+                if(typeof xunjie_attention_isexist == 'undefined') {
+                xunjie_attention_isexist = 1;
+                ajaxget(link, id, id);
+                }
+                }
+                function xunjie_attention_mleave(id) {
+                    var div = document.getElementById(id);
+                    var x = event.clientX + window.pageXOffset;
+                    var y = event.clientY + window.pageYOffset;
+                    var divx1 = div.offsetLeft;
+                    var divy1 = div.offsetTop;
+                    var divx2 = div.offsetLeft + div.offsetWidth;
+                    var divy2 = div.offsetTop + div.offsetHeight;
+                if(x < divx1 || x > divx2 || y < divy1 || y > divy2) {
+                div.style.display = 'none';
+                }	
+                }
+                function xunjie_attention_mOut(div) {
+                div.style.display = 'none';
+                }
+                function xunjie_attention_userlist(div, id) {
+                if(div.href != 'javascript:;') {
+                ajaxget(div.href, id);
+                div.href = 'javascript:;';
+                }
+                }
+                </script>
+                <script>xunjie_attention_2 = '关注TA';xunjie_attention_5 = '取消关注';ajaxget('plugin.php?id=xunjie_attention:attention&type=5&formhash=8b4647a7', 'xunjie_attention_s', 'xunjie_attention_w');</script>
+                <script src="source/plugin/x520_top/template/js/saved_resource.js" type="text/javascript"></script>
+                <script src="source/plugin/x520_top/template/js/header.js" type="text/javascript"></script>
+                <script type="text/javascript">
+                TMall = TMall || {};
+                TMall.BackTop = function() {
+                    function C() {
+                        this.start = 0;
+                        this.step = 100;
+                        this.updateValue = function(K, N, L, M) {
+                            E.scrollTo(0, -L * (K /= M) * (K - 2) + N)
+                        };
+                        this.getValue = function() {
+                            return E.pageYOffset || G.body.scrollTop || G.documentElement.scrollTop
+                        }
+                    }
+                    function H(K) {
+                        if (! (this instanceof H)) {
+                            return new H(K)
+                        }
+                        this.config = {};
+                        this.scrollBtn = null;
+                        this._init(K)
+                    }
+                    var I = KISSY,
+                    J = I.DOM,
+                    F = I.Event,
+                    G = document,
+                    E = window,
+                    B = I.UA.ie == 6,
+                    D = "hidden",
+                    A = {
+                        triggerId: "J_ScrollTopBtn",
+                        triggerClass: "backToTop",
+                        style: "",
+                        bottom: 40,
+                        right: 50,
+                        baseLine: 90
+                    };
+                    C.prototype.scrollTop = function(K) {
+                        var Q = this,
+                        L = Q.getValue(),
+                        M = null,
+                        P = Q.start,
+                        N = 0,
+                        O = parseInt(L / 100);
+                        if (K !== L) {
+                            N = K - L;
+                            M = setInterval(function() {
+                                if (P <= O) {
+                                    Q.updateValue(P, L, N, O);
+                                    P++
+                                } else {
+                                    clearInterval(M)
+                                }
+                            },
+                            5)
+                        }
+                    };
+                    I.augment(H, {
+                        _init: function(K) {
+                            var L = this;
+                            L.config = I.merge(K, A);
+                            I.ready(function(M) {
+                                L.createEl();
+                                L.scrollBtn = M.get("#" + L.config.triggerId);
+                                L.addEvent()
+                            })
+                        },
+                        createEl: function() {
+                            var K = this.config,
+                            L = J.create("<div>", {
+                                css: {
+                                    display: "block",
+                                    textIndent: "-9999px",
+                                    position: B ? "absolute": "fixed",
+                                    bottom: K.bottom,
+                                    right: K.right,
+                                    height: "55px",
+                                    width: "55px",
+                                    outline: "none",
+                                    opacity: "0",
+                                    overflow: "hidden",
+                                    cursor: "pointer",
+                                    background: "url('./source/plugin/x520_top/template/img/tops.png') no-repeat center center #57bae8"
+                                },
+                                id: K.triggerId,
+                                "class": K.triggerClass + " hidden",
+                                text: "\u8fd4\u56de\u9876\u90e8",
+                                href: "#"
+                            });
+                            K.style || J.attr(L, "style", J.attr(L, "style") + K.style);
+                            J.addStyleSheet(".hidden{visibility:hidden}");
+                            J.append(L, "body")
+                        },
+                        addEvent: function() {
+                            function K() {
+                                var P = J.hasClass(L, D),
+                                O = parseInt(J.scrollTop(G));
+                                if (O > M && P) {
+                                    P = new I.Anim(L, {
+                                        opacity: 0.8
+                                    },
+                                    0.3);
+                                    P.run();
+                                    J.removeClass(L, D)
+                                } else {
+                                    if (O < M && !P) {
+                                        P = new I.Anim(L, {
+                                            opacity: 0
+                                        },
+                                        0.3);
+                                        P.run();
+                                        J.addClass(L, D)
+                                    }
+                                }
+                                if (B) {
+                                    P = J.viewportHeight(G);
+                                    O = O + P - N.bottom - J.height(L);
+                                    J.css(L, "top", O)
+                                }
+                            }
+                            var N = this.config,
+                            L = I.get("#" + N.triggerId),
+                            M = parseInt(N.baseLine);
+                            if (L) {
+                                F.on(E, "scroll", K);
+                                F.on(L, "click",
+                                function(O) {
+                                    O.halt(); (new C(G.documentElement)).scrollTop(0)
+                                });
+                                F.on(L, "mouseover",
+                                function() { (new I.Anim(L, {
+                                        opacity: 1
+                                    },
+                                    0.3)).run()
+                                });
+                                F.on(L, "mouseout",
+                                function() { (new I.Anim(L, {
+                                        opacity: 0.8
+                                    },
+                                    0.3)).run()
+                                })
+                            }
+                        }
+                    });
+                    H.init = function(K) {
+                        H(K)
+                    };
+                    return H
+                } ();
+                </script>
+                <script>TMall.BackTop.init();</script>
+                <style type="text/css">
+                #scrolltop {
+                    display: none;
+                }
+                .backToTop {
+                    z-index: 99;
+                }
+                </style>
+                <div class="subforunm_foot_intro clearfix">
+                <div class="subforunm_foot_intro_left">
+                <div>Designed by <a href="//steamcommunity.com/profiles/76561198020599404/" target="_blank">Lee</a> in <a href="//www.bing.com/search?q=Balestier" target="_blank">Balestier</a>, Powered by <a href="https://www.discuz.vip/" target="_blank">Discuz!</a></div>
+                <div style="margin-top:2px; margin-top:6px\0;">推荐使用 <a href="https://www.google.cn/chrome/" target="_blank">Chrome</a> 或 <a href="https://www.microsoft.com/edge" target="_blank">Microsoft Edge</a> 来浏览本站</div>
+                </div>
+                <div class="subforunm_foot_intro_right">
+                <div>
+                <a href="advertising_with_keylol_20210216.pdf" >广告投放</a><span class="pipe">|</span><a href="forum.php?mobile=yes" >手机版</a><span class="pipe">|</span><a href="#" >广州数趣信息科技有限公司 版权所有</a><span class="pipe">|</span><strong><a href="https://keylol.com" target="_blank">其乐 Keylol</a></strong>
+                ( <a href="http://beian.miit.gov.cn/" target="_blank">粤ICP备17068105号</a> )<!-- Steam 蓝绿插件 -->
+                <script src="https://steamdb.keylol.com/steam_info.js?v=0520"></script>
+
+                <!-- 追加 Steam 来源 -->
+                <script>
+                (function (params) {
+                	params.forEach(function (param) {
+                		function e(e,r,t){
+                			var a=new RegExp("([?&])"+r+"=.*?(&|${'$'})","i"),
+                				n=-1!==e.indexOf("?")?"&":"?",
+                				b='#app_reviews_hash',
+                				s=-1!==e.indexOf(b)?'':b,
+                				e=e.replace(b,'');
+                			return e.match(a) ? e.replace(a,"${'$'}1"+r+"="+t+"${'$'}2"+s):e+n+r+"="+t+s
+                		}
+                		jQuery(param[0]).each(function(){
+                			var r = jQuery(this);
+                			r.attr("href", e(r.attr("href"), param[1], param[2]));
+                			setInterval(function () {r.attr("href", e(r.attr("href"), param[1], param[2]))}, 1000);
+                		});
+                	});
+                })([
+                	// 追加 Steam 鉴赏家来源
+                	['a[href^="http://store.steampowered.com/"],a[href^="https://store.steampowered.com/"]', 'utm_source', 'keylol'],
+                	['a[href^="http://store.steampowered.com/"],a[href^="https://store.steampowered.com/"]', 'curator_clanid', '9730205'],
+                	// 追加 Steam 来源：无敌号（731040）
+                	['a[href^="http://store.steampowered.com/app/731040"],a[href^="https://store.steampowered.com/app/731040"]', 'utm_campaign', 'release'],
+                ]);
+                </script>
+
+                <!-- 追加其他网站来源 -->
+                <script>
+                (function (params) {
+                	params.forEach(function (param) {
+                		function e(e,r,t){
+                			var a=new RegExp("([?&])"+r+"=.*?(&|${'$'})","i"),
+                				n=-1!==e.indexOf("?")?"&":"?";
+                			return e.match(a)?e.replace(a,"${'$'}1"+r+"="+t+"${'$'}2"):e+n+r+"="+t
+                		}
+                		jQuery(param[0]).each(function(){
+                			var r = jQuery(this);
+                			r.attr("href", e(r.attr("href"), param[1], param[2]));
+                			setInterval(function () {r.attr("href", e(r.attr("href"), param[1], param[2]))}, 1000);
+                		});
+                	});
+                })([
+                	// 追加育碧网站来源
+                	['a[href*="ubi.com/"],a[href*="ubisoft.com/"],a[href*="ubisoft.com.cn/"]', 'ucid', 'DDP-ID_189202'],
+                	['a[href*="ubi.com/"],a[href*="ubisoft.com/"],a[href*="ubisoft.com.cn/"]', 'maltcode', 'ubisoftstore_acqst_DDP_other___STORE____'],
+                	// 追加 doaxvv 来源
+                	['a[href^="https://game.doaxvv.com/"]', 'utm_source', 'universe'],
+                	['a[href^="https://game.doaxvv.com/"]', 'utm_medium', 'cpm'],
+                	['a[href^="https://game.doaxvv.com/"]', 'utm_campaign', '4th'],
+                	['a[href^="https://game.doaxvv.com/"]', 'utm_content', '03_keylol_864x598'],
+                	// 追加 HB 来源
+                	['a[href^="http://www.humblebundle.com/"],a[href^="https://www.humblebundle.com/"],a[href^="http://zh.humblebundle.com/"],a[href^="https://zh.humblebundle.com/"]', 'utm_source', 'Keylol'],
+                	['a[href^="http://www.humblebundle.com/"],a[href^="https://www.humblebundle.com/"],a[href^="http://zh.humblebundle.com/"],a[href^="https://zh.humblebundle.com/"]', 'utm_campaign', 'December_Choice24'],
+                	['a[href^="http://www.humblebundle.com/"],a[href^="https://www.humblebundle.com/"],a[href^="http://zh.humblebundle.com/"],a[href^="https://zh.humblebundle.com/"]', 'utm_medium', 'Paid'],
+                	// 追加 GMG 来源
+                	['a[href^="http://www.greenmangaming.com/"],a[href^="https://www.greenmangaming.com/"]', 'utm_source', 'Keylol'],
+                	['a[href^="http://www.greenmangaming.com/"],a[href^="https://www.greenmangaming.com/"]', 'utm_medium', 'Referral'],
+                	// 追加杉果来源
+                	['a[href^="http://www.sonkwo.cn/"],a[href^="https://www.sonkwo.cn/"]', 'rcode', 'w84nno'],
+                	['iframe[src^="https://activity.sonkwo.com/card/product.html"]', 'rcode', 'w84nno'],
+                	// 追加杉果hk来源
+                	['a[href^="http://www.sonkwo.hk/"],a[href^="https://www.sonkwo.hk/"]', 'rcode', 'w84nno'],
+                	['iframe[src^="https://activity.sonkwo.com/card/product_in.html"]', 'rcode', 'w84nno'],
+                	// 追加 2Game 来源
+                	['a[href^="http://2game.com"],a[href^="http://2game.hk"],a[href^="https://2game.com"],a[href^="https://2game.hk"]', 'dir', 'asc'],
+                	['a[href^="http://2game.com"],a[href^="http://2game.hk"],a[href^="https://2game.com"],a[href^="https://2game.hk"]', 'order', 'position'],
+                ]);
+                </script>
+
+                <!-- 注册 Service Worker 加速访问 -->
+                <script>
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js?v=23');
+                  });
+                }
+                </script>
+
+                <!-- 修复夜间模式下iframe白底 -->
+                <style>
+                iframe[src^="https://store.steampowered.com/widget/"], iframe[src^="https://steamdb.keylol.com/tooltip"] {
+                    color-scheme: auto;
+                }
+                </style>
+                </div>
+                <div style="margin-top:2px; margin-top:6px;">
+                GMT+8, 2024-12-6 15:05</div>
+                </div>
+                </div>
+
+                <!-- 百度统计 -->
+                <script>
+                var _hmt = _hmt || [];
+                _hmt.push(['_setUserId', window.discuz_uid]);
+                (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?8cf683f51eb4795c5d09446e920329c3";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+                })();
+                </script>
+
+                <!-- Google 统计 -->
+                <script src="https://www.googletagmanager.com/gtag/js?id=UA-17880378-3" type="text/javascript"></script>
+                <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'UA-17880378-3', { 'user_id': window.discuz_uid });
+                </script>
+                </div>
+                <div class="focus plugin" id="ip_notice"></div>
+                <script type="text/javascript">ipNotice();</script>
+
+                <div id="scrolltop">
+                <span hidefocus="true"><a title="返回顶部" onclick="window.scrollTo('0','0')" class="scrolltopa" ><b>返回顶部</b></a></span>
+                </div>
+                <script type="text/javascript">_attachEvent(window, 'scroll', function () { showTopLink(); });checkBlind();</script>
+                </body>
+                </html>
+            """.trimIndent()
+        val nickname = Ksoup.parse(html).title().substringBefore("的个人资料")
+        assertEquals("星鸢", nickname)
     }
 }

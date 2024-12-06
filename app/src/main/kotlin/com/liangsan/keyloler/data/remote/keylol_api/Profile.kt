@@ -11,7 +11,7 @@ class Profile(
 ) : DiscuzMobileApi() {
     init {
         require(uid != null || username != null) {
-            "uid 和 username皆为空，需要至少一个参数。"
+            "uid 和 username为空，需要至少一个参数。"
         }
     }
 }

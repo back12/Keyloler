@@ -1,9 +1,10 @@
 package com.liangsan.keyloler.data.remote
 
+import com.fleeksoft.ksoup.Ksoup
 import com.liangsan.keyloler.data.remote.dto.ForumIndexDto
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.data.remote.dto.LoginDto
-import com.liangsan.keyloler.data.remote.keylol_api.CheckSecureCode
+import com.liangsan.keyloler.data.remote.keylol_api.Avatar
 import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
 import com.liangsan.keyloler.data.remote.keylol_api.Login
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
@@ -15,6 +16,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.href
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.parameters
 
@@ -41,12 +43,6 @@ class KeylolerService(private val httpClient: HttpClient) {
     fun getSecureCodeImageUrl(update: String, idHash: String): String =
         "https://keylol.com${httpClient.href(SecureCode(update = update, idHash = idHash))}"
 
-    suspend fun checkSecureCode(idHash: String, secCode: String): Result<Boolean> =
-        safeApiCall {
-            httpClient.get(CheckSecureCode(idHash = idHash, secVerify = secCode))
-                .bodyAsText().contains("succeed")
-        }
-
     suspend fun secureWebLogin(secCode: String, loginParam: LoginParam): Result<String> =
         safeApiCall {
             httpClient.submitForm(
@@ -61,6 +57,15 @@ class KeylolerService(private val httpClient: HttpClient) {
                     append("cookietime", "2592000")
                 }
             ).bodyAsText()
+        }
+
+    fun getUserAvatarUrl(uid: String): String =
+        "https://keylol.com${httpClient.href(Avatar(uid = uid))}"
+
+    suspend fun getUserNickname(uid: String): Result<String> =
+        safeApiCall {
+            val response = httpClient.get("https://keylol.com/suid-$uid").bodyAsText()
+            Ksoup.parse(response).title().substringBefore("的个人资料", "")
         }
 
     suspend fun getForumIndex(): Result<KeylolResponse<ForumIndexDto>> =

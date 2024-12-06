@@ -20,7 +20,7 @@ coil3 = "3.0.4"
 paging = "3.3.4"
 datetime = "0.6.1"
 constraintlayoutCompose = "1.1.0"
-ksoup = "0.2.0"
+ksoup = "0.2.1"
 protobuf = "4.28.3"
 protobufGradlePlugin = "0.9.4"
 
@@ -60,7 +60,7 @@ androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", 
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
-ksoup-lite = { group = "com.fleeksoft.ksoup", name = "ksoup-lite", version.ref = "ksoup" }
+ksoup-lite = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 
 [plugins]

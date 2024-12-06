@@ -65,7 +65,9 @@ fun IndexScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     IndexScreenContent(
-        modifier = modifier.safeDrawingPadding(),
+        modifier = modifier
+            .safeDrawingPadding()
+            .bottomBarPadding(),
         state = state,
         onSearchClick = onSearchClick,
         onForumClick = onForumClick
@@ -86,11 +88,7 @@ private fun IndexScreenContent(
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .bottomBarPadding()
-    ) {
+    LazyColumn(modifier = modifier.fillMaxSize()) {
         item {
             TopAppBar(
                 title = {

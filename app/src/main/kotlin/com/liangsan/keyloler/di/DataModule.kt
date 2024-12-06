@@ -6,10 +6,12 @@ import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.ktorHttpClient
 import com.liangsan.keyloler.data.repository.ForumCategoryRepositoryImpl
 import com.liangsan.keyloler.data.repository.LoginRepositoryImpl
+import com.liangsan.keyloler.data.repository.ProfileRepositoryImpl
 import com.liangsan.keyloler.data.repository.SearchHistoryRepositoryImpl
 import com.liangsan.keyloler.data.repository.UserRepositoryImpl
 import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
 import com.liangsan.keyloler.domain.repository.LoginRepository
+import com.liangsan.keyloler.domain.repository.ProfileRepository
 import com.liangsan.keyloler.domain.repository.SearchHistoryRepository
 import com.liangsan.keyloler.domain.repository.UserRepository
 import org.koin.core.module.dsl.singleOf
@@ -39,4 +41,6 @@ val dataModule = module {
     singleOf(::LoginRepositoryImpl).bind<LoginRepository>()
 
     singleOf(::UserRepositoryImpl).bind<UserRepository>()
+
+    singleOf(::ProfileRepositoryImpl).bind<ProfileRepository>()
 }

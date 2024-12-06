@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
+import com.liangsan.keyloler.presentation.profile.ProfileScreen
+import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
@@ -54,8 +56,20 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     }
                 }
 
-                composable<TopLevelDestination.Profile> {
+                navigation<TopLevelDestination.Profile>(startDestination = ProfileDestination.Overview) {
+                    composable<ProfileDestination.Overview> {
+                        ProfileScreen(
+                            onNavigateToLogin = {
+                                navHostController.navigate(LoginDestination.Login())
+                            },
+                            onNavigateToProfileInfo = {
+                                navHostController.navigate(ProfileDestination.ProfileInfo())
+                            }
+                        )
+                    }
+                    composable<ProfileDestination.ProfileInfo> {
 
+                    }
                 }
 
                 composable<LoginDestination.Login> {
