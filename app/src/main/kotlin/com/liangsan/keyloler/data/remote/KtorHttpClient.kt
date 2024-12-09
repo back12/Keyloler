@@ -2,6 +2,7 @@ package com.liangsan.keyloler.data.remote
 
 import com.liangsan.keyloler.BuildConfig
 import com.liangsan.keyloler.data.remote.keylol_api.KEYLOL_BASE_URL
+import com.liangsan.keyloler.domain.repository.CookiesRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpResponseValidator
@@ -18,7 +19,9 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
-val ktorHttpClient = HttpClient(CIO) {
+fun ktorHttpClient(
+    cookiesRepository: CookiesRepository
+) = HttpClient(CIO) {
     expectSuccess = true
 
     HttpResponseValidator {
@@ -27,7 +30,9 @@ val ktorHttpClient = HttpClient(CIO) {
         }
     }
 
-    install(HttpCookies)
+    install(HttpCookies) {
+        storage = PersistentCookiesStorage(cookiesRepository)
+    }
 
     install(Resources)
 

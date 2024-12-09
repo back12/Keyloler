@@ -3,7 +3,7 @@ package com.liangsan.keyloler.presentation.login
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
-import com.liangsan.keyloler.domain.utils.LoginParam
+import com.liangsan.keyloler.domain.model.LoginParam
 
 @Stable
 data class LoginSecureSession(

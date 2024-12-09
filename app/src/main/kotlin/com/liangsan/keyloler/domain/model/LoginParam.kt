@@ -1,4 +1,4 @@
-package com.liangsan.keyloler.domain.utils
+package com.liangsan.keyloler.domain.model
 
 data class LoginParam(
     val auth: String,

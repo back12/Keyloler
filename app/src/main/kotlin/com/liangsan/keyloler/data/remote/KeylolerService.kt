@@ -10,7 +10,7 @@ import com.liangsan.keyloler.data.remote.keylol_api.Login
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
 import com.liangsan.keyloler.data.remote.keylol_api.WebLoginVerify
-import com.liangsan.keyloler.domain.utils.LoginParam
+import com.liangsan.keyloler.domain.model.LoginParam
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get

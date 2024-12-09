@@ -5,7 +5,7 @@ import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.domain.model.LoginResult
 import com.liangsan.keyloler.domain.repository.LoginRepository
-import com.liangsan.keyloler.domain.utils.LoginParam
+import com.liangsan.keyloler.domain.model.LoginParam
 import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

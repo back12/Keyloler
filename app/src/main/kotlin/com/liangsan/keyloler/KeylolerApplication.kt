@@ -9,6 +9,7 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
+import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import com.liangsan.keyloler.di.dataModule
 import com.liangsan.keyloler.di.viewModelModule
@@ -42,6 +43,7 @@ class KeylolerApplication : Application(), SingletonImageLoader.Factory {
                 add(
                     KtorNetworkFetcherFactory(httpClient = { httpClient })
                 )
+                add(SvgDecoder.Factory())
             }
             .memoryCache {
                 MemoryCache.Builder()

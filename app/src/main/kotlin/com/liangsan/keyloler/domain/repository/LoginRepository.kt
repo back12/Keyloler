@@ -1,7 +1,7 @@
 package com.liangsan.keyloler.domain.repository
 
 import com.liangsan.keyloler.domain.model.LoginResult
-import com.liangsan.keyloler.domain.utils.LoginParam
+import com.liangsan.keyloler.domain.model.LoginParam
 import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 

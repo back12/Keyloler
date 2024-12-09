@@ -87,6 +87,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.timber)
     implementation(libs.coil.kt.compose)
+    implementation(libs.coil.kt.svg)
     implementation(libs.coil.kt.network.ktor)
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.constraintlayout.compose)
@@ -98,7 +99,7 @@ dependencies {
     // kotlin serialization
     implementation(libs.kotlinx.serialization.json)
     // datastore
-    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.protobuf)
     // room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

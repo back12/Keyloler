@@ -2,8 +2,40 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6565fc25e68d3cd34d3e077259cb977a",
+    "identityHash": "0fe59f07988b871c6376be05967d0353",
     "entities": [
+      {
+        "tableName": "CookieWithTimestamp",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cookieName` TEXT NOT NULL, `cookie` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`cookieName`))",
+        "fields": [
+          {
+            "fieldPath": "cookieName",
+            "columnName": "cookieName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cookie",
+            "columnName": "cookie",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cookieName"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
       {
         "tableName": "ForumEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fid` INTEGER NOT NULL, `name` TEXT NOT NULL, `threads` INTEGER NOT NULL, `posts` INTEGER NOT NULL, `todayPosts` INTEGER NOT NULL, `description` TEXT, `icon` TEXT, `subList` TEXT, PRIMARY KEY(`fid`))",
@@ -175,7 +207,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6565fc25e68d3cd34d3e077259cb977a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fe59f07988b871c6376be05967d0353')"
     ]
   }
 }
