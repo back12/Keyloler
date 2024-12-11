@@ -95,7 +95,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     // koin
     implementation(libs.koin.android)
-    implementation(libs.koin.android.compose)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.startup)
     // kotlin serialization
     implementation(libs.kotlinx.serialization.json)
     // datastore

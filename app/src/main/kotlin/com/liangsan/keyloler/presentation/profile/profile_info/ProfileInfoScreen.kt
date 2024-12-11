@@ -134,7 +134,7 @@ private fun ProfileInfoScreenContent(
                     AsyncImage(
                         model = avatar,
                         contentDescription = null,
-                        contentScale = ContentScale.FillHeight,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .size(64.dp)
                             .clip(CircleShape)

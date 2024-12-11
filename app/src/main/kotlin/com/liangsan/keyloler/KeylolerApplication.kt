@@ -17,31 +17,31 @@ import io.ktor.client.HttpClient
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+import org.koin.androix.startup.KoinStartup
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.dsl.KoinAppDeclaration
 import timber.log.Timber
 
-class KeylolerApplication : Application(), SingletonImageLoader.Factory {
+@OptIn(KoinExperimentalAPI::class)
+class KeylolerApplication : Application(), SingletonImageLoader.Factory, KoinStartup {
+
+    override fun onKoinStartup(): KoinAppDeclaration = {
+        androidLogger()
+        androidContext(this@KeylolerApplication)
+        modules(dataModule + viewModelModule)
+    }
 
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        startKoin {
-            // Log Koin into Android logger
-            androidLogger()
-            // Reference Android context
-            androidContext(this@KeylolerApplication)
-            // Load modules
-            modules(dataModule + viewModelModule)
-        }
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-        val httpClient: HttpClient = get()
         return ImageLoader.Builder(this)
             .crossfade(true)
             .components {
                 add(
-                    KtorNetworkFetcherFactory(httpClient = { httpClient })
+                    KtorNetworkFetcherFactory(httpClient = { get<HttpClient>() })
                 )
                 add(SvgDecoder.Factory())
             }
