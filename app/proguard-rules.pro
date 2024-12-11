@@ -20,3 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontobfuscate
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { <fields>; }
