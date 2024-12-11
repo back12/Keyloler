@@ -4,5 +4,6 @@ import io.ktor.resources.Resource
 
 @Resource("/uc_server/avatar.php")
 class Avatar(
-    val uid: String
+    val uid: String,
+    val size: String = "big"      // ("small" | "middle" | "big")
 )

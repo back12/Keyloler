@@ -9,5 +9,10 @@ sealed class ProfileDestination : KeylolerDestination() {
     data object Overview : ProfileDestination()
 
     @Serializable
-    data class ProfileInfo(override val showBottomNav: Boolean = false) : ProfileDestination()
+    data class ProfileInfo(
+        override val showBottomNav: Boolean = false,
+        val uid: String,
+        val avatar: String,
+        val nickname: String
+    ) : ProfileDestination()
 }

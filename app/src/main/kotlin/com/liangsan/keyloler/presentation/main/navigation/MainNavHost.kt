@@ -2,6 +2,8 @@ package com.liangsan.keyloler.presentation.main.navigation
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -9,10 +11,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
-import com.liangsan.keyloler.presentation.profile.ProfileScreen
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
+import com.liangsan.keyloler.presentation.profile.overview.ProfileScreen
+import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
@@ -30,7 +34,9 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
             NavHost(
                 modifier = modifier,
                 navController = navHostController,
-                startDestination = TopLevelDestination.Home
+                startDestination = TopLevelDestination.Home,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
             ) {
                 composable<TopLevelDestination.Home> {
 
@@ -62,13 +68,25 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                             onNavigateToLogin = {
                                 navHostController.navigate(LoginDestination.Login())
                             },
-                            onNavigateToProfileInfo = {
-                                navHostController.navigate(ProfileDestination.ProfileInfo())
+                            onNavigateToProfileInfo = { uid, avatar, nickname ->
+                                navHostController.navigate(
+                                    ProfileDestination.ProfileInfo(
+                                        uid = uid,
+                                        avatar = avatar,
+                                        nickname = nickname
+                                    )
+                                )
                             }
                         )
                     }
                     composable<ProfileDestination.ProfileInfo> {
-
+                        val args = it.toRoute<ProfileDestination.ProfileInfo>()
+                        ProfileInfoScreen(
+                            uid = args.uid,
+                            avatar = args.avatar,
+                            nickname = args.nickname,
+                            onNavigateUp = navHostController::navigateUp
+                        )
                     }
                 }
 

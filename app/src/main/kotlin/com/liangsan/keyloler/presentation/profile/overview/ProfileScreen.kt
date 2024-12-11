@@ -1,5 +1,6 @@
-package com.liangsan.keyloler.presentation.profile
+package com.liangsan.keyloler.presentation.profile.overview
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
+import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
+import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.onTap
 import org.koin.androidx.compose.koinViewModel
@@ -47,15 +50,15 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateToLogin: () -> Unit,
-    onNavigateToProfileInfo: () -> Unit
+    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     ProfileScreenContent(
         modifier = modifier.bottomBarPadding(),
         state = state,
         onTopBarClick = {
-            if (state.loggedIn) {
-                onNavigateToProfileInfo()
+            if (state.uid != null) {
+                onNavigateToProfileInfo(state.uid!!, state.userAvatar, state.userNickname)
             } else {
                 onNavigateToLogin()
             }
@@ -76,7 +79,7 @@ private fun ProfileScreenContent(
         item {
             ProfileTopBar(
                 avatarUrl = state.userAvatar,
-                title = if (state.loggedIn) state.userNickname else "当前未登录",
+                title = if (state.uid != null) state.userNickname else "当前未登录",
                 onTopBarClick = onTopBarClick
             )
         }
@@ -165,14 +168,6 @@ private fun ProfileTopBar(
     val avatarModifier = Modifier
         .size(36.dp)
         .clip(CircleShape)
-        .background(
-            brush = Brush.linearGradient(
-                listOf(
-                    MaterialTheme.colorScheme.primary,
-                    Color.LightGray
-                )
-            )
-        )
         .border(
             width = 1.dp,
             color = Color(0xAFFFFFFF),
@@ -192,7 +187,17 @@ private fun ProfileTopBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (avatarUrl.isBlank()) {
-                Spacer(modifier = avatarModifier)
+                Spacer(
+                    modifier = avatarModifier
+                        .background(
+                            brush = Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    Color.LightGray
+                                )
+                            )
+                        )
+                )
             } else {
                 AsyncImage(
                     model = avatarUrl,
@@ -202,7 +207,10 @@ private fun ProfileTopBar(
                 )
             }
             Spacer(Modifier.width(12.dp))
-            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(
+                title,
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
 }

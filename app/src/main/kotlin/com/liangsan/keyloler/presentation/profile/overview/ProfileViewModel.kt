@@ -1,4 +1,4 @@
-package com.liangsan.keyloler.presentation.profile
+package com.liangsan.keyloler.presentation.profile.overview
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -44,7 +44,7 @@ class ProfileViewModel(
                 .distinctUntilChanged()
                 .collectLatest { uid ->
                     if (uid.isNotBlank()) {
-                        _state.update { it.copy(loggedIn = true) }
+                        _state.update { it.copy(uid = uid) }
                         val nickname = profileRepository.getUserNickname(uid)
                         val avatar = profileRepository.getUserAvatarUrl(uid)
                         savedStateHandle[NICKNAME] = nickname
@@ -57,7 +57,7 @@ class ProfileViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeUserState() {
         viewModelScope.launch {
-            state.filter { it.loggedIn }
+            state.filter { it.uid != null }
                 .flatMapLatest {
                     combine(
                         savedStateHandle.getStateFlow(NICKNAME, ""),

@@ -1,6 +1,5 @@
 package com.liangsan.keyloler.data.remote.dto
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,21 +21,8 @@ data class LoginDto(
     val memberUid: String,
     @SerialName("member_username")
     val memberUsername: String,
-    val notice: Notice,
     @SerialName("readaccess")
     val readAccess: String,
     @SerialName("saltkey")
     val saltKey: String
-) {
-    @Serializable
-    data class Notice(
-        @SerialName("newmypost")
-        val newMyPost: String,
-        @SerialName("newpm")
-        val newPm: String,
-        @SerialName("newprompt")
-        val newPrompt: String,
-        @SerialName("newpush")
-        val newPush: String
-    )
-}
+)

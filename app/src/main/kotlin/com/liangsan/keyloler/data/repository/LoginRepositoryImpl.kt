@@ -3,9 +3,9 @@ package com.liangsan.keyloler.data.repository
 import com.fleeksoft.ksoup.Ksoup
 import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
+import com.liangsan.keyloler.domain.model.LoginParam
 import com.liangsan.keyloler.domain.model.LoginResult
 import com.liangsan.keyloler.domain.repository.LoginRepository
-import com.liangsan.keyloler.domain.model.LoginParam
 import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +16,7 @@ class LoginRepositoryImpl(
     private val service: KeylolerService
 ) : LoginRepository {
 
-    override suspend fun loginByPassword(username: String, password: String): Flow<LoginResult> =
+    override fun loginByPassword(username: String, password: String): Flow<LoginResult> =
         flow {
             emit(LoginResult.Loading)
 
@@ -106,7 +106,7 @@ class LoginRepositoryImpl(
         return service.getSecureCodeImageUrl(update, idHash)
     }
 
-    override suspend fun secureWebLogin(
+    override fun secureWebLogin(
         secCode: String,
         loginParam: LoginParam
     ): Flow<LoginResult> = flow {

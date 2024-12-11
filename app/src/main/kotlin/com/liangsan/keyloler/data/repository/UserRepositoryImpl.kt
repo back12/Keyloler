@@ -17,4 +17,10 @@ class UserRepositoryImpl(context: Application) : UserRepository {
     override suspend fun updateUserData(block: suspend (userData: UserData) -> UserData) {
         dataStore.updateData(block)
     }
+
+    override suspend fun logout() {
+        dataStore.updateData {
+            it.toBuilder().clear().build()
+        }
+    }
 }

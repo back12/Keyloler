@@ -1,11 +1,6 @@
 package com.liangsan.keyloler.presentation.search_index.index
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,12 +19,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +42,6 @@ import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.ForumCategory
-import com.liangsan.keyloler.domain.utils.Result
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
@@ -133,10 +125,10 @@ private fun IndexScreenContent(
             }
         }
 
-        itemsIndexed(
+        items(
             state.forumCategoryList,
-            key = { _, item -> item.category.fcid }
-        ) { index, (category, forum) ->
+            key = { item -> item.category.fcid }
+        ) { (category, forum) ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -148,17 +140,6 @@ private fun IndexScreenContent(
                     forum = forum,
                     onForumClick = onForumClick
                 )
-                AnimatedVisibility(
-                    index == 0 && state.loadingState == Result.Loading,
-                    enter = fadeIn() + slideInVertically(),
-                    exit = fadeOut() + slideOutVertically()
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentWidth()
-                    )
-                }
             }
         }
     }

@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
 
-    suspend fun loginByPassword(username: String, password: String): Flow<LoginResult>
+    fun loginByPassword(username: String, password: String): Flow<LoginResult>
 
     suspend fun getSecureCodeUpdateParam(auth: String): Result<LoginParam>
 
     suspend fun getSecureCodeImageUrl(update: String, idHash: String): String
 
-    suspend fun secureWebLogin(secCode: String, loginParam: LoginParam): Flow<LoginResult>
+    fun secureWebLogin(secCode: String, loginParam: LoginParam): Flow<LoginResult>
 }

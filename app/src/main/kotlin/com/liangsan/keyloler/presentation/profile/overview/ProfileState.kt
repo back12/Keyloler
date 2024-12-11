@@ -1,7 +1,7 @@
-package com.liangsan.keyloler.presentation.profile
+package com.liangsan.keyloler.presentation.profile.overview
 
 data class ProfileState(
-    val loggedIn: Boolean = false,
+    val uid: String? = null,
     val userNickname: String = "",
     val userAvatar: String = ""
 )

@@ -22,4 +22,7 @@ interface CookieWithTimestampDao {
 
     @Delete
     suspend fun deleteCookieWithTimeStamp(cookieWithTimestamp: CookieWithTimestamp)
+
+    @Query("DELETE FROM cookiewithtimestamp")
+    suspend fun clearAllCookies()
 }

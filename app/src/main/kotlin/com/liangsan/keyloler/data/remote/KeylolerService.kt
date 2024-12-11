@@ -4,9 +4,11 @@ import com.fleeksoft.ksoup.Ksoup
 import com.liangsan.keyloler.data.remote.dto.ForumIndexDto
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.data.remote.dto.LoginDto
+import com.liangsan.keyloler.data.remote.dto.ProfileDto
 import com.liangsan.keyloler.data.remote.keylol_api.Avatar
 import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
 import com.liangsan.keyloler.data.remote.keylol_api.Login
+import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
 import com.liangsan.keyloler.data.remote.keylol_api.WebLoginVerify
@@ -66,6 +68,15 @@ class KeylolerService(private val httpClient: HttpClient) {
         safeApiCall {
             val response = httpClient.get("https://keylol.com/suid-$uid").bodyAsText()
             Ksoup.parse(response).title().substringBefore("的个人资料", "")
+        }
+
+    suspend fun getProfileInfo(
+        uid: String? = null,
+        username: String? = null
+    ): Result<KeylolResponse<ProfileDto>> =
+        safeApiCall {
+            require(uid != null || username != null)
+            httpClient.get(Profile(uid = uid, username = username)).body()
         }
 
     suspend fun getForumIndex(): Result<KeylolResponse<ForumIndexDto>> =

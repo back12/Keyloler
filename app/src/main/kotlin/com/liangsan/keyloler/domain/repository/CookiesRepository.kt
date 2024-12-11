@@ -12,4 +12,6 @@ interface CookiesRepository {
     suspend fun addCookie(cookieWithTimestamp: CookieWithTimestamp)
 
     suspend fun deleteCookie(cookieWithTimestamp: CookieWithTimestamp)
+
+    suspend fun clearAllCookies()
 }

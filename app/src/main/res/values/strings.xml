@@ -24,4 +24,23 @@
     <string name="logo">论坛图标</string>
     <string name="secure_code">验证码</string>
     <string name="secure_code_error">请输入验证码</string>
+    <string name="medal">勋章</string>
+    <string name="activity_info">活跃概况</string>
+    <string name="user_group">用户组</string>
+    <string name="suffix_hour">%1$s小时</string>
+    <string name="online_time">在线时间</string>
+    <string name="reg_date">注册时间</string>
+    <string name="last_visit">最后访问</string>
+    <string name="last_activity">上次活动时间</string>
+    <string name="last_post">上次发表时间</string>
+    <string name="statistic_info">统计信息</string>
+    <string name="suffix_points">%1$s点</string>
+    <string name="suffix_grams">%1$s克</string>
+    <string name="steam_points">蒸汽</string>
+    <string name="power_points">动力</string>
+    <string name="health_points">体力</string>
+    <string name="credits">积分</string>
+    <string name="friends">好友</string>
+    <string name="posts_number">回帖数</string>
+    <string name="threads_number">主题数</string>
 </resources>

@@ -8,4 +8,6 @@ interface UserRepository {
     fun getUserData(): Flow<UserData>
 
     suspend fun updateUserData(block: suspend (userData: UserData) -> UserData)
+
+    suspend fun logout()
 }
