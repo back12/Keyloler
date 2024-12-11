@@ -1,7 +1,7 @@
 package com.liangsan.keyloler.di
 
 import com.liangsan.keyloler.presentation.login.LoginViewModel
-import com.liangsan.keyloler.presentation.profile.overview.ProfileViewModel
+import com.liangsan.keyloler.presentation.profile.profile.ProfileViewModel
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoViewModel
 import com.liangsan.keyloler.presentation.search_index.index.IndexViewModel
 import com.liangsan.keyloler.presentation.search_index.search.SearchViewModel

@@ -15,7 +15,7 @@ import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
-import com.liangsan.keyloler.presentation.profile.overview.ProfileScreen
+import com.liangsan.keyloler.presentation.profile.profile.ProfileScreen
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination

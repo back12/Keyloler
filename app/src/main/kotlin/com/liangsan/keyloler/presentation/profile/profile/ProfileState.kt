@@ -1,4 +1,4 @@
-package com.liangsan.keyloler.presentation.profile.overview
+package com.liangsan.keyloler.presentation.profile.profile
 
 data class ProfileState(
     val uid: String? = null,
