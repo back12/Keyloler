@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.liangsan.keyloler.presentation.theme.KeylolerTheme
+import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity() {
 
@@ -12,8 +13,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KeylolerTheme {
-                KeylolerApp()
+            KoinContext {
+                KeylolerTheme {
+                    KeylolerApp()
+                }
             }
         }
     }

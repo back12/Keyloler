@@ -29,7 +29,6 @@ import com.liangsan.keyloler.presentation.utils.Zero
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.isTopLevelDestinationInHierarchy
 import com.liangsan.keyloler.presentation.utils.topLevelNavigate
-import org.koin.compose.KoinContext
 
 @Composable
 fun KeylolerApp() {
@@ -57,48 +56,46 @@ fun KeylolerApp() {
             event.onResult?.invoke(it)
         }
     }
-    KoinContext {
-        Scaffold(
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                    snackbar = { data ->
-                        SwipeToDismissBox(
-                            state = rememberSwipeToDismissBoxState(
-                                confirmValueChange = {
-                                    data.dismiss(); true
-                                }
-                            ),
-                            backgroundContent = {}
-                        ) {
-                            Snackbar(
-                                snackbarData = data,
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .imePadding()
-                        .bottomBarPadding(showBottomBar)
-                )
-            },
-            contentWindowInsets = WindowInsets.Zero
-        ) { innerPadding ->
-            Box(
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    SwipeToDismissBox(
+                        state = rememberSwipeToDismissBoxState(
+                            confirmValueChange = {
+                                data.dismiss(); true
+                            }
+                        ),
+                        backgroundContent = {}
+                    ) {
+                        Snackbar(
+                            snackbarData = data,
+                        )
+                    }
+                },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                MainNavHost(
-                    modifier = Modifier.fillMaxSize(),
-                    navHostController = navHostController
-                )
-                BottomNavBar(
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    visible = showBottomBar,
-                    isSelected = currentBackStackEntry::isTopLevelDestinationInHierarchy,
-                    onNavigate = navHostController::topLevelNavigate
-                )
-            }
+                    .imePadding()
+                    .bottomBarPadding(showBottomBar)
+            )
+        },
+        contentWindowInsets = WindowInsets.Zero
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            MainNavHost(
+                modifier = Modifier.fillMaxSize(),
+                navHostController = navHostController
+            )
+            BottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                visible = showBottomBar,
+                isSelected = currentBackStackEntry::isTopLevelDestinationInHierarchy,
+                onNavigate = navHostController::topLevelNavigate
+            )
         }
     }
 }
