@@ -16,7 +16,7 @@ interface ForumDao {
 
     @Transaction
     @Query("SELECT * FROM forumcategoryentity ORDER BY fcid")
-    fun getForumsWithCategory(): Flow<List<ForumsWithCategory>>
+    suspend fun getForumsWithCategory(): List<ForumsWithCategory>
 
     @Query("SELECT COUNT(*) FROM forumcategoryentity")
     suspend fun getCategoryCount(): Int

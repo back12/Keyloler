@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 
 @Composable
-fun VerticalGrid(
+inline fun VerticalGrid(
     modifier: Modifier = Modifier,
     columns: Int = 2,
     content: @Composable () -> Unit

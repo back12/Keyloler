@@ -21,6 +21,8 @@ sealed interface KeylolResponse<out T> {
     ) : KeylolResponse<Nothing>
 }
 
+fun <T> KeylolResponse<T>.getOrNull(): T? = (this as? KeylolResponse.Success)?.variables
+
 @Serializable
 data class Message(
     @SerialName("messageval")

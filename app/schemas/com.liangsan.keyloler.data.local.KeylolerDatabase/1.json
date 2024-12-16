@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0fe59f07988b871c6376be05967d0353",
+    "identityHash": "9c2d2dac71a1b679910649906d914381",
     "entities": [
       {
         "tableName": "CookieWithTimestamp",
@@ -202,12 +202,110 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "NewThreadEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tid` TEXT NOT NULL, `readPerm` TEXT NOT NULL, `author` TEXT NOT NULL, `authorId` TEXT NOT NULL, `subject` TEXT NOT NULL, `dateline` TEXT NOT NULL, `lastPost` TEXT NOT NULL, `lastPoster` TEXT NOT NULL, `views` TEXT NOT NULL, `replies` TEXT NOT NULL, `digest` TEXT NOT NULL, `attachment` TEXT NOT NULL, `dbDateline` INTEGER NOT NULL, `dbLastPost` TEXT NOT NULL, PRIMARY KEY(`tid`))",
+        "fields": [
+          {
+            "fieldPath": "tid",
+            "columnName": "tid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readPerm",
+            "columnName": "readPerm",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorId",
+            "columnName": "authorId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateline",
+            "columnName": "dateline",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastPost",
+            "columnName": "lastPost",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastPoster",
+            "columnName": "lastPoster",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "views",
+            "columnName": "views",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "replies",
+            "columnName": "replies",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "digest",
+            "columnName": "digest",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachment",
+            "columnName": "attachment",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbDateline",
+            "columnName": "dbDateline",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbLastPost",
+            "columnName": "dbLastPost",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "tid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fe59f07988b871c6376be05967d0353')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c2d2dac71a1b679910649906d914381')"
     ]
   }
 }

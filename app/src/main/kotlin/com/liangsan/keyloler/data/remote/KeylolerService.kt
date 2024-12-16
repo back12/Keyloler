@@ -10,6 +10,7 @@ import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
 import com.liangsan.keyloler.data.remote.keylol_api.Login
 import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
+import com.liangsan.keyloler.data.remote.keylol_api.Keylol
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
 import com.liangsan.keyloler.data.remote.keylol_api.WebLoginVerify
 import com.liangsan.keyloler.domain.model.LoginParam
@@ -82,5 +83,10 @@ class KeylolerService(private val httpClient: HttpClient) {
     suspend fun getForumIndex(): Result<KeylolResponse<ForumIndexDto>> =
         safeApiCall {
             httpClient.get(ForumIndex()).body()
+        }
+
+    suspend fun webIndex(): Result<String> =
+        safeApiCall {
+            httpClient.get(Keylol()).bodyAsText()
         }
 }

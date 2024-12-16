@@ -7,6 +7,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.cookies.CookiesStorage
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
@@ -20,7 +21,7 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 fun ktorHttpClient(
-    cookiesRepository: CookiesRepository
+    cookiesStorage: CookiesStorage
 ) = HttpClient(CIO) {
     expectSuccess = true
 
@@ -31,7 +32,7 @@ fun ktorHttpClient(
     }
 
     install(HttpCookies) {
-        storage = PersistentCookiesStorage(cookiesRepository)
+        storage = cookiesStorage
     }
 
     install(Resources)

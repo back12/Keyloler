@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
@@ -39,7 +40,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 exitTransition = { fadeOut() }
             ) {
                 composable<TopLevelDestination.Home> {
-
+                    HomeScreen()
                 }
 
                 navigation<TopLevelDestination.SearchIndex>(startDestination = SearchIndexDestination.Index) {

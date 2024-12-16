@@ -24,13 +24,16 @@ class ForumCategoryRepositoryImpl(
 
     private val forumDao = database.forumDao()
 
-    override fun fetchForumIndex(scope: CoroutineScope, refresh: Boolean): Flow<Result<Boolean>> =
+    override fun fetchForumIndex(
+        scope: CoroutineScope,
+        refresh: Boolean
+    ): Flow<Result<ForumWithCategoryList>> =
         flow {
             emit(Result.Loading)
 
             if (!refresh) {
                 if (forumDao.getCategoryCount() > 0) {
-                    emit(Result.Success(false))
+                    emit(Result.Success(forumDao.getForumsWithCategory()))
                     return@flow
                 }
             }
@@ -67,12 +70,7 @@ class ForumCategoryRepositoryImpl(
                     forumDao.insertForumCategory(categoryList)
                 }
             ).awaitAll()
-            emit(Result.Success(true))
+            emit(Result.Success(forumDao.getForumsWithCategory()))
         }.flowOn(Dispatchers.IO)
 
-
-    override fun getForumIndex(): Flow<ForumWithCategoryList> {
-        return forumDao.getForumsWithCategory()
-            .flowOn(Dispatchers.IO)
-    }
 }

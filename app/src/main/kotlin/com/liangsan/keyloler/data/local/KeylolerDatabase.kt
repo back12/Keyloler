@@ -7,10 +7,12 @@ import com.liangsan.keyloler.data.local.converter.CookieConverter
 import com.liangsan.keyloler.data.local.converter.ForumEntityListConverter
 import com.liangsan.keyloler.data.local.dao.CookieWithTimestampDao
 import com.liangsan.keyloler.data.local.dao.ForumDao
+import com.liangsan.keyloler.data.local.dao.NewThreadsDao
 import com.liangsan.keyloler.data.local.dao.SearchHistoryDao
 import com.liangsan.keyloler.data.local.entity.CookieWithTimestamp
 import com.liangsan.keyloler.data.local.entity.ForumCategoryEntity
 import com.liangsan.keyloler.data.local.entity.ForumEntity
+import com.liangsan.keyloler.data.local.entity.NewThreadEntity
 import com.liangsan.keyloler.data.local.entity.SearchHistoryEntity
 import com.liangsan.keyloler.data.local.relation.ForumCategoryCrossRef
 
@@ -20,7 +22,8 @@ import com.liangsan.keyloler.data.local.relation.ForumCategoryCrossRef
         ForumEntity::class,
         ForumCategoryEntity::class,
         ForumCategoryCrossRef::class,
-        SearchHistoryEntity::class
+        SearchHistoryEntity::class,
+        NewThreadEntity::class,
     ],
     version = 1,
     exportSchema = true
@@ -36,4 +39,6 @@ abstract class KeylolerDatabase : RoomDatabase() {
     abstract fun forumDao(): ForumDao
 
     abstract fun searchHistoryDao(): SearchHistoryDao
+
+    abstract fun newThreadsDao(): NewThreadsDao
 }

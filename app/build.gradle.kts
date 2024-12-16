@@ -103,6 +103,7 @@ dependencies {
     implementation(libs.androidx.datastore.protobuf)
     // room
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
     // ktor
     implementation(libs.ktor.client.core)

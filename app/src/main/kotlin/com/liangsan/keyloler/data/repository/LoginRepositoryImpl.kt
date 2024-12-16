@@ -69,7 +69,7 @@ class LoginRepositoryImpl(
             return Result.Error(error = "update值获取失败", throwable = it)
         }
         return try {
-            val document = Ksoup.parse(html)
+            val document = Ksoup.parseBodyFragment(html)
             val onclick =
                 document.getElementsByClass("sec_button")[0].attribute("onclick")?.value!!
             val regex = "duceapp_updateseccode\\('([^']+)','([^']+)'\\)".toRegex()

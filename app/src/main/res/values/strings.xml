@@ -43,4 +43,5 @@
     <string name="friends">好友</string>
     <string name="posts_number">回帖数</string>
     <string name="threads_number">主题数</string>
+    <string name="view_more">查看更多</string>
 </resources>

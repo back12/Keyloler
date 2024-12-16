@@ -1,5 +1,6 @@
 package com.liangsan.keyloler.di
 
+import com.liangsan.keyloler.presentation.home.HomeViewModel
 import com.liangsan.keyloler.presentation.login.LoginViewModel
 import com.liangsan.keyloler.presentation.profile.profile.ProfileViewModel
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoViewModel
@@ -18,4 +19,6 @@ val viewModelModule = module {
     viewModelOf(::ProfileViewModel)
 
     viewModelOf(::ProfileInfoViewModel)
+
+    viewModelOf(::HomeViewModel)
 }

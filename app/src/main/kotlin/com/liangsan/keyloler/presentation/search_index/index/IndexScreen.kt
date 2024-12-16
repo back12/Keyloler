@@ -42,6 +42,7 @@ import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.ForumCategory
+import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
@@ -124,22 +125,23 @@ private fun IndexScreenContent(
                 }
             }
         }
-
-        items(
-            state.forumCategoryList,
-            key = { item -> item.category.fcid }
-        ) { (category, forum) ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-            ) {
-                ForumCategoryItem(
-                    modifier = Modifier.animateItem(),
-                    category = category,
-                    forum = forum,
-                    onForumClick = onForumClick
-                )
+        state.forumCategoryList.onSuccess {
+            items(
+                it,
+                key = { item -> item.category.fcid }
+            ) { (category, forum) ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    ForumCategoryItem(
+                        modifier = Modifier.animateItem(),
+                        category = category,
+                        forum = forum,
+                        onForumClick = onForumClick
+                    )
+                }
             }
         }
     }
