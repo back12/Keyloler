@@ -47,10 +47,11 @@ class SearchViewModel(
     }
 
     private fun realSearch(history: String? = null) {
-        viewModelScope.launch {
+        viewModelScope.launch outerLaunch@ {
             searchJob?.cancel()
             searchJob = launch {
                 val content = history ?: state.value.searchInput
+                if(content.isBlank()) return@launch
                 Timber.d("Search for threads {$content}")
                 addNewSearchHistory(
                     SearchHistory(
