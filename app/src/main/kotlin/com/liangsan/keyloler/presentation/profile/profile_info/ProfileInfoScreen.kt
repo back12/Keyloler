@@ -1,6 +1,5 @@
 package com.liangsan.keyloler.presentation.profile.profile_info
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,7 +39,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -137,12 +134,6 @@ private fun ProfileInfoScreenContent(
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .size(64.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xAFFFFFFF),
-                                shape = CircleShape
-                            )
                     )
                     Spacer(Modifier.width(12.dp))
                     Column(

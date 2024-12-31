@@ -11,6 +11,7 @@ import com.liangsan.keyloler.data.repository.IndexRepositoryImpl
 import com.liangsan.keyloler.data.repository.LoginRepositoryImpl
 import com.liangsan.keyloler.data.repository.ProfileRepositoryImpl
 import com.liangsan.keyloler.data.repository.SearchHistoryRepositoryImpl
+import com.liangsan.keyloler.data.repository.ThreadsRepositoryImpl
 import com.liangsan.keyloler.data.repository.UserRepositoryImpl
 import com.liangsan.keyloler.domain.repository.CookiesRepository
 import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
@@ -18,6 +19,7 @@ import com.liangsan.keyloler.domain.repository.IndexRepository
 import com.liangsan.keyloler.domain.repository.LoginRepository
 import com.liangsan.keyloler.domain.repository.ProfileRepository
 import com.liangsan.keyloler.domain.repository.SearchHistoryRepository
+import com.liangsan.keyloler.domain.repository.ThreadsRepository
 import com.liangsan.keyloler.domain.repository.UserRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.cookies.CookiesStorage
@@ -58,4 +60,6 @@ val dataModule = module {
     singleOf(::CookiesRepositoryImpl).bind<CookiesRepository>()
 
     singleOf(::IndexRepositoryImpl).bind<IndexRepository>()
+
+    singleOf(::ThreadsRepositoryImpl).bind<ThreadsRepository>()
 }

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.7.3"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
 coreKtx = "1.15.0"
@@ -10,8 +10,8 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 koin = "4.1.0-Beta1"
 datastore = "1.1.1"
-composeBom = "2024.11.00"
-navigation = "2.8.4"
+composeBom = "2024.12.01"
+navigation = "2.8.5"
 room = "2.6.1"
 ktor = "3.0.2"
 kotlinxSerialization = "1.7.3"
@@ -58,6 +58,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 coil-kt-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
 coil-kt-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil3" }
+coil-kt-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil3" }
 coil-kt-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil3" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
@@ -68,6 +69,7 @@ protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

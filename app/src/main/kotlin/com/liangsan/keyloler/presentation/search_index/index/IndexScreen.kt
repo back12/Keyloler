@@ -7,8 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -128,7 +128,8 @@ private fun IndexScreenContent(
         state.forumCategoryList.onSuccess {
             items(
                 it,
-                key = { item -> item.category.fcid }
+                key = { item -> item.category.fcid },
+                contentType = { _ -> "forum_category" }
             ) { (category, forum) ->
                 Box(
                     modifier = Modifier
@@ -162,16 +163,16 @@ private fun ForumCategoryItem(
         )
         Spacer(Modifier.height(6.dp))
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(4.dp)) {
-            FlowRow(
+            ContextualFlowRow(
+                itemCount = forum.size,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                forum.forEach {
-                    ForumItem(forum = it, onForumClick = { onForumClick(it) })
-                }
+            ) { index ->
+                val current = forum[index]
+                ForumItem(forum = current, onForumClick = { onForumClick(current) })
             }
         }
     }

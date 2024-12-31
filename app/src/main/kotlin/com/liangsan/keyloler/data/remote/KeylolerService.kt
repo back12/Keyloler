@@ -5,12 +5,14 @@ import com.liangsan.keyloler.data.remote.dto.ForumIndexDto
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.data.remote.dto.LoginDto
 import com.liangsan.keyloler.data.remote.dto.ProfileDto
+import com.liangsan.keyloler.data.remote.dto.ThreadDto
 import com.liangsan.keyloler.data.remote.keylol_api.Avatar
 import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
+import com.liangsan.keyloler.data.remote.keylol_api.Keylol
 import com.liangsan.keyloler.data.remote.keylol_api.Login
 import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
-import com.liangsan.keyloler.data.remote.keylol_api.Keylol
+import com.liangsan.keyloler.data.remote.keylol_api.Thread
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
 import com.liangsan.keyloler.data.remote.keylol_api.WebLoginVerify
 import com.liangsan.keyloler.domain.model.LoginParam
@@ -76,7 +78,6 @@ class KeylolerService(private val httpClient: HttpClient) {
         username: String? = null
     ): Result<KeylolResponse<ProfileDto>> =
         safeApiCall {
-            require(uid != null || username != null)
             httpClient.get(Profile(uid = uid, username = username)).body()
         }
 
@@ -88,5 +89,10 @@ class KeylolerService(private val httpClient: HttpClient) {
     suspend fun webIndex(): Result<String> =
         safeApiCall {
             httpClient.get(Keylol()).bodyAsText()
+        }
+
+    suspend fun viewThread(tid: String, page: Int, cp: String): Result<KeylolResponse<ThreadDto>> =
+        safeApiCall {
+            httpClient.get(Thread(tid = tid, page = page, cp = cp)).body()
         }
 }

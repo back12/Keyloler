@@ -14,15 +14,18 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
-import com.liangsan.keyloler.presentation.login.navigation.LoginDestination
+import com.liangsan.keyloler.presentation.login.navigation.Login
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
 import com.liangsan.keyloler.presentation.profile.profile.ProfileScreen
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
+import com.liangsan.keyloler.presentation.thread.ThreadScreen
+import com.liangsan.keyloler.presentation.thread.navigation.Thread
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
+import com.liangsan.keyloler.presentation.utils.openThread
 import com.liangsan.keyloler.presentation.utils.topLevelNavigate
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -40,7 +43,16 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 exitTransition = { fadeOut() }
             ) {
                 composable<TopLevelDestination.Home> {
-                    HomeScreen()
+                    HomeScreen(onOpenThread = navHostController::openThread)
+                }
+
+                composable<Thread> {
+                    val route = it.toRoute<Thread>()
+                    ThreadScreen(
+                        tid = route.tid,
+                        title = route.title,
+                        onNavigateUp = navHostController::navigateUp
+                    )
                 }
 
                 navigation<TopLevelDestination.SearchIndex>(startDestination = SearchIndexDestination.Index) {
@@ -67,7 +79,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     composable<ProfileDestination.Overview> {
                         ProfileScreen(
                             onNavigateToLogin = {
-                                navHostController.navigate(LoginDestination.Login())
+                                navHostController.navigate(Login())
                             },
                             onNavigateToProfileInfo = { uid, avatar, nickname ->
                                 navHostController.navigate(
@@ -91,7 +103,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     }
                 }
 
-                composable<LoginDestination.Login> {
+                composable<Login> {
                     LoginScreen(
                         onNavigateUp = navHostController::navigateUp,
                         onNavigateToHome = {

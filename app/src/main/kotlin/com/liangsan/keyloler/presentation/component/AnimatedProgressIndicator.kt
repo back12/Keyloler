@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun AnimatedProgressIndicator(modifier: Modifier = Modifier, visible: Boolean) {
+fun AnimatedProgressIndicator(visible: Boolean, modifier: Modifier = Modifier) {
     AnimatedVisibility(
         visible,
         enter = fadeIn() + slideInVertically(),

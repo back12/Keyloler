@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.SteamPlatform
@@ -137,7 +138,7 @@ fun SteamWidget(modifier: Modifier = Modifier, data: SteamWidgetData) {
                     modifier = Modifier.height(IntrinsicSize.Max),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    data.platformImages.forEach {
+                    data.platformImages.fastForEach {
                         Image(
                             painterResource(getPlatformImageRes(it)),
                             contentScale = ContentScale.Fit,

@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.coil.kt.compose)
     implementation(libs.coil.kt.svg)
+    implementation(libs.coil.kt.gif)
     implementation(libs.coil.kt.network.ktor)
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.constraintlayout.compose)

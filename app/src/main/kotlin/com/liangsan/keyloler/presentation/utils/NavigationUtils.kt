@@ -5,13 +5,14 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import com.liangsan.keyloler.presentation.main.navigation.TopLevelDestination
+import com.liangsan.keyloler.presentation.thread.navigation.Thread
 import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 @Serializable
-open class KeylolerDestination {
+open class KeylolerDestination(
     open val showBottomNav: Boolean = true
-}
+)
 
 fun NavBackStackEntry?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
     this?.destination?.hierarchy?.any {
@@ -28,6 +29,12 @@ fun NavHostController.topLevelNavigate(destination: TopLevelDestination) {
         }
     } catch (ignored: IllegalArgumentException) {
         Timber.e(ignored)
+    }
+}
+
+fun NavHostController.openThread(tid: String, title: String) {
+    navigate(Thread(tid = tid, title = title)) {
+        launchSingleTop = true
     }
 }
 

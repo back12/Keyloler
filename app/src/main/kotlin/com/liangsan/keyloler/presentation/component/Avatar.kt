@@ -1,7 +1,6 @@
 package com.liangsan.keyloler.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -21,11 +20,6 @@ fun Avatar(avatarUrl: String, modifier: Modifier = Modifier, size: Dp = 36.dp) {
     val avatarModifier = modifier
         .size(size)
         .clip(CircleShape)
-        .border(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outline,
-            shape = CircleShape
-        )
     if (avatarUrl.isBlank()) {
         Spacer(
             modifier = avatarModifier

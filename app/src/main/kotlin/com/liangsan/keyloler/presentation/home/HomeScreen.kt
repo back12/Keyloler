@@ -43,25 +43,36 @@ import com.liangsan.keyloler.domain.model.Slide
 import com.liangsan.keyloler.domain.model.Thread
 import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.component.Avatar
+import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.ForumBadge
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
+import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = koinViewModel()) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = koinViewModel(),
+    onOpenThread: (String, String) -> Unit
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         modifier = modifier
             .safeDrawingPadding()
             .bottomBarPadding(),
-        state = state
+        state = state,
+        onOpenThread = onOpenThread
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeScreenContent(modifier: Modifier = Modifier, state: HomeState) {
+private fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    state: HomeState,
+    onOpenThread: (String, String) -> Unit
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,34 +81,29 @@ private fun HomeScreenContent(modifier: Modifier = Modifier, state: HomeState) {
         state.index.onSuccess {
             if (it.slides.isNotEmpty()) {
                 item {
-                    SlideShow(slides = it.slides)
+                    SlideShow(slides = it.slides, onSlideClick = onOpenThread)
                 }
             }
             it.threadsList.forEach { (title, threads) ->
-                item { Spacer(Modifier.height(16.dp)) }
+                item(contentType = "spacer") { Spacer(Modifier.height(16.dp)) }
                 stickyHeader(contentType = "title") {
                     IndexThreadListTitle(title = title)
                 }
-                itemsIndexed(threads, key = { index, thread -> "$index$thread" }) { index, thread ->
+                itemsIndexed(
+                    threads,
+                    key = { index, thread -> "$index$thread" },
+                    contentType = { _, _ -> "thread" }
+                ) { index, thread ->
                     IndexThreadItem(
                         thread = thread,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                        indicator = {
+                        divider = {
                             if (index != threads.lastIndex) {
-                                Spacer(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .height(1.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.onBackground.copy(
-                                                alpha = 0.05f
-                                            )
-                                        )
-                                )
+                                Divider()
                             }
                         },
                         onClick = {
-
+                            onOpenThread(thread.tid, thread.subject)
                         }
                     )
                 }
@@ -110,10 +116,9 @@ private fun HomeScreenContent(modifier: Modifier = Modifier, state: HomeState) {
 private inline fun IndexThreadItem(
     modifier: Modifier = Modifier,
     thread: Thread,
-    indicator: @Composable () -> Unit,
+    divider: @Composable () -> Unit,
     noinline onClick: () -> Unit
 ) {
-    val avatarUrl = "https://keylol.com/uc_server/avatar.php?uid=${thread.authorId}"
     Column {
         Column(
             modifier = Modifier
@@ -125,8 +130,8 @@ private inline fun IndexThreadItem(
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
             ) {
-                Avatar(avatarUrl)
-                Spacer(Modifier.width(8.dp))
+                Avatar(getAvatarUrl(thread.authorId))
+                Spacer(Modifier.width(12.dp))
                 Column(verticalArrangement = Arrangement.SpaceAround) {
                     Text(
                         thread.author,
@@ -149,7 +154,7 @@ private inline fun IndexThreadItem(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-        indicator()
+        divider()
     }
 }
 
@@ -179,7 +184,8 @@ private fun IndexThreadListTitle(modifier: Modifier = Modifier, title: String) {
 @Composable
 private fun SlideShow(
     modifier: Modifier = Modifier,
-    slides: List<Slide>
+    slides: List<Slide>,
+    onSlideClick: (String, String) -> Unit
 ) {
     val carouselState = rememberCarouselState { Int.MAX_VALUE }
 
@@ -192,7 +198,11 @@ private fun SlideShow(
         flingBehavior = CarouselDefaults.singleAdvanceFlingBehavior(state = carouselState)
     ) {
         val slide = slides[it % slides.size]
-        Box {
+        Box(
+            modifier = Modifier.clickable {
+                onSlideClick(slide.tid, slide.title)
+            }
+        ) {
             AsyncImage(
                 model = slide.img,
                 contentDescription = null,

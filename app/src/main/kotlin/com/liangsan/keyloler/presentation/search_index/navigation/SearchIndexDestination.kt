@@ -9,7 +9,7 @@ sealed class SearchIndexDestination : KeylolerDestination() {
     data object Index : SearchIndexDestination()
 
     @Serializable
-    data class Search(
+    class Search : SearchIndexDestination() {
         override val showBottomNav: Boolean = false
-    ) : SearchIndexDestination()
+    }
 }
