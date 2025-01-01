@@ -1,5 +1,6 @@
 package com.liangsan.keyloler.presentation.thread
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,8 +24,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,7 +65,7 @@ fun ThreadScreen(
     ThreadScreenContent(title = title, content = threadContent, onNavigateUp = onNavigateUp)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ThreadScreenContent(
     title: String,
@@ -70,7 +79,12 @@ private fun ThreadScreenContent(
             LargeTopAppBar(
                 title = {
                     val completeTitle = content.data?.thread?.subject ?: title
-                    Text(completeTitle, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        completeTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 navigationIcon = {
                     IconButton(
@@ -87,11 +101,54 @@ private fun ThreadScreenContent(
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
-            content.onSuccess {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(it.postList, key = { it.pid }) {
+            val lazyListState = rememberLazyListState()
+            var firstPostHeight by remember { mutableFloatStateOf(0f) }
+            var firstPostOffset by remember { mutableFloatStateOf(0f) }
+            val postNestedScrollConnection = remember {
+                object : NestedScrollConnection {
+                    override fun onPreScroll(
+                        available: Offset,
+                        source: NestedScrollSource
+                    ): Offset {
+                        if (available.y > 0 && lazyListState.firstVisibleItemIndex > 0)
+                            return super.onPreScroll(available, source)
+                        val delta = available.y
+                        val newOffset = firstPostOffset + delta
+                        if (lazyListState.canScrollForward)
+                            firstPostOffset = newOffset.coerceIn(-firstPostHeight, 0f)
+
+                        return super.onPreScroll(available, source)
+                    }
+                }
+            }
+            content.onSuccess { data ->
+                val postList = data.postList
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(postNestedScrollConnection),
+                    state = lazyListState
+                ) {
+                    // Make first post sticky to prevent lazy load to increase performance
+                    // in case first post contains lots of data
+                    stickyHeader {
+                        Column(
+                            modifier = Modifier
+                                .graphicsLayer { translationY = firstPostOffset }
+                                .onGloballyPositioned {
+                                    firstPostHeight = it.size.height.toFloat()
+                                }
+                        ) {
+                            PostItem(post = postList.first())
+                            Divider()
+                        }
+                    }
+                    items(
+                        postList.size - 1,
+                        key = { index -> postList[index + 1].pid }
+                    ) { index ->
                         Column {
-                            PostItem(post = it)
+                            PostItem(post = postList[index + 1])
                             Divider()
                         }
                     }

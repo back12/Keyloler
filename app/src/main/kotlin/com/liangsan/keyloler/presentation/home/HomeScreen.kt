@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -89,19 +89,14 @@ private fun HomeScreenContent(
                 stickyHeader(contentType = "title") {
                     IndexThreadListTitle(title = title)
                 }
-                itemsIndexed(
+                items(
                     threads,
-                    key = { index, thread -> "$index$thread" },
-                    contentType = { _, _ -> "thread" }
-                ) { index, thread ->
+                    key = { thread -> "$title$thread" },
+                    contentType = { "thread" }
+                ) { thread ->
                     IndexThreadItem(
                         thread = thread,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                        divider = {
-                            if (index != threads.lastIndex) {
-                                Divider()
-                            }
-                        },
                         onClick = {
                             onOpenThread(thread.tid, thread.subject)
                         }
@@ -113,11 +108,10 @@ private fun HomeScreenContent(
 }
 
 @Composable
-private inline fun IndexThreadItem(
+private fun IndexThreadItem(
     modifier: Modifier = Modifier,
     thread: Thread,
-    divider: @Composable () -> Unit,
-    noinline onClick: () -> Unit
+    onClick: () -> Unit
 ) {
     Column {
         Column(
@@ -154,7 +148,7 @@ private inline fun IndexThreadItem(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-        divider()
+        Divider()
     }
 }
 

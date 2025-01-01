@@ -7,8 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -163,16 +163,17 @@ private fun ForumCategoryItem(
         )
         Spacer(Modifier.height(6.dp))
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(4.dp)) {
-            ContextualFlowRow(
-                itemCount = forum.size,
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) { index ->
-                val current = forum[index]
-                ForumItem(forum = current, onForumClick = { onForumClick(current) })
+            ) {
+                repeat(forum.size) {
+                    val current = forum[it]
+                    ForumItem(forum = current, onForumClick = { onForumClick(current) })
+                }
             }
         }
     }

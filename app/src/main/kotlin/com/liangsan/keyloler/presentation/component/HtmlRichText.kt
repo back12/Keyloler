@@ -2,8 +2,8 @@ package com.liangsan.keyloler.presentation.component
 
 import android.text.Html
 import android.text.Spanned
-import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,6 +12,7 @@ import androidx.compose.ui.text.LinkInteractionListener
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.util.fastForEach
 import androidx.core.text.HtmlCompat
 import com.liangsan.keyloler.presentation.theme.LightBlue
 import com.liangsan.keyloler.presentation.utils.ContentHandlerReplacementTag
@@ -36,20 +37,20 @@ fun HtmlRichText(
     linkInteractionListener: LinkInteractionListener? = null
 ) {
     SelectionContainer {
-        Html.fromHtml(
-            "<$ContentHandlerReplacementTag />$content",
-            HtmlCompat.FROM_HTML_MODE_COMPACT,
-            null,
-            TagHandler
-        ).toComposable(
-            linkStyles,
-            linkInteractionListener
-        ).let {
-            ContextualFlowRow(
-                itemCount = it.size,
-                modifier = modifier,
-            ) { index ->
-                it[index](Modifier.align(Alignment.Bottom))
+        FlowRow(
+            modifier = modifier,
+        ) {
+            val bottomAlignModifier = Modifier.align(Alignment.Bottom)
+            Html.fromHtml(
+                "<$ContentHandlerReplacementTag />$content",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+                null,
+                TagHandler
+            ).toComposable(
+                linkStyles,
+                linkInteractionListener
+            ).fastForEach {
+                it(bottomAlignModifier)
             }
         }
     }
