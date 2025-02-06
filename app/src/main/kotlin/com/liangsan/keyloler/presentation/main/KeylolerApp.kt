@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -62,6 +63,7 @@ fun KeylolerApp() {
                 hostState = snackbarHostState,
                 snackbar = { data ->
                     SwipeToDismissBox(
+                        modifier = Modifier,
                         state = rememberSwipeToDismissBoxState(
                             confirmValueChange = {
                                 data.dismiss(); true
@@ -76,6 +78,7 @@ fun KeylolerApp() {
                 },
                 modifier = Modifier
                     .imePadding()
+                    .safeDrawingPadding()
                     .bottomBarPadding(showBottomBar)
             )
         },

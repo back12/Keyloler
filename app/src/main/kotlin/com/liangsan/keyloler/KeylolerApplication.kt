@@ -23,12 +23,14 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androix.startup.KoinStartup
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.KoinConfiguration
+import org.koin.dsl.koinConfiguration
 import timber.log.Timber
 
 @OptIn(KoinExperimentalAPI::class)
 class KeylolerApplication : Application(), SingletonImageLoader.Factory, KoinStartup {
 
-    override fun onKoinStartup(): KoinAppDeclaration = {
+    override fun onKoinStartup(): KoinConfiguration = koinConfiguration {
         androidLogger()
         androidContext(this@KeylolerApplication)
         modules(dataModule + viewModelModule)

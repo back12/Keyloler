@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.liangsan.keyloler.presentation.main.component.bottomBarHeight
 
 fun Modifier.bottomBarPadding(show: Boolean = true) =
-    this.windowInsetsPadding(WindowInsets(bottom = if (show) bottomBarHeight else 0.dp))
+    this.padding(bottom = if (show) bottomBarHeight else 0.dp)
 
 fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
     return if (condition) {
