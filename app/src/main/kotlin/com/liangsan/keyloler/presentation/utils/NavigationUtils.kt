@@ -19,7 +19,7 @@ fun NavBackStackEntry?.isTopLevelDestinationInHierarchy(destination: TopLevelDes
         it isSameWith destination
     } ?: false
 
-fun NavHostController.topLevelNavigate(destination: TopLevelDestination) {
+fun NavHostController.navigateToTopLevel(destination: TopLevelDestination) {
     try {
         if (currentDestination?.isSameWith(destination) == true)
             return

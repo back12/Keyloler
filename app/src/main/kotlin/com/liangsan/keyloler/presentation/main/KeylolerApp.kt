@@ -29,7 +29,7 @@ import com.liangsan.keyloler.presentation.utils.SnackbarController
 import com.liangsan.keyloler.presentation.utils.Zero
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.isTopLevelDestinationInHierarchy
-import com.liangsan.keyloler.presentation.utils.topLevelNavigate
+import com.liangsan.keyloler.presentation.utils.navigateToTopLevel
 
 @Composable
 fun KeylolerApp() {
@@ -97,7 +97,7 @@ fun KeylolerApp() {
                 modifier = Modifier.align(Alignment.BottomCenter),
                 visible = showBottomBar,
                 isSelected = currentBackStackEntry::isTopLevelDestinationInHierarchy,
-                onNavigate = navHostController::topLevelNavigate
+                onNavigate = navHostController::navigateToTopLevel
             )
         }
     }

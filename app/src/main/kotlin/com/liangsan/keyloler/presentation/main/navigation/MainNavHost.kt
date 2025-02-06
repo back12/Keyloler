@@ -26,7 +26,7 @@ import com.liangsan.keyloler.presentation.thread.navigation.Thread
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.openThread
-import com.liangsan.keyloler.presentation.utils.topLevelNavigate
+import com.liangsan.keyloler.presentation.utils.navigateToTopLevel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -107,7 +107,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     LoginScreen(
                         onNavigateUp = navHostController::navigateUp,
                         onNavigateToHome = {
-                            navHostController.topLevelNavigate(TopLevelDestination.Home)
+                            navHostController.navigateToTopLevel(TopLevelDestination.Home)
                         }
                     )
                 }
