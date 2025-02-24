@@ -8,13 +8,15 @@ import com.liangsan.keyloler.data.remote.dto.ProfileDto
 import com.liangsan.keyloler.data.remote.dto.ThreadDto
 import com.liangsan.keyloler.data.remote.keylol_api.Avatar
 import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
+import com.liangsan.keyloler.data.remote.keylol_api.GetForumDisplay
+import com.liangsan.keyloler.data.remote.keylol_api.GetThread
 import com.liangsan.keyloler.data.remote.keylol_api.Keylol
 import com.liangsan.keyloler.data.remote.keylol_api.Login
 import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
-import com.liangsan.keyloler.data.remote.keylol_api.Thread
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
 import com.liangsan.keyloler.data.remote.keylol_api.WebLoginVerify
+import com.liangsan.keyloler.domain.model.ForumDisplay
 import com.liangsan.keyloler.domain.model.LoginParam
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -93,6 +95,14 @@ class KeylolerService(private val httpClient: HttpClient) {
 
     suspend fun viewThread(tid: String, page: Int, cp: String): Result<KeylolResponse<ThreadDto>> =
         safeApiCall {
-            httpClient.get(Thread(tid = tid, page = page, cp = cp)).body()
+            httpClient.get(GetThread(tid = tid, page = page, cp = cp)).body()
+        }
+
+    suspend fun getForumDisplay(
+        fid: Int,
+        page: Int
+    ): Result<KeylolResponse<ForumDisplay>> =
+        safeApiCall {
+            httpClient.get(GetForumDisplay(fid = fid, page = page)).body()
         }
 }

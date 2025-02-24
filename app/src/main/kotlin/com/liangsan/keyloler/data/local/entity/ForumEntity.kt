@@ -12,7 +12,7 @@ data class ForumEntity(
     val name: String,
     val threads: Int,
     val posts: Int,
-    val todayPosts: Int,
+    val todayPosts: Int?,
     val description: String?,
     val icon: String?,
     val subList: List<ForumEntity>?

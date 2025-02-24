@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -91,7 +91,7 @@ private fun HomeScreenContent(
                 }
                 items(
                     threads,
-                    key = { thread -> "$title$thread" },
+                    key = { thread -> "$title${thread.tid}" },
                     contentType = { "thread" }
                 ) { thread ->
                     IndexThreadItem(
@@ -126,14 +126,17 @@ private fun IndexThreadItem(
             ) {
                 Avatar(getAvatarUrl(thread.authorId))
                 Spacer(Modifier.width(12.dp))
-                Column(verticalArrangement = Arrangement.SpaceAround) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
                     Text(
                         thread.author,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
                         thread.dateline,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -142,7 +145,7 @@ private fun IndexThreadItem(
                     ForumBadge(it)
                 }
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
                 thread.subject,
                 style = MaterialTheme.typography.bodyLarge

@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.Login
@@ -23,10 +24,14 @@ import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDes
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
 import com.liangsan.keyloler.presentation.thread.ThreadScreen
 import com.liangsan.keyloler.presentation.thread.navigation.Thread
+import com.liangsan.keyloler.presentation.thread_list.forum_thread_list.ForumThreadListScreen
+import com.liangsan.keyloler.presentation.thread_list.navigation.ForumThreadList
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
-import com.liangsan.keyloler.presentation.utils.openThread
 import com.liangsan.keyloler.presentation.utils.navigateToTopLevel
+import com.liangsan.keyloler.presentation.utils.openThread
+import com.liangsan.keyloler.presentation.utils.serializableType
+import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -55,23 +60,22 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     )
                 }
 
-                navigation<TopLevelDestination.SearchIndex>(startDestination = SearchIndexDestination.Index) {
-                    composable<SearchIndexDestination.Index> {
-                        CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                            IndexScreen(
-                                onSearchClick = {
-                                    navHostController.navigate(SearchIndexDestination.Search())
-                                },
-                                onForumClick = {
-
-                                }
-                            )
-                        }
+                composable<TopLevelDestination.SearchIndex> {
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                        IndexScreen(
+                            onSearchClick = {
+                                navHostController.navigate(SearchIndexDestination.Search())
+                            },
+                            onForumClick = {
+                                navHostController.navigate(ForumThreadList(forum = it))
+                            }
+                        )
                     }
-                    composable<SearchIndexDestination.Search> {
-                        CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                            SearchScreen(onNavigateUp = navHostController::navigateUp)
-                        }
+                }
+
+                composable<SearchIndexDestination.Search> {
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                        SearchScreen(onNavigateUp = navHostController::navigateUp)
                     }
                 }
 
@@ -109,6 +113,17 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                         onNavigateToHome = {
                             navHostController.navigateToTopLevel(TopLevelDestination.Home)
                         }
+                    )
+                }
+
+                composable<ForumThreadList>(
+                    typeMap = mapOf(typeOf<Forum>() to serializableType<Forum>("forum_type"))
+                ) {
+                    val forum = it.toRoute<ForumThreadList>().forum
+                    ForumThreadListScreen(
+                        forum = forum,
+                        onOpenThread = navHostController::openThread,
+                        onNavigateUp = navHostController::navigateUp
                     )
                 }
             }

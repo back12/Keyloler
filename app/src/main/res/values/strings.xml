@@ -44,4 +44,6 @@
     <string name="posts_number">回帖数</string>
     <string name="threads_number">主题数</string>
     <string name="view_more">查看更多</string>
+    <string name="last_post_prefix">最后回复%1$s</string>
+    <string name="views_prefix">浏览%1$s</string>
 </resources>

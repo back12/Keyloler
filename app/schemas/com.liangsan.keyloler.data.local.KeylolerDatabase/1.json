@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9c2d2dac71a1b679910649906d914381",
+    "identityHash": "1bf126935a75d0b4c36decaad4cf8586",
     "entities": [
       {
         "tableName": "CookieWithTimestamp",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "ForumEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fid` INTEGER NOT NULL, `name` TEXT NOT NULL, `threads` INTEGER NOT NULL, `posts` INTEGER NOT NULL, `todayPosts` INTEGER NOT NULL, `description` TEXT, `icon` TEXT, `subList` TEXT, PRIMARY KEY(`fid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fid` INTEGER NOT NULL, `name` TEXT NOT NULL, `threads` INTEGER NOT NULL, `posts` INTEGER NOT NULL, `todayPosts` INTEGER, `description` TEXT, `icon` TEXT, `subList` TEXT, PRIMARY KEY(`fid`))",
         "fields": [
           {
             "fieldPath": "fid",
@@ -68,7 +68,7 @@
             "fieldPath": "todayPosts",
             "columnName": "todayPosts",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "description",
@@ -305,7 +305,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c2d2dac71a1b679910649906d914381')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1bf126935a75d0b4c36decaad4cf8586')"
     ]
   }
 }

@@ -6,9 +6,6 @@ import kotlinx.serialization.Serializable
 sealed class SearchIndexDestination : KeylolerDestination() {
 
     @Serializable
-    data object Index : SearchIndexDestination()
-
-    @Serializable
     class Search : SearchIndexDestination() {
         override val showBottomNav: Boolean = false
     }

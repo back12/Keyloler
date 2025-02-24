@@ -7,6 +7,7 @@ import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoViewMo
 import com.liangsan.keyloler.presentation.search_index.index.IndexViewModel
 import com.liangsan.keyloler.presentation.search_index.search.SearchViewModel
 import com.liangsan.keyloler.presentation.thread.ThreadViewModel
+import com.liangsan.keyloler.presentation.thread_list.forum_thread_list.ForumThreadListViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -24,4 +25,6 @@ val viewModelModule = module {
     viewModelOf(::HomeViewModel)
 
     viewModelOf(::ThreadViewModel)
+
+    viewModelOf(::ForumThreadListViewModel)
 }

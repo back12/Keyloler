@@ -1,6 +1,7 @@
 package com.liangsan.keyloler.presentation.thread
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,30 +52,38 @@ import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
+import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ThreadScreen(
+    modifier: Modifier = Modifier,
     tid: String,
     title: String,
     viewModel: ThreadViewModel = koinViewModel { parametersOf(tid) },
     onNavigateUp: () -> Unit
 ) {
     val threadContent by viewModel.state.collectAsStateWithLifecycle()
-    ThreadScreenContent(title = title, content = threadContent, onNavigateUp = onNavigateUp)
+    ThreadScreenContent(
+        modifier = modifier,
+        title = title,
+        content = threadContent,
+        onNavigateUp = onNavigateUp
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ThreadScreenContent(
+    modifier: Modifier = Modifier,
     title: String,
     content: Result<ThreadContent>,
     onNavigateUp: () -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = {
@@ -100,7 +109,11 @@ private fun ThreadScreenContent(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+        ) {
             val lazyListState = rememberLazyListState()
             var firstPostHeight by remember { mutableFloatStateOf(0f) }
             var firstPostOffset by remember { mutableFloatStateOf(0f) }
@@ -139,17 +152,21 @@ private fun ThreadScreenContent(
                                     firstPostHeight = it.size.height.toFloat()
                                 }
                         ) {
-                            PostItem(post = postList.first())
-                            Divider()
+                            postList.firstOrNull()?.let {
+                                PostItem(post = it)
+                                Divider()
+                            }
                         }
                     }
-                    items(
-                        postList.size - 1,
-                        key = { index -> postList[index + 1].pid }
-                    ) { index ->
-                        Column {
-                            PostItem(post = postList[index + 1])
-                            Divider()
+                    if (postList.isNotEmpty()) {
+                        items(
+                            postList.size - 1,
+                            key = { index -> postList[index + 1].pid }
+                        ) { index ->
+                            Column {
+                                PostItem(post = postList[index + 1])
+                                Divider()
+                            }
                         }
                     }
                 }
@@ -177,7 +194,7 @@ private fun PostItem(modifier: Modifier = Modifier, post: Post) {
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    post.dateline.replace("&nbsp;", " "),
+                    post.dateline.toHTMLAnnotatedString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
