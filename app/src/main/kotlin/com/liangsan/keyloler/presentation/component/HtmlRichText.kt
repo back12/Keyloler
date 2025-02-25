@@ -19,6 +19,7 @@ import com.liangsan.keyloler.presentation.utils.ContentHandlerReplacementTag
 import com.liangsan.keyloler.presentation.utils.NewLineSpan
 import com.liangsan.keyloler.presentation.utils.NoDrawableImageSpan
 import com.liangsan.keyloler.presentation.utils.TagHandler
+import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toAnnotatedString
 
 private val defaultLinkStyle = TextLinkStyles(
@@ -34,12 +35,11 @@ fun HtmlRichText(
     content: String,
     modifier: Modifier = Modifier,
     linkStyles: TextLinkStyles? = defaultLinkStyle,
-    linkInteractionListener: LinkInteractionListener? = null
+    linkInteractionListener: LinkInteractionListener? = null,
+    onZoomImage: (String?) -> Unit
 ) {
     SelectionContainer {
-        FlowRow(
-            modifier = modifier,
-        ) {
+        FlowRow(modifier = modifier) {
             val bottomAlignModifier = Modifier.align(Alignment.Bottom)
             Html.fromHtml(
                 "<$ContentHandlerReplacementTag />$content",
@@ -50,7 +50,19 @@ fun HtmlRichText(
                 linkStyles,
                 linkInteractionListener
             ).fastForEach {
-                it(bottomAlignModifier)
+                when (it) {
+                    is ImageElement -> {
+                        it(
+                            bottomAlignModifier.onTap {
+                                onZoomImage(it.src)
+                            }
+                        )
+                    }
+
+                    else -> {
+                        it(bottomAlignModifier)
+                    }
+                }
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.liangsan.keyloler.presentation.thread
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.panpf.zoomimage.CoilZoomAsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Post
 import com.liangsan.keyloler.domain.model.ThreadContent
@@ -81,7 +85,11 @@ private fun ThreadScreenContent(
     content: Result<ThreadContent>,
     onNavigateUp: () -> Unit
 ) {
+    var zoomImageSrc by remember { mutableStateOf<String?>(null) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    BackHandler(enabled = zoomImageSrc != null) {
+        zoomImageSrc = null
+    }
     Scaffold(
         modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -153,7 +161,9 @@ private fun ThreadScreenContent(
                                 }
                         ) {
                             postList.firstOrNull()?.let {
-                                PostItem(post = it)
+                                PostItem(post = it) {
+                                    zoomImageSrc = it
+                                }
                                 Divider()
                             }
                         }
@@ -164,7 +174,9 @@ private fun ThreadScreenContent(
                             key = { index -> postList[index + 1].pid }
                         ) { index ->
                             Column {
-                                PostItem(post = postList[index + 1])
+                                PostItem(post = postList[index + 1]) {
+                                    zoomImageSrc = it
+                                }
                                 Divider()
                             }
                         }
@@ -174,10 +186,26 @@ private fun ThreadScreenContent(
             AnimatedProgressIndicator(content.isLoading())
         }
     }
+    AnimatedVisibility(zoomImageSrc != null) {
+        CoilZoomAsyncImage(
+            model = zoomImageSrc,
+            contentDescription = null,
+            onTap = {
+                zoomImageSrc = null
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        )
+    }
 }
 
 @Composable
-private fun PostItem(modifier: Modifier = Modifier, post: Post) {
+private fun PostItem(
+    modifier: Modifier = Modifier,
+    post: Post,
+    onZoomImage: (String?) -> Unit
+) {
     Column(
         modifier = modifier.padding(12.dp)
     ) {
@@ -201,6 +229,6 @@ private fun PostItem(modifier: Modifier = Modifier, post: Post) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        HtmlRichText(content = post.message)
+        HtmlRichText(content = post.message, onZoomImage = onZoomImage)
     }
 }

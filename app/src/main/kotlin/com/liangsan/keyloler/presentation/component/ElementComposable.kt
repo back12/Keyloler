@@ -11,7 +11,6 @@ import coil3.compose.AsyncImage
 
 sealed interface ElementComposable {
 
-    // https://issuetracker.google.com/issues/317490247
     @Composable
     operator fun invoke(modifier: Modifier)
 }

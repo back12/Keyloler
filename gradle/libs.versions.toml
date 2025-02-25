@@ -13,7 +13,7 @@ datastore = "1.1.2"
 composeBom = "2025.02.00"
 navigation = "2.8.7"
 room = "2.6.1"
-ktor = "3.0.3"
+ktor = "3.1.0"
 kotlinxSerialization = "1.7.3"
 timber = "5.0.1"
 coil3 = "3.1.0"
@@ -23,6 +23,7 @@ constraintlayoutCompose = "1.1.0"
 ksoup = "0.2.2"
 protobuf = "4.28.3"
 protobufGradlePlugin = "0.9.4"
+zoomimage = "1.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -66,6 +67,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 ksoup-lite = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+zoomimage-compose-coil3 = { group = "io.github.panpf.zoomimage", name = "zoomimage-compose-coil3", version.ref = "zoomimage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

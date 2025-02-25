@@ -120,4 +120,5 @@ dependencies {
     implementation(libs.ksoup.lite)
     // protobuf
     implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.zoomimage.compose.coil3)
 }
