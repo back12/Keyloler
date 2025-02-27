@@ -1,5 +1,11 @@
 package com.liangsan.keyloler.domain.model
 
-import com.liangsan.keyloler.data.remote.dto.ThreadDto
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-typealias ThreadContent = ThreadDto
+@Serializable
+data class ThreadContent(
+    val thread: Thread,
+    @SerialName("postlist")
+    val postList: List<Post>
+)

@@ -23,7 +23,9 @@ import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
 import com.liangsan.keyloler.presentation.thread.ThreadScreen
-import com.liangsan.keyloler.presentation.thread.navigation.Thread
+import com.liangsan.keyloler.presentation.thread.navigation.ViewThread
+import com.liangsan.keyloler.presentation.thread_history.ThreadHistoryScreen
+import com.liangsan.keyloler.presentation.thread_history.navigation.ThreadHistory
 import com.liangsan.keyloler.presentation.thread_list.forum_thread_list.ForumThreadListScreen
 import com.liangsan.keyloler.presentation.thread_list.navigation.ForumThreadList
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
@@ -51,8 +53,8 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     HomeScreen(onOpenThread = navHostController::openThread)
                 }
 
-                composable<Thread> {
-                    val route = it.toRoute<Thread>()
+                composable<ViewThread> {
+                    val route = it.toRoute<ViewThread>()
                     ThreadScreen(
                         tid = route.tid,
                         title = route.title,
@@ -93,7 +95,11 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                                         nickname = nickname
                                     )
                                 )
-                            }
+                            },
+                            onNavigateToThreadHistory = {
+                                navHostController.navigate(ThreadHistory())
+                            },
+                            onOpenThread = navHostController::openThread
                         )
                     }
                     composable<ProfileDestination.ProfileInfo> {
@@ -122,6 +128,13 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     val forum = it.toRoute<ForumThreadList>().forum
                     ForumThreadListScreen(
                         forum = forum,
+                        onOpenThread = navHostController::openThread,
+                        onNavigateUp = navHostController::navigateUp
+                    )
+                }
+
+                composable<ThreadHistory> {
+                    ThreadHistoryScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
                     )

@@ -179,7 +179,7 @@ private fun ThreadItem(
                 }
                 Spacer(Modifier.weight(1f))
             }
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
                 thread.subject,
                 style = MaterialTheme.typography.bodyLarge

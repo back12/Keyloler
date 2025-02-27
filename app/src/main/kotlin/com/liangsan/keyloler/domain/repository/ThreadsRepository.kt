@@ -12,9 +12,11 @@ interface ThreadsRepository {
 
     fun getThreadsByForumId(fid: Int): Flow<PagingData<Thread>>
 
-    fun getNewThreads(
-        fids: String,
-        limit: Int,
-        start: Int
-    ): Flow<Result<List<Thread>>>
+    suspend fun insertHistory(thread: Thread)
+
+    fun getThreadHistoryOverview(): Flow<List<Thread>>
+
+    fun getThreadHistory(query: String): Flow<PagingData<Thread>>
+
+    suspend fun clearHistory()
 }

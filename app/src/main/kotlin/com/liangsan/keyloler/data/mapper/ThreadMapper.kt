@@ -1,38 +1,27 @@
 package com.liangsan.keyloler.data.mapper
 
-import com.liangsan.keyloler.data.local.entity.NewThreadEntity
+import com.liangsan.keyloler.data.local.entity.ThreadHistoryEntity
 import com.liangsan.keyloler.domain.model.Thread
+import kotlinx.datetime.Clock
 
-fun Thread.toNewThreadEntity() = NewThreadEntity(
-    tid = tid,
-    readPerm = readPerm,
-    author = author,
-    authorId = authorId,
-    subject = subject,
-    dateline = dateline,
-    lastPost = lastPost,
-    lastPoster = lastPoster,
-    views = views,
-    replies = replies,
-    digest = digest,
-    attachment = attachment,
-    dbDateline = dbDateline.toLong(),
-    dbLastPost = dbLastPost,
+fun Thread.toThreadHistoryEntity() = ThreadHistoryEntity(
+    thread = this,
+    createdTime = Clock.System.now().toEpochMilliseconds()
 )
 
-fun NewThreadEntity.toDomain() = Thread(
-    tid = tid,
-    readPerm = readPerm,
-    author = author,
-    authorId = authorId,
-    subject = subject,
-    dateline = dateline,
-    lastPost = lastPost,
-    lastPoster = lastPoster,
-    views = views,
-    replies = replies,
-    digest = digest,
-    attachment = attachment,
-    dbDateline = dbDateline.toString(),
-    dbLastPost = dbLastPost,
+fun ThreadHistoryEntity.toDomain() = Thread(
+    tid = thread.tid,
+    readPerm = thread.readPerm,
+    author = thread.author,
+    authorId = thread.authorId,
+    subject = thread.subject,
+    dateline = thread.dateline,
+    lastPost = thread.lastPost,
+    lastPoster = thread.lastPoster,
+    views = thread.views,
+    replies = thread.replies,
+    digest = thread.digest,
+    attachment = thread.attachment,
+    dbDateline = thread.dbDateline.toString(),
+    dbLastPost = thread.dbLastPost,
 )

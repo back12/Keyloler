@@ -8,9 +8,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import com.liangsan.keyloler.presentation.main.navigation.TopLevelDestination
-import com.liangsan.keyloler.presentation.thread.navigation.Thread
+import com.liangsan.keyloler.presentation.thread.navigation.ViewThread
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
@@ -22,7 +21,7 @@ open class KeylolerDestination(
 fun NavBackStackEntry?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
     this?.destination?.hierarchy?.any {
         it isSameWith destination
-    } ?: false
+    } == true
 
 fun NavHostController.navigateToTopLevel(destination: TopLevelDestination) {
     try {
@@ -38,7 +37,7 @@ fun NavHostController.navigateToTopLevel(destination: TopLevelDestination) {
 }
 
 fun NavHostController.openThread(tid: String, title: String) {
-    navigate(Thread(tid = tid, title = title)) {
+    navigate(ViewThread(tid = tid, title = title)) {
         launchSingleTop = true
     }
 }

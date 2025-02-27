@@ -44,6 +44,13 @@
     <string name="posts_number">回帖数</string>
     <string name="threads_number">主题数</string>
     <string name="view_more">查看更多</string>
-    <string name="last_post_prefix">最后回复%1$s</string>
-    <string name="views_prefix">浏览%1$s</string>
+    <string name="last_post_prefix">最后回复 %1$s</string>
+    <string name="views_prefix">浏览 %1$s</string>
+    <string name="history">历史记录</string>
+    <string name="not_logged_in">当前未登录</string>
+    <string name="view_all">查看全部</string>
+    <string name="blank">空</string>
+    <string name="favorite">收藏</string>
+    <string name="my_thread">我的帖子</string>
+    <string name="message_notification">消息通知</string>
 </resources>

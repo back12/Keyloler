@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.liangsan.keyloler.domain.repository.ProfileRepository
+import com.liangsan.keyloler.domain.repository.ThreadsRepository
 import com.liangsan.keyloler.domain.repository.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val threadsRepository: ThreadsRepository
 ) : ViewModel() {
 
     companion object {
@@ -35,6 +37,17 @@ class ProfileViewModel(
     init {
         observeLoginState()
         observeUserState()
+        observeThreadHistory()
+    }
+
+    private fun observeThreadHistory() {
+        viewModelScope.launch {
+            threadsRepository.getThreadHistoryOverview().collectLatest { history ->
+                _state.update {
+                    it.copy(threadHistoryOverView = history)
+                }
+            }
+        }
     }
 
     private fun observeLoginState() {

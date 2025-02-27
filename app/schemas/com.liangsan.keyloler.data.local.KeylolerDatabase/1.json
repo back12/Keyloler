@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1bf126935a75d0b4c36decaad4cf8586",
+    "identityHash": "33a3cf0150f3ba88b043891d3b87c5e1",
     "entities": [
       {
         "tableName": "CookieWithTimestamp",
@@ -204,92 +204,104 @@
         "foreignKeys": []
       },
       {
-        "tableName": "NewThreadEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tid` TEXT NOT NULL, `readPerm` TEXT NOT NULL, `author` TEXT NOT NULL, `authorId` TEXT NOT NULL, `subject` TEXT NOT NULL, `dateline` TEXT NOT NULL, `lastPost` TEXT NOT NULL, `lastPoster` TEXT NOT NULL, `views` TEXT NOT NULL, `replies` TEXT NOT NULL, `digest` TEXT NOT NULL, `attachment` TEXT NOT NULL, `dbDateline` INTEGER NOT NULL, `dbLastPost` TEXT NOT NULL, PRIMARY KEY(`tid`))",
+        "tableName": "ThreadHistoryEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`createdTime` INTEGER NOT NULL, `tid` TEXT NOT NULL, `readPerm` TEXT NOT NULL, `author` TEXT NOT NULL, `authorId` TEXT NOT NULL, `subject` TEXT NOT NULL, `dateline` TEXT NOT NULL, `lastPost` TEXT NOT NULL, `lastPoster` TEXT NOT NULL, `views` TEXT NOT NULL, `replies` TEXT NOT NULL, `digest` TEXT NOT NULL, `attachment` TEXT NOT NULL, `dbDateline` TEXT NOT NULL, `dbLastPost` TEXT NOT NULL, `forum` TEXT, PRIMARY KEY(`tid`))",
         "fields": [
           {
-            "fieldPath": "tid",
+            "fieldPath": "createdTime",
+            "columnName": "createdTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thread.tid",
             "columnName": "tid",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "readPerm",
+            "fieldPath": "thread.readPerm",
             "columnName": "readPerm",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "author",
+            "fieldPath": "thread.author",
             "columnName": "author",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "authorId",
+            "fieldPath": "thread.authorId",
             "columnName": "authorId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "subject",
+            "fieldPath": "thread.subject",
             "columnName": "subject",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "dateline",
+            "fieldPath": "thread.dateline",
             "columnName": "dateline",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "lastPost",
+            "fieldPath": "thread.lastPost",
             "columnName": "lastPost",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "lastPoster",
+            "fieldPath": "thread.lastPoster",
             "columnName": "lastPoster",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "views",
+            "fieldPath": "thread.views",
             "columnName": "views",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "replies",
+            "fieldPath": "thread.replies",
             "columnName": "replies",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "digest",
+            "fieldPath": "thread.digest",
             "columnName": "digest",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "attachment",
+            "fieldPath": "thread.attachment",
             "columnName": "attachment",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "dbDateline",
+            "fieldPath": "thread.dbDateline",
             "columnName": "dbDateline",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "dbLastPost",
+            "fieldPath": "thread.dbLastPost",
             "columnName": "dbLastPost",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "thread.forum",
+            "columnName": "forum",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -305,7 +317,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1bf126935a75d0b4c36decaad4cf8586')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33a3cf0150f3ba88b043891d3b87c5e1')"
     ]
   }
 }

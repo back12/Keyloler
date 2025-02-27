@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -28,10 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.presentation.component.Avatar
+import com.liangsan.keyloler.presentation.component.Divider
+import com.liangsan.keyloler.presentation.component.HistoryItem
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.onTap
 import org.koin.androidx.compose.koinViewModel
@@ -41,7 +43,9 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateToLogin: () -> Unit,
-    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit
+    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
+    onNavigateToThreadHistory: () -> Unit,
+    onOpenThread: (String, String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     ProfileScreenContent(
@@ -53,7 +57,9 @@ fun ProfileScreen(
             } else {
                 onNavigateToLogin()
             }
-        }
+        },
+        onNavigateToThreadHistory = onNavigateToThreadHistory,
+        onOpenThread = onOpenThread
     )
 }
 
@@ -61,7 +67,9 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     modifier: Modifier = Modifier,
     state: ProfileState,
-    onTopBarClick: () -> Unit
+    onTopBarClick: () -> Unit,
+    onNavigateToThreadHistory: () -> Unit,
+    onOpenThread: (String, String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -70,7 +78,7 @@ private fun ProfileScreenContent(
         item {
             ProfileTopBar(
                 avatarUrl = state.userAvatar,
-                title = if (state.uid != null) state.userNickname else "当前未登录",
+                title = if (state.uid != null) state.userNickname else stringResource(R.string.not_logged_in),
                 onTopBarClick = onTopBarClick
             )
         }
@@ -83,24 +91,38 @@ private fun ProfileScreenContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("历史记录")
+                    Text(stringResource(R.string.history))
                     TextButton(
-                        onClick = {}
+                        onClick = onNavigateToThreadHistory
                     ) {
-                        Text("查看全部")
+                        Text(stringResource(R.string.view_all))
                     }
                 }
-                Text(
-                    "空",
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .padding(vertical = 8.dp)
-                        .wrapContentWidth()
-                )
+                        .padding(vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (state.threadHistoryOverView.isEmpty()) {
+                        Text(
+                            stringResource(R.string.blank)
+                        )
+                    } else {
+                        state.threadHistoryOverView.forEachIndexed { index, thread ->
+                            HistoryItem(thread = thread, onClick = {
+                                onOpenThread(thread.tid, thread.subject)
+                            })
+                            if (index != state.threadHistoryOverView.lastIndex) {
+                                Divider()
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -113,15 +135,15 @@ private fun ProfileScreenContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("收藏")
+                    Text(stringResource(R.string.favorite))
                     TextButton(
                         onClick = {}
                     ) {
-                        Text("查看全部")
+                        Text(stringResource(R.string.view_all))
                     }
                 }
                 Text(
-                    "空",
+                    stringResource(R.string.blank),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
@@ -135,14 +157,14 @@ private fun ProfileScreenContent(
         }
         item {
             IconTextButton(
-                text = "我的帖子",
+                text = stringResource(R.string.my_thread),
                 icon = painterResource(R.drawable.round_description_24),
                 onClick = {}
             )
         }
         item {
             IconTextButton(
-                text = "消息通知",
+                text = stringResource(R.string.message_notification),
                 icon = painterResource(R.drawable.round_notifications_none_24),
                 onClick = {}
             )
