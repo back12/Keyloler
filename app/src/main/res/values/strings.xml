@@ -53,4 +53,8 @@
     <string name="favorite">收藏</string>
     <string name="my_thread">我的帖子</string>
     <string name="message_notification">消息通知</string>
+    <string name="clear_history">清除历史</string>
+    <string name="cancel">取消</string>
+    <string name="confirm_clear_all_history">确认清除所有历史吗？</string>
+    <string name="confirm">确认</string>
 </resources>

@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.emptyFlow
 
 data class ThreadHistoryState(
     val searchInput: String = "",
-    val historyList: Flow<PagingData<Thread>> = emptyFlow()
+    val historyList: Flow<PagingData<Thread>> = emptyFlow(),
+    val showDialog: Boolean = false
 )

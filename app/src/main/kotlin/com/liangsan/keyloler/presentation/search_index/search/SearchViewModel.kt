@@ -21,7 +21,7 @@ class SearchViewModel(
 ) : ViewModel() {
 
     companion object {
-        const val SEARCH_INPUT = "search_input"
+        private const val SEARCH_INPUT = "search_input"
     }
 
     private val searchInputFlow = savedStateHandle.getStateFlow(SEARCH_INPUT, "")
@@ -47,11 +47,11 @@ class SearchViewModel(
     }
 
     private fun realSearch(history: String? = null) {
-        viewModelScope.launch outerLaunch@ {
+        viewModelScope.launch outerLaunch@{
             searchJob?.cancel()
             searchJob = launch {
                 val content = history ?: state.value.searchInput
-                if(content.isBlank()) return@launch
+                if (content.isBlank()) return@launch
                 Timber.d("Search for threads {$content}")
                 addNewSearchHistory(
                     SearchHistory(
