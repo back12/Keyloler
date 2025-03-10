@@ -58,6 +58,15 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     ThreadScreen(
                         tid = route.tid,
                         title = route.title,
+                        onNavigateToProfileInfo = { uid, avatar, nickname ->
+                            navHostController.navigate(
+                                ProfileDestination.ProfileInfo(
+                                    uid = uid,
+                                    avatar = avatar,
+                                    nickname = nickname
+                                )
+                            )
+                        },
                         onNavigateUp = navHostController::navigateUp
                     )
                 }

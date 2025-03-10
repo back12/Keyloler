@@ -55,6 +55,7 @@ import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
+import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import org.koin.androidx.compose.koinViewModel
@@ -66,6 +67,7 @@ fun ThreadScreen(
     tid: String,
     title: String,
     viewModel: ThreadViewModel = koinViewModel { parametersOf(tid) },
+    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
     val threadContent by viewModel.state.collectAsStateWithLifecycle()
@@ -73,6 +75,7 @@ fun ThreadScreen(
         modifier = modifier,
         title = title,
         content = threadContent,
+        onNavigateToProfileInfo = onNavigateToProfileInfo,
         onNavigateUp = onNavigateUp
     )
 }
@@ -83,6 +86,7 @@ private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
     title: String,
     content: Result<ThreadContent>,
+    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
     var zoomImageSrc by remember { mutableStateOf<String?>(null) }
@@ -161,9 +165,16 @@ private fun ThreadScreenContent(
                                 }
                         ) {
                             postList.firstOrNull()?.let {
-                                PostItem(post = it) {
-                                    zoomImageSrc = it
-                                }
+                                PostItem(
+                                    post = it,
+                                    onZoomImage = { zoomImageSrc = it },
+                                    onOpenProfile = {
+                                        onNavigateToProfileInfo(
+                                            it.authorId,
+                                            getAvatarUrl(it.authorId),
+                                            it.author
+                                        )
+                                    })
                                 Divider()
                             }
                         }
@@ -173,10 +184,19 @@ private fun ThreadScreenContent(
                             postList.size - 1,
                             key = { index -> postList[index + 1].pid }
                         ) { index ->
+                            val post = postList[index + 1]
                             Column {
-                                PostItem(post = postList[index + 1]) {
-                                    zoomImageSrc = it
-                                }
+                                PostItem(
+                                    post = post,
+                                    onZoomImage = { zoomImageSrc = it },
+                                    onOpenProfile = {
+                                        onNavigateToProfileInfo(
+                                            post.authorId,
+                                            getAvatarUrl(post.authorId),
+                                            post.author
+                                        )
+                                    }
+                                )
                                 Divider()
                             }
                         }
@@ -204,7 +224,8 @@ private fun ThreadScreenContent(
 private fun PostItem(
     modifier: Modifier = Modifier,
     post: Post,
-    onZoomImage: (String?) -> Unit
+    onZoomImage: (String?) -> Unit,
+    onOpenProfile: () -> Unit,
 ) {
     Column(
         modifier = modifier.padding(12.dp)
@@ -214,7 +235,10 @@ private fun PostItem(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
         ) {
-            Avatar(avatarUrl = getAvatarUrl(post.authorId))
+            Avatar(
+                avatarUrl = getAvatarUrl(post.authorId),
+                modifier = Modifier.onTap(onOpenProfile)
+            )
             Spacer(Modifier.width(12.dp))
             Column(verticalArrangement = Arrangement.SpaceAround) {
                 Text(
