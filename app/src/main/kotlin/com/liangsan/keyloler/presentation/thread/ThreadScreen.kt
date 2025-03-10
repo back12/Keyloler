@@ -44,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.panpf.zoomimage.CoilZoomAsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Post
 import com.liangsan.keyloler.domain.model.ThreadContent
@@ -57,6 +56,7 @@ import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
+import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -187,10 +187,10 @@ private fun ThreadScreenContent(
         }
     }
     AnimatedVisibility(zoomImageSrc != null) {
-        CoilZoomAsyncImage(
+        ZoomableAsyncImage(
             model = zoomImageSrc,
             contentDescription = null,
-            onTap = {
+            onClick = {
                 zoomImageSrc = null
             },
             modifier = Modifier
