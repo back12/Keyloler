@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.LinkInteractionListener
@@ -38,9 +41,13 @@ fun HtmlRichText(
     linkInteractionListener: LinkInteractionListener? = null,
     onZoomImage: (String?) -> Unit
 ) {
-    SelectionContainer {
-        FlowRow(modifier = modifier) {
-            val bottomAlignModifier = Modifier.align(Alignment.Bottom)
+    val htmlComposable = remember { mutableStateListOf<ElementComposable>() }
+
+    LaunchedEffect(content, linkStyles) {
+        if (htmlComposable.isNotEmpty()) {
+            htmlComposable.clear()
+        }
+        htmlComposable.addAll(
             Html.fromHtml(
                 "<$ContentHandlerReplacementTag />$content",
                 HtmlCompat.FROM_HTML_MODE_COMPACT,
@@ -49,7 +56,13 @@ fun HtmlRichText(
             ).toComposable(
                 linkStyles,
                 linkInteractionListener
-            ).fastForEach {
+            )
+        )
+    }
+    SelectionContainer {
+        FlowRow(modifier = modifier) {
+            val bottomAlignModifier = Modifier.align(Alignment.Bottom)
+            htmlComposable.fastForEach {
                 when (it) {
                     is ImageElement -> {
                         it(
