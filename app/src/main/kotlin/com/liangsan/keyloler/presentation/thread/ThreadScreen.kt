@@ -120,7 +120,7 @@ private fun ThreadScreenContent(
         Box(
             modifier = Modifier
                 .padding(padding)
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
             val lazyListState = rememberLazyListState()
             var firstPostHeight by remember { mutableFloatStateOf(0f) }
