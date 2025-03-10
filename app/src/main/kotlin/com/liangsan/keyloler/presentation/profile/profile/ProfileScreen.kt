@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -123,36 +122,6 @@ private fun ProfileScreenContent(
                         }
                     }
                 }
-            }
-        }
-
-        item {
-            Column(
-                modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.favorite))
-                    TextButton(
-                        onClick = {}
-                    ) {
-                        Text(stringResource(R.string.view_all))
-                    }
-                }
-                Text(
-                    stringResource(R.string.blank),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .padding(vertical = 8.dp)
-                        .wrapContentWidth()
-                )
             }
         }
         item {
