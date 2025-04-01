@@ -17,7 +17,18 @@ class HomeViewModel(
     private val _state = MutableStateFlow(HomeState())
     val state = _state.onStart {
         _state.update {
-            it.copy(index = Result.Success(indexRepository.getIndexContent()))
+            indexRepository.getIndexContent().let { index ->
+                it.copy(
+                    index = Result.Success(index),
+                    currentTab = index.threadsList.keys.firstOrNull()
+                )
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
+
+    fun selectTab(tab: String) {
+        _state.update {
+            it.copy(currentTab = tab)
+        }
+    }
 }

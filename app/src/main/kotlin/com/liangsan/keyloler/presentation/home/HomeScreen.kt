@@ -1,5 +1,7 @@
 package com.liangsan.keyloler.presentation.home
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +21,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.carousel.CarouselDefaults
 import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
@@ -32,13 +34,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Slide
 import com.liangsan.keyloler.domain.model.Thread
 import com.liangsan.keyloler.domain.utils.onSuccess
@@ -62,7 +64,8 @@ fun HomeScreen(
             .safeDrawingPadding()
             .bottomBarPadding(),
         state = state,
-        onOpenThread = onOpenThread
+        onOpenThread = onOpenThread,
+        onSelectTab = viewModel::selectTab
     )
 }
 
@@ -71,7 +74,8 @@ fun HomeScreen(
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     state: HomeState,
-    onOpenThread: (String, String) -> Unit
+    onOpenThread: (String, String) -> Unit,
+    onSelectTab: (String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -84,24 +88,27 @@ private fun HomeScreenContent(
                     SlideShow(slides = it.slides, onSlideClick = onOpenThread)
                 }
             }
-            it.threadsList.forEach { (title, threads) ->
-                item(contentType = "spacer") { Spacer(Modifier.height(16.dp)) }
-                stickyHeader(contentType = "title") {
-                    IndexThreadListTitle(title = title)
-                }
-                items(
-                    threads,
-                    key = { thread -> "$title${thread.tid}" },
-                    contentType = { "thread" }
-                ) { thread ->
-                    IndexThreadItem(
-                        thread = thread,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                        onClick = {
-                            onOpenThread(thread.tid, thread.subject)
-                        }
-                    )
-                }
+            stickyHeader(contentType = "title") {
+                IndexTabs(
+                    tabs = it.threadsList.keys.toList(),
+                    currentTab = state.currentTab,
+                    onSelect = onSelectTab
+                )
+            }
+            items(
+                it.threadsList[state.currentTab] ?: emptyList(),
+                key = { thread -> thread.tid },
+                contentType = { "thread" }
+            ) { thread ->
+                IndexThreadItem(
+                    thread = thread,
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    onClick = {
+                        onOpenThread(thread.tid, thread.subject)
+                    }
+                )
             }
         }
     }
@@ -156,23 +163,40 @@ private fun IndexThreadItem(
 }
 
 @Composable
-private fun IndexThreadListTitle(modifier: Modifier = Modifier, title: String) {
-    Row(
+private fun IndexTabs(
+    modifier: Modifier = Modifier,
+    tabs: List<String>,
+    currentTab: String?,
+    onSelect: (String) -> Unit
+) {
+    LazyRow(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(4.dp)
-            )
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .background(MaterialTheme.colorScheme.background)
+            .padding(top = 16.dp, bottom = 8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(title, style = MaterialTheme.typography.titleMedium)
-        TextButton(
-            onClick = {}
-        ) {
-            Text(stringResource(R.string.view_more))
+        items(tabs) { tab ->
+            val selected = tab == currentTab
+            val tabTransition = updateTransition(selected)
+            val textColor = tabTransition.animateColor {
+                if (it) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface
+            }
+            val backgroundColor = tabTransition.animateColor {
+                if (it) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceContainerHigh
+            }
+            Text(
+                tab,
+                color = textColor.value,
+                fontWeight = if (selected) FontWeight.Bold else null,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(backgroundColor.value)
+                    .clickable(onClick = { onSelect(tab) })
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+            )
         }
     }
 }

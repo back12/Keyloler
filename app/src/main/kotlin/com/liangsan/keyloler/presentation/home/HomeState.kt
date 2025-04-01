@@ -6,5 +6,6 @@ import com.liangsan.keyloler.domain.utils.Result
 
 @Stable
 data class HomeState(
-    val index: Result<Index> = Result.Loading
+    val index: Result<Index> = Result.Loading,
+    val currentTab: String? = null
 )

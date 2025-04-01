@@ -234,10 +234,10 @@ private fun PostItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
+                .onTap(onOpenProfile)
         ) {
             Avatar(
-                avatarUrl = getAvatarUrl(post.authorId),
-                modifier = Modifier.onTap(onOpenProfile)
+                avatarUrl = getAvatarUrl(post.authorId)
             )
             Spacer(Modifier.width(12.dp))
             Column(verticalArrangement = Arrangement.SpaceAround) {

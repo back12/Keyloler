@@ -63,7 +63,9 @@ fun KeylolerApp() {
                 hostState = snackbarHostState,
                 snackbar = { data ->
                     SwipeToDismissBox(
-                        modifier = Modifier,
+                        modifier = Modifier
+                            .safeDrawingPadding()
+                            .bottomBarPadding(showBottomBar),
                         state = rememberSwipeToDismissBoxState(
                             confirmValueChange = {
                                 data.dismiss(); true
@@ -76,10 +78,7 @@ fun KeylolerApp() {
                         )
                     }
                 },
-                modifier = Modifier
-                    .imePadding()
-                    .safeDrawingPadding()
-                    .bottomBarPadding(showBottomBar)
+                modifier = Modifier.imePadding()
             )
         },
         contentWindowInsets = WindowInsets.Zero
