@@ -54,6 +54,10 @@ class LoginRepositoryImpl(
                     }
                 }
 
+                "login_strike" -> {
+                    emit(LoginResult.Failed(LoginResult.Cause.LoginStrike))
+                }
+
                 null -> {
                     emit(LoginResult.Failed(LoginResult.Cause.Unknown()))
                 }

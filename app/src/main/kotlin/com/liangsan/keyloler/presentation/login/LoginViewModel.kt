@@ -126,6 +126,7 @@ class LoginViewModel(
                                 is LoginResult.Cause.Unknown -> it.session
 
                                 // remove existed session
+                                LoginResult.Cause.LoginStrike,
                                 LoginResult.Cause.WrongPassword -> null
 
                                 // create a new session with previous auth value
@@ -191,6 +192,8 @@ class LoginViewModel(
 
                     LoginResult.Cause.NoUidFound ->
                         SnackbarController.showSnackbar("登陆失败，未找到uid")
+
+                    LoginResult.Cause.LoginStrike -> SnackbarController.showSnackbar("密码错误次数过多，请 15 分钟后重新登录")
                 }
             }
 

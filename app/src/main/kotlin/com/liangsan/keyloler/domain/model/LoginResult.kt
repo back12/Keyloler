@@ -19,6 +19,8 @@ sealed class LoginResult(open val msg: String? = null) {
 
         data object NoUidFound : Cause()
 
+        data object LoginStrike : Cause()
+
         data class Unknown(val msg: String? = null) : Cause()
     }
 }
