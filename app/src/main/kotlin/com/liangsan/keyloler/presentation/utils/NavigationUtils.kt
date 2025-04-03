@@ -36,8 +36,8 @@ fun NavHostController.navigateToTopLevel(destination: TopLevelDestination) {
     }
 }
 
-fun NavHostController.openThread(tid: String, title: String) {
-    navigate(ViewThread(tid = tid, title = title)) {
+fun NavHostController.openThread(tid: String, title: String, pid: String? = null) {
+    navigate(ViewThread(tid = tid, title = title, pid = pid)) {
         launchSingleTop = true
     }
 }

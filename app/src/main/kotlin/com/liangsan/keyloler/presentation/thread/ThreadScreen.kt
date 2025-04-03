@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +67,7 @@ fun ThreadScreen(
     modifier: Modifier = Modifier,
     tid: String,
     title: String,
+    pid: String?,
     viewModel: ThreadViewModel = koinViewModel { parametersOf(tid) },
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
@@ -74,6 +76,7 @@ fun ThreadScreen(
     ThreadScreenContent(
         modifier = modifier,
         title = title,
+        pid = pid,
         content = threadContent,
         onNavigateToProfileInfo = onNavigateToProfileInfo,
         onNavigateUp = onNavigateUp
@@ -85,6 +88,7 @@ fun ThreadScreen(
 private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
     title: String,
+    pid: String?,
     content: Result<ThreadContent>,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
@@ -148,6 +152,18 @@ private fun ThreadScreenContent(
             }
             content.onSuccess { data ->
                 val postList = data.postList
+
+                LaunchedEffect(firstPostHeight) {
+                    if (pid == null) return@LaunchedEffect
+                    val postIndex = postList.indexOfFirst { it.pid == pid }.takeIf { it != -1 }
+                        ?: return@LaunchedEffect
+                    // hide fist post
+                    if (firstPostHeight != -firstPostHeight) {
+                        firstPostOffset = -firstPostHeight
+                    }
+                    // scroll to post
+                    lazyListState.scrollToItem(postIndex)
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()

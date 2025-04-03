@@ -18,6 +18,8 @@ import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.Login
 import com.liangsan.keyloler.presentation.my_thread.MyThreadScreen
 import com.liangsan.keyloler.presentation.my_thread.navigation.MyThread
+import com.liangsan.keyloler.presentation.notice.NoticeScreen
+import com.liangsan.keyloler.presentation.notice.navigation.Notice
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
 import com.liangsan.keyloler.presentation.profile.profile.ProfileScreen
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
@@ -60,6 +62,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     ThreadScreen(
                         tid = route.tid,
                         title = route.title,
+                        pid = route.pid,
                         onNavigateToProfileInfo = { uid, avatar, nickname ->
                             navHostController.navigate(
                                 ProfileDestination.ProfileInfo(
@@ -113,6 +116,9 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                             onOpenThread = navHostController::openThread,
                             onNavigateToMyThread = {
                                 navHostController.navigate(MyThread())
+                            },
+                            onNavigateToNotice = {
+                                navHostController.navigate(Notice())
                             }
                         )
                     }
@@ -156,6 +162,13 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
 
                 composable<MyThread> {
                     MyThreadScreen(
+                        onOpenThread = navHostController::openThread,
+                        onNavigateUp = navHostController::navigateUp
+                    )
+                }
+
+                composable<Notice> {
+                    NoticeScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
                     )

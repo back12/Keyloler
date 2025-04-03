@@ -4,6 +4,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.liangsan.keyloler.data.remote.dto.ForumIndexDto
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.data.remote.dto.LoginDto
+import com.liangsan.keyloler.data.remote.dto.MyNoteDto
 import com.liangsan.keyloler.data.remote.dto.MyThreadDto
 import com.liangsan.keyloler.data.remote.dto.ProfileDto
 import com.liangsan.keyloler.data.remote.keylol_api.Avatar
@@ -12,6 +13,7 @@ import com.liangsan.keyloler.data.remote.keylol_api.GetForumDisplay
 import com.liangsan.keyloler.data.remote.keylol_api.GetThread
 import com.liangsan.keyloler.data.remote.keylol_api.Keylol
 import com.liangsan.keyloler.data.remote.keylol_api.Login
+import com.liangsan.keyloler.data.remote.keylol_api.MyNoteList
 import com.liangsan.keyloler.data.remote.keylol_api.MyThread
 import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
@@ -114,5 +116,9 @@ class KeylolerService(private val httpClient: HttpClient) {
 
     suspend fun getMyThread(page: Int): Result<KeylolResponse<MyThreadDto>> = safeApiCall {
         httpClient.get(MyThread(page = page)).body()
+    }
+
+    suspend fun getMyNoteList(page: Int): Result<KeylolResponse<MyNoteDto>> = safeApiCall {
+        httpClient.get(MyNoteList(page = page)).body()
     }
 }

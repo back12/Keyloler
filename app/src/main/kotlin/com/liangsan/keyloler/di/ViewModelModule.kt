@@ -3,6 +3,7 @@ package com.liangsan.keyloler.di
 import com.liangsan.keyloler.presentation.home.HomeViewModel
 import com.liangsan.keyloler.presentation.login.LoginViewModel
 import com.liangsan.keyloler.presentation.my_thread.MyThreadViewModel
+import com.liangsan.keyloler.presentation.notice.NoticeViewModel
 import com.liangsan.keyloler.presentation.profile.profile.ProfileViewModel
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoViewModel
 import com.liangsan.keyloler.presentation.search_index.index.IndexViewModel
@@ -33,4 +34,6 @@ val viewModelModule = module {
     viewModelOf(::ThreadHistoryViewModel)
 
     viewModelOf(::MyThreadViewModel)
+
+    viewModelOf(::NoticeViewModel)
 }

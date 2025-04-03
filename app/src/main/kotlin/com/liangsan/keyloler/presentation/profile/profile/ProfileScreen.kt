@@ -46,6 +46,7 @@ fun ProfileScreen(
     onNavigateToThreadHistory: () -> Unit,
     onOpenThread: (String, String) -> Unit,
     onNavigateToMyThread: () -> Unit,
+    onNavigateToNotice: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     ProfileScreenContent(
@@ -60,7 +61,8 @@ fun ProfileScreen(
         },
         onNavigateToThreadHistory = onNavigateToThreadHistory,
         onOpenThread = onOpenThread,
-        onNavigateToMyThread = onNavigateToMyThread
+        onNavigateToMyThread = onNavigateToMyThread,
+        onNavigateToNotice = onNavigateToNotice
     )
 }
 
@@ -72,6 +74,7 @@ private fun ProfileScreenContent(
     onNavigateToThreadHistory: () -> Unit,
     onOpenThread: (String, String) -> Unit,
     onNavigateToMyThread: () -> Unit,
+    onNavigateToNotice: () -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -138,7 +141,7 @@ private fun ProfileScreenContent(
             IconTextButton(
                 text = stringResource(R.string.message_notification),
                 icon = painterResource(R.drawable.round_notifications_none_24),
-                onClick = {}
+                onClick = onNavigateToNotice
             )
         }
     }
