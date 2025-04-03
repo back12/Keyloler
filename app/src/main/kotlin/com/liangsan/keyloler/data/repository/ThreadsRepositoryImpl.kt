@@ -9,6 +9,7 @@ import com.liangsan.keyloler.data.mapper.toDomain
 import com.liangsan.keyloler.data.mapper.toThreadHistoryEntity
 import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.data_source.ForumDisplayPagingSource
+import com.liangsan.keyloler.data.remote.data_source.MyThreadPagingSource
 import com.liangsan.keyloler.data.remote.dto.mapToResult
 import com.liangsan.keyloler.domain.model.Thread
 import com.liangsan.keyloler.domain.model.ThreadContent
@@ -62,5 +63,15 @@ class ThreadsRepositoryImpl(
 
     override suspend fun clearHistory() {
         historyDao.clearAll()
+    }
+
+    override fun getMyThread(): Flow<PagingData<Thread>> {
+        val pager = Pager(
+            config = PagingConfig(pageSize = 50),
+            pagingSourceFactory = {
+                MyThreadPagingSource(service)
+            }
+        )
+        return pager.flow
     }
 }

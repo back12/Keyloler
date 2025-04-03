@@ -4,6 +4,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.liangsan.keyloler.data.remote.dto.ForumIndexDto
 import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.data.remote.dto.LoginDto
+import com.liangsan.keyloler.data.remote.dto.MyThreadDto
 import com.liangsan.keyloler.data.remote.dto.ProfileDto
 import com.liangsan.keyloler.data.remote.keylol_api.Avatar
 import com.liangsan.keyloler.data.remote.keylol_api.ForumIndex
@@ -11,6 +12,7 @@ import com.liangsan.keyloler.data.remote.keylol_api.GetForumDisplay
 import com.liangsan.keyloler.data.remote.keylol_api.GetThread
 import com.liangsan.keyloler.data.remote.keylol_api.Keylol
 import com.liangsan.keyloler.data.remote.keylol_api.Login
+import com.liangsan.keyloler.data.remote.keylol_api.MyThread
 import com.liangsan.keyloler.data.remote.keylol_api.Profile
 import com.liangsan.keyloler.data.remote.keylol_api.SecureCode
 import com.liangsan.keyloler.data.remote.keylol_api.WebLogin
@@ -93,7 +95,11 @@ class KeylolerService(private val httpClient: HttpClient) {
             httpClient.get(Keylol()).bodyAsText()
         }
 
-    suspend fun viewThread(tid: String, page: Int, cp: String): Result<KeylolResponse<ThreadContent>> =
+    suspend fun viewThread(
+        tid: String,
+        page: Int,
+        cp: String
+    ): Result<KeylolResponse<ThreadContent>> =
         safeApiCall {
             httpClient.get(GetThread(tid = tid, page = page, cp = cp)).body()
         }
@@ -105,4 +111,8 @@ class KeylolerService(private val httpClient: HttpClient) {
         safeApiCall {
             httpClient.get(GetForumDisplay(fid = fid, page = page)).body()
         }
+
+    suspend fun getMyThread(page: Int): Result<KeylolResponse<MyThreadDto>> = safeApiCall {
+        httpClient.get(MyThread(page = page)).body()
+    }
 }

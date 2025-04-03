@@ -19,4 +19,6 @@ interface ThreadsRepository {
     fun getThreadHistory(query: String): Flow<PagingData<Thread>>
 
     suspend fun clearHistory()
+
+    fun getMyThread(): Flow<PagingData<Thread>>
 }

@@ -16,6 +16,8 @@ import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.Login
+import com.liangsan.keyloler.presentation.my_thread.MyThreadScreen
+import com.liangsan.keyloler.presentation.my_thread.navigation.MyThread
 import com.liangsan.keyloler.presentation.profile.navigation.ProfileDestination
 import com.liangsan.keyloler.presentation.profile.profile.ProfileScreen
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
@@ -108,7 +110,10 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                             onNavigateToThreadHistory = {
                                 navHostController.navigate(ThreadHistory())
                             },
-                            onOpenThread = navHostController::openThread
+                            onOpenThread = navHostController::openThread,
+                            onNavigateToMyThread = {
+                                navHostController.navigate(MyThread())
+                            }
                         )
                     }
                     composable<ProfileDestination.ProfileInfo> {
@@ -144,6 +149,13 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
 
                 composable<ThreadHistory> {
                     ThreadHistoryScreen(
+                        onOpenThread = navHostController::openThread,
+                        onNavigateUp = navHostController::navigateUp
+                    )
+                }
+
+                composable<MyThread> {
+                    MyThreadScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
                     )
