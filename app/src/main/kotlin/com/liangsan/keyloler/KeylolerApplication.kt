@@ -56,13 +56,13 @@ class KeylolerApplication : Application(), SingletonImageLoader.Factory, KoinSta
             }
             .memoryCache {
                 MemoryCache.Builder()
-                    .maxSizePercent(this, 0.1)
+                    .maxSizePercent(this, 0.01)
                     .build()
             }
             .diskCache {
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("keyloler_image_cache"))
-                    .maxSizePercent(0.02)
+                    .maxSizePercent(0.01)
                     .build()
             }
             .apply {

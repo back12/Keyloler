@@ -82,21 +82,21 @@ private fun HomeScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        state.index.onSuccess {
-            if (it.slides.isNotEmpty()) {
+        state.index.onSuccess { index ->
+            if (index.slides.isNotEmpty()) {
                 item {
-                    SlideShow(slides = it.slides, onSlideClick = onOpenThread)
+                    SlideShow(slides = index.slides, onSlideClick = onOpenThread)
                 }
             }
             stickyHeader(contentType = "title") {
                 IndexTabs(
-                    tabs = it.threadsList.keys.toList(),
+                    tabs = index.threadsList.keys.toList(),
                     currentTab = state.currentTab,
                     onSelect = onSelectTab
                 )
             }
             items(
-                it.threadsList[state.currentTab] ?: emptyList(),
+                index.threadsList[state.currentTab] ?: emptyList(),
                 key = { thread -> thread.tid },
                 contentType = { "thread" }
             ) { thread ->

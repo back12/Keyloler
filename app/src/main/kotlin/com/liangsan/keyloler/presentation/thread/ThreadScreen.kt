@@ -2,6 +2,7 @@ package com.liangsan.keyloler.presentation.thread
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,19 +29,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,29 +51,37 @@ import com.liangsan.keyloler.presentation.component.AnimatedProgressIndicator
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
+import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ThreadScreen(
     modifier: Modifier = Modifier,
-    tid: String,
     title: String,
-    pid: String?,
-    viewModel: ThreadViewModel = koinViewModel { parametersOf(tid) },
+    viewModel: ThreadViewModel = koinViewModel(),
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
     val threadContent by viewModel.state.collectAsStateWithLifecycle()
+    val lazyListState = rememberLazyListState()
+
+    ObserveAsEvents(viewModel.event) {
+        when (it) {
+            is ThreadScreenEvent.JumpToPost -> {
+                lazyListState.scrollToItem(it.index)
+            }
+        }
+    }
+
     ThreadScreenContent(
         modifier = modifier,
         title = title,
-        pid = pid,
         content = threadContent,
+        lazyListState = lazyListState,
         onNavigateToProfileInfo = onNavigateToProfileInfo,
         onNavigateUp = onNavigateUp
     )
@@ -88,8 +92,8 @@ fun ThreadScreen(
 private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
     title: String,
-    pid: String?,
     content: Result<ThreadContent>,
+    lazyListState: LazyListState,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
@@ -107,7 +111,6 @@ private fun ThreadScreenContent(
                     Text(
                         completeTitle,
                         style = MaterialTheme.typography.titleLarge,
-                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
@@ -130,57 +133,15 @@ private fun ThreadScreenContent(
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
-            val lazyListState = rememberLazyListState()
-            var firstPostHeight by remember { mutableFloatStateOf(0f) }
-            var firstPostOffset by remember { mutableFloatStateOf(0f) }
-            val postNestedScrollConnection = remember {
-                object : NestedScrollConnection {
-                    override fun onPreScroll(
-                        available: Offset,
-                        source: NestedScrollSource
-                    ): Offset {
-                        if (available.y > 0 && lazyListState.firstVisibleItemIndex > 0)
-                            return super.onPreScroll(available, source)
-                        val delta = available.y
-                        val newOffset = firstPostOffset + delta
-                        if (lazyListState.canScrollForward)
-                            firstPostOffset = newOffset.coerceIn(-firstPostHeight, 0f)
-
-                        return super.onPreScroll(available, source)
-                    }
+            Crossfade(targetState = content) {
+                if (it.isLoading()) {
+                    AnimatedProgressIndicator(content.isLoading())
+                    return@Crossfade
                 }
-            }
-            content.onSuccess { data ->
-                val postList = data.postList
-
-                LaunchedEffect(firstPostHeight) {
-                    if (pid == null) return@LaunchedEffect
-                    val postIndex = postList.indexOfFirst { it.pid == pid }.takeIf { it != -1 }
-                        ?: return@LaunchedEffect
-                    // hide fist post
-                    if (firstPostHeight != -firstPostHeight) {
-                        firstPostOffset = -firstPostHeight
-                    }
-                    // scroll to post
-                    lazyListState.scrollToItem(postIndex)
-                }
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(postNestedScrollConnection),
-                    state = lazyListState
-                ) {
-                    // Make first post sticky to prevent lazy load to increase performance
-                    // in case first post contains lots of data
-                    stickyHeader {
-                        Column(
-                            modifier = Modifier
-                                .graphicsLayer { translationY = firstPostOffset }
-                                .onGloballyPositioned {
-                                    firstPostHeight = it.size.height.toFloat()
-                                }
-                        ) {
-                            postList.firstOrNull()?.let {
+                content.onSuccess { data ->
+                    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+                        items(data.postList, key = { it.pid }) {
+                            Column {
                                 PostItem(
                                     post = it,
                                     onZoomImage = { zoomImageSrc = it },
@@ -190,27 +151,6 @@ private fun ThreadScreenContent(
                                             getAvatarUrl(it.authorId),
                                             it.author
                                         )
-                                    })
-                                Divider()
-                            }
-                        }
-                    }
-                    if (postList.isNotEmpty()) {
-                        items(
-                            postList.size - 1,
-                            key = { index -> postList[index + 1].pid }
-                        ) { index ->
-                            val post = postList[index + 1]
-                            Column {
-                                PostItem(
-                                    post = post,
-                                    onZoomImage = { zoomImageSrc = it },
-                                    onOpenProfile = {
-                                        onNavigateToProfileInfo(
-                                            post.authorId,
-                                            getAvatarUrl(post.authorId),
-                                            post.author
-                                        )
                                     }
                                 )
                                 Divider()
@@ -219,7 +159,6 @@ private fun ThreadScreenContent(
                     }
                 }
             }
-            AnimatedProgressIndicator(content.isLoading())
         }
     }
     AnimatedVisibility(zoomImageSrc != null) {

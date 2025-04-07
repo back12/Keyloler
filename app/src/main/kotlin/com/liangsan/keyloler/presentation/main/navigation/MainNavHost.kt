@@ -60,9 +60,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 composable<ViewThread> {
                     val route = it.toRoute<ViewThread>()
                     ThreadScreen(
-                        tid = route.tid,
                         title = route.title,
-                        pid = route.pid,
                         onNavigateToProfileInfo = { uid, avatar, nickname ->
                             navHostController.navigate(
                                 ProfileDestination.ProfileInfo(
