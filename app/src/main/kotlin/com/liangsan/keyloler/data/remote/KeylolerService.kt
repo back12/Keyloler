@@ -29,6 +29,7 @@ import io.ktor.client.plugins.resources.href
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.headers
 import io.ktor.http.parameters
 
 class KeylolerService(private val httpClient: HttpClient) {
@@ -120,5 +121,13 @@ class KeylolerService(private val httpClient: HttpClient) {
 
     suspend fun getMyNoteList(page: Int): Result<KeylolResponse<MyNoteDto>> = safeApiCall {
         httpClient.get(MyNoteList(page = page)).body()
+    }
+
+    suspend fun getSteamIframeSrc(src: String): Result<String> = safeApiCall {
+        httpClient.get(src){
+            headers {
+                append("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+            }
+        }.bodyAsText()
     }
 }

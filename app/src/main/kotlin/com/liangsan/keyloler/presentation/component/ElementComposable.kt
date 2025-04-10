@@ -2,11 +2,13 @@ package com.liangsan.keyloler.presentation.component
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 
 sealed interface ElementComposable {
@@ -40,5 +42,18 @@ data object NewLineElement : ElementComposable {
     @Composable
     override fun invoke(modifier: Modifier) {
         Spacer(modifier = modifier.fillMaxWidth())
+    }
+}
+
+@Immutable
+data class SteamIframeElement(val src: String) : ElementComposable {
+    @Composable
+    override fun invoke(modifier: Modifier) {
+        SteamView(
+            modifier = modifier
+                .fillMaxWidth()
+                .widthIn(max = 300.dp),
+            src = src
+        )
     }
 }

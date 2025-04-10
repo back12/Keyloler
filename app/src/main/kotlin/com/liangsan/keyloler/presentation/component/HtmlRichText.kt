@@ -19,6 +19,7 @@ import androidx.compose.ui.util.fastForEach
 import androidx.core.text.HtmlCompat
 import com.liangsan.keyloler.presentation.theme.LightBlue
 import com.liangsan.keyloler.presentation.utils.ContentHandlerReplacementTag
+import com.liangsan.keyloler.presentation.utils.SteamIframeSpan
 import com.liangsan.keyloler.presentation.utils.NewLineSpan
 import com.liangsan.keyloler.presentation.utils.NoDrawableImageSpan
 import com.liangsan.keyloler.presentation.utils.TagHandler
@@ -109,6 +110,10 @@ private fun Spanned.toComposable(
 
             is NewLineSpan -> {
                 result.add(NewLineElement)
+            }
+
+            is SteamIframeSpan -> {
+                result.add(SteamIframeElement(span.src))
             }
         }
     }

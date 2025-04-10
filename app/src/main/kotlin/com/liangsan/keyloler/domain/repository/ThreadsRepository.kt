@@ -1,6 +1,7 @@
 package com.liangsan.keyloler.domain.repository
 
 import androidx.paging.PagingData
+import com.liangsan.keyloler.domain.model.SteamIframeData
 import com.liangsan.keyloler.domain.model.Thread
 import com.liangsan.keyloler.domain.model.ThreadContent
 import com.liangsan.keyloler.domain.utils.Result
@@ -21,4 +22,6 @@ interface ThreadsRepository {
     suspend fun clearHistory()
 
     fun getMyThread(): Flow<PagingData<Thread>>
+
+    suspend fun parseSteamIframe(src: String): SteamIframeData?
 }

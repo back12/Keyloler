@@ -236,6 +236,15 @@ private class AnnotationContentHandler(
                 )
             }
 
+            "iframe" -> {
+                val src: String = atts.getValue("", "src")
+
+                output.setSpan(
+                    SteamIframeSpan(src), output.length, output.length,
+                    SPAN_MARK_MARK
+                )
+            }
+
             else -> contentHandler.startElement(uri, localName, qName, atts)
         }
     }
@@ -274,6 +283,8 @@ private class AnnotationContentHandler(
 private class ScriptSpan
 
 class NoDrawableImageSpan(val src: String)
+
+class SteamIframeSpan(val src: String)
 
 class NewLineSpan
 
