@@ -16,10 +16,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +50,6 @@ import com.liangsan.keyloler.domain.model.ThreadContent
 import com.liangsan.keyloler.domain.utils.Result
 import com.liangsan.keyloler.domain.utils.data
 import com.liangsan.keyloler.domain.utils.onSuccess
-import com.liangsan.keyloler.presentation.component.AnimatedProgressIndicator
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
@@ -135,7 +137,11 @@ private fun ThreadScreenContent(
         ) {
             Crossfade(targetState = content) {
                 if (it.isLoading()) {
-                    AnimatedProgressIndicator(content.isLoading())
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize()
+                    )
                     return@Crossfade
                 }
                 content.onSuccess { data ->

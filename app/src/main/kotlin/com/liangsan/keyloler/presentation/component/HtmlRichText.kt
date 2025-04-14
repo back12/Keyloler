@@ -25,6 +25,8 @@ import com.liangsan.keyloler.presentation.utils.NoDrawableImageSpan
 import com.liangsan.keyloler.presentation.utils.TagHandler
 import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toAnnotatedString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private val defaultLinkStyle = TextLinkStyles(
     SpanStyle(
@@ -48,17 +50,19 @@ fun HtmlRichText(
         if (htmlComposable.isNotEmpty()) {
             htmlComposable.clear()
         }
-        htmlComposable.addAll(
-            Html.fromHtml(
-                "<$ContentHandlerReplacementTag />$content",
-                HtmlCompat.FROM_HTML_MODE_COMPACT,
-                null,
-                TagHandler
-            ).toComposable(
-                linkStyles,
-                linkInteractionListener
+        withContext(Dispatchers.Default) {
+            htmlComposable.addAll(
+                Html.fromHtml(
+                    "<$ContentHandlerReplacementTag />$content",
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                    null,
+                    TagHandler
+                ).toComposable(
+                    linkStyles,
+                    linkInteractionListener
+                )
             )
-        )
+        }
     }
     SelectionContainer {
         FlowRow(modifier = modifier) {

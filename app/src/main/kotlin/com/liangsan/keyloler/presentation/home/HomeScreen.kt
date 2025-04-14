@@ -1,5 +1,6 @@
 package com.liangsan.keyloler.presentation.home
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,10 +21,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -77,38 +80,48 @@ private fun HomeScreenContent(
     onOpenThread: (String, String) -> Unit,
     onSelectTab: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(vertical = 16.dp)
-    ) {
-        state.index.onSuccess { index ->
-            if (index.slides.isNotEmpty()) {
-                item {
-                    SlideShow(slides = index.slides, onSlideClick = onOpenThread)
-                }
-            }
-            stickyHeader(contentType = "title") {
-                IndexTabs(
-                    tabs = index.threadsList.keys.toList(),
-                    currentTab = state.currentTab,
-                    onSelect = onSelectTab
-                )
-            }
-            items(
-                index.threadsList[state.currentTab] ?: emptyList(),
-                key = { thread -> thread.tid },
-                contentType = { "thread" }
-            ) { thread ->
-                IndexThreadItem(
-                    thread = thread,
-                    modifier = Modifier
-                        .animateItem()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    onClick = {
-                        onOpenThread(thread.tid, thread.subject)
+    Crossfade(targetState = state.index) {
+        if (it.isLoading()) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize()
+            )
+            return@Crossfade
+        }
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
+            state.index.onSuccess { index ->
+                if (index.slides.isNotEmpty()) {
+                    item {
+                        SlideShow(slides = index.slides, onSlideClick = onOpenThread)
                     }
-                )
+                }
+                stickyHeader(contentType = "title") {
+                    IndexTabs(
+                        tabs = index.threadsList.keys.toList(),
+                        currentTab = state.currentTab,
+                        onSelect = onSelectTab
+                    )
+                }
+                items(
+                    index.threadsList[state.currentTab] ?: emptyList(),
+                    key = { thread -> thread.tid },
+                    contentType = { "thread" }
+                ) { thread ->
+                    IndexThreadItem(
+                        thread = thread,
+                        modifier = Modifier
+                            .animateItem()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        onClick = {
+                            onOpenThread(thread.tid, thread.subject)
+                        }
+                    )
+                }
             }
         }
     }
