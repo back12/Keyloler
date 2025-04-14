@@ -54,24 +54,29 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 exitTransition = { fadeOut() }
             ) {
                 composable<TopLevelDestination.Home> {
-                    HomeScreen(onOpenThread = navHostController::openThread)
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                        HomeScreen(onOpenThread = navHostController::openThread)
+                    }
                 }
 
                 composable<ViewThread> {
                     val route = it.toRoute<ViewThread>()
-                    ThreadScreen(
-                        title = route.title,
-                        onNavigateToProfileInfo = { uid, avatar, nickname ->
-                            navHostController.navigate(
-                                ProfileDestination.ProfileInfo(
-                                    uid = uid,
-                                    avatar = avatar,
-                                    nickname = nickname
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                        ThreadScreen(
+                            tid = route.tid,
+                            title = route.title,
+                            onNavigateToProfileInfo = { uid, avatar, nickname ->
+                                navHostController.navigate(
+                                    ProfileDestination.ProfileInfo(
+                                        uid = uid,
+                                        avatar = avatar,
+                                        nickname = nickname
+                                    )
                                 )
-                            )
-                        },
-                        onNavigateUp = navHostController::navigateUp
-                    )
+                            },
+                            onNavigateUp = navHostController::navigateUp
+                        )
+                    }
                 }
 
                 composable<TopLevelDestination.SearchIndex> {
@@ -144,11 +149,13 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                     typeMap = mapOf(typeOf<Forum>() to serializableType<Forum>("forum_type"))
                 ) {
                     val forum = it.toRoute<ForumThreadList>().forum
-                    ForumThreadListScreen(
-                        forum = forum,
-                        onOpenThread = navHostController::openThread,
-                        onNavigateUp = navHostController::navigateUp
-                    )
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                        ForumThreadListScreen(
+                            forum = forum,
+                            onOpenThread = navHostController::openThread,
+                            onNavigateUp = navHostController::navigateUp
+                        )
+                    }
                 }
 
                 composable<ThreadHistory> {

@@ -81,6 +81,7 @@ class ThreadsRepositoryImpl(
         val body = service.getSteamIframeSrc(src).getOrNull() ?: return null
         val document = Ksoup.parseBodyFragment(body)
         val title = document.getElementsByClass("main_text")[0].text()
+        if (title == "Error") return null
         val titleExt = document.getElementsByClass("tail")[0].text()
         val descElement = document.getElementsByClass("desc")[0]
         val image = descElement.getElementsByClass("capsule")[0].attribute("src")?.value!!

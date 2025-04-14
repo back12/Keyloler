@@ -1,6 +1,8 @@
 package com.liangsan.keyloler.presentation.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope.ResizeMode.Companion.RemeasureToBounds
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -50,6 +52,8 @@ import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.ForumBadge
+import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
+import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import org.koin.androidx.compose.koinViewModel
@@ -72,7 +76,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
@@ -80,6 +84,8 @@ private fun HomeScreenContent(
     onOpenThread: (String, String) -> Unit,
     onSelectTab: (String) -> Unit
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
     Crossfade(targetState = state.index) {
         if (it.isLoading()) {
             CircularProgressIndicator(
@@ -89,38 +95,44 @@ private fun HomeScreenContent(
             )
             return@Crossfade
         }
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(vertical = 16.dp)
-        ) {
-            state.index.onSuccess { index ->
-                if (index.slides.isNotEmpty()) {
-                    item {
-                        SlideShow(slides = index.slides, onSlideClick = onOpenThread)
-                    }
-                }
-                stickyHeader(contentType = "title") {
-                    IndexTabs(
-                        tabs = index.threadsList.keys.toList(),
-                        currentTab = state.currentTab,
-                        onSelect = onSelectTab
-                    )
-                }
-                items(
-                    index.threadsList[state.currentTab] ?: emptyList(),
-                    key = { thread -> thread.tid },
-                    contentType = { "thread" }
-                ) { thread ->
-                    IndexThreadItem(
-                        thread = thread,
-                        modifier = Modifier
-                            .animateItem()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        onClick = {
-                            onOpenThread(thread.tid, thread.subject)
+        with(sharedTransitionScope) {
+            LazyColumn(
+                modifier = modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                state.index.onSuccess { index ->
+                    if (index.slides.isNotEmpty()) {
+                        item {
+                            SlideShow(slides = index.slides, onSlideClick = onOpenThread)
                         }
-                    )
+                    }
+                    stickyHeader(contentType = "title") {
+                        IndexTabs(
+                            tabs = index.threadsList.keys.toList(),
+                            currentTab = state.currentTab,
+                            onSelect = onSelectTab
+                        )
+                    }
+                    items(
+                        index.threadsList[state.currentTab] ?: emptyList(),
+                        key = { thread -> thread.tid },
+                        contentType = { "thread" }
+                    ) { thread ->
+                        IndexThreadItem(
+                            thread = thread,
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "thread${thread.tid}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    resizeMode = RemeasureToBounds
+                                )
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                            onClick = {
+                                onOpenThread(thread.tid, thread.subject)
+                            }
+                        )
+                    }
                 }
             }
         }

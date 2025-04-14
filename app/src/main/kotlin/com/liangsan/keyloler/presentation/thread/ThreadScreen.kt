@@ -3,6 +3,8 @@ package com.liangsan.keyloler.presentation.thread
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope.ResizeMode.Companion.RemeasureToBounds
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -53,6 +54,8 @@ import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
+import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
+import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.onTap
@@ -63,6 +66,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ThreadScreen(
     modifier: Modifier = Modifier,
+    tid: String,
     title: String,
     viewModel: ThreadViewModel = koinViewModel(),
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
@@ -81,6 +85,7 @@ fun ThreadScreen(
 
     ThreadScreenContent(
         modifier = modifier,
+        tid = tid,
         title = title,
         content = threadContent,
         lazyListState = lazyListState,
@@ -89,77 +94,91 @@ fun ThreadScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
 private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
+    tid: String,
     title: String,
     content: Result<ThreadContent>,
     lazyListState: LazyListState,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
     var zoomImageSrc by remember { mutableStateOf<String?>(null) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     BackHandler(enabled = zoomImageSrc != null) {
         zoomImageSrc = null
     }
-    Scaffold(
-        modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = {
-                    val completeTitle = content.data?.thread?.subject ?: title
-                    Text(
-                        completeTitle,
-                        style = MaterialTheme.typography.titleLarge,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateUp
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.round_arrow_back_24),
-                            contentDescription = stringResource(R.string.navigate_up)
+    with(sharedTransitionScope) {
+        Scaffold(
+            modifier = modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                .sharedBounds(
+                    rememberSharedContentState(key = "thread${tid}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    resizeMode = RemeasureToBounds
+                ),
+            topBar = {
+                LargeTopAppBar(
+                    title = {
+                        val completeTitle = content.data?.thread?.subject ?: title
+                        Text(
+                            completeTitle,
+                            style = MaterialTheme.typography.titleLarge,
+                            overflow = TextOverflow.Ellipsis
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = onNavigateUp
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.round_arrow_back_24),
+                                contentDescription = stringResource(R.string.navigate_up)
+                            )
+                        }
+                    },
+                    scrollBehavior = topAppBarScrollBehavior
+                )
+            }
+        ) { padding ->
+            Box(
+                modifier = Modifier
+                    .padding(padding)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                Crossfade(targetState = content) {
+                    if (it.isLoading()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize()
+                        )
+                        return@Crossfade
                     }
-                },
-                scrollBehavior = topAppBarScrollBehavior
-            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-        ) {
-            Crossfade(targetState = content) {
-                if (it.isLoading()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize()
-                    )
-                    return@Crossfade
-                }
-                content.onSuccess { data ->
-                    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
-                        items(data.postList, key = { it.pid }) {
-                            Column {
-                                PostItem(
-                                    post = it,
-                                    onZoomImage = { zoomImageSrc = it },
-                                    onOpenProfile = {
-                                        onNavigateToProfileInfo(
-                                            it.authorId,
-                                            getAvatarUrl(it.authorId),
-                                            it.author
-                                        )
-                                    }
-                                )
-                                Divider()
+                    content.onSuccess { data ->
+                        LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+                            items(data.postList, key = { it.pid }) {
+                                Column {
+                                    PostItem(
+                                        post = it,
+                                        onZoomImage = { zoomImageSrc = it },
+                                        onOpenProfile = {
+                                            onNavigateToProfileInfo(
+                                                it.authorId,
+                                                getAvatarUrl(it.authorId),
+                                                it.author
+                                            )
+                                        }
+                                    )
+                                    Divider()
+                                }
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 package com.liangsan.keyloler.presentation.thread_list.forum_thread_list
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope.ResizeMode.Companion.RemeasureToBounds
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,8 @@ import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.Thread
 import com.liangsan.keyloler.presentation.component.ThreadItem
+import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
+import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -49,7 +53,7 @@ fun ForumThreadListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ForumThreadListScreenContent(
     modifier: Modifier = Modifier,
@@ -58,6 +62,8 @@ private fun ForumThreadListScreenContent(
     onOpenThread: (String, String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
@@ -85,26 +91,34 @@ private fun ForumThreadListScreenContent(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(vertical = 16.dp)
-        ) {
-            items(
-                threadList.itemCount,
-                key = threadList.itemKey { thread -> thread.tid }
-            ) { index ->
-                val thread = threadList[index]
-                thread?.let {
-                    ThreadItem(
-                        thread = it,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                        onClick = {
-                            onOpenThread(thread.tid, thread.subject)
-                        }
-                    )
+        with(sharedTransitionScope) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                items(
+                    threadList.itemCount,
+                    key = threadList.itemKey { thread -> thread.tid }
+                ) { index ->
+                    val thread = threadList[index]
+                    thread?.let {
+                        ThreadItem(
+                            thread = it,
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "thread${thread.tid}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    resizeMode = RemeasureToBounds
+                                )
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                            onClick = {
+                                onOpenThread(thread.tid, thread.subject)
+                            }
+                        )
+                    }
                 }
             }
         }
