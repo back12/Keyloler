@@ -150,6 +150,7 @@ private fun ThreadScreenContent(
         ) { padding ->
             Box(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(padding)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {

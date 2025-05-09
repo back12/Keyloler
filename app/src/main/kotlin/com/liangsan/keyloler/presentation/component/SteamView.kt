@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.FlowRowOverflow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,11 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.domain.model.SteamIframeData
 import com.liangsan.keyloler.domain.repository.ThreadsRepository
 import org.koin.compose.koinInject
-import androidx.core.net.toUri
 
 private val steamViewShape = RoundedCornerShape(4.dp)
 private val steamViewBackgroundGradient = Brush.linearGradient(
@@ -97,8 +96,7 @@ private fun SteamView(modifier: Modifier = Modifier, data: SteamIframeData, onCl
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    overflow = FlowRowOverflow.Visible
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
                         data.title,

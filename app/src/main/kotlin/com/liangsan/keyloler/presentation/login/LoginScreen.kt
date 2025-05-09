@@ -47,7 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,8 +66,8 @@ import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.LoginResult
-import com.liangsan.keyloler.presentation.utils.NoCopyPasteClipboardManager
 import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
+import com.liangsan.keyloler.presentation.utils.noCopyPasteClipboardManager
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -341,7 +341,7 @@ private fun LoginByPasswordPart(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(12.dp))
-        CompositionLocalProvider(LocalClipboardManager provides NoCopyPasteClipboardManager) {
+        CompositionLocalProvider(LocalClipboard provides noCopyPasteClipboardManager()) {
             OutlinedTextField(
                 value = loginByPassword.password,
                 onValueChange = onChangePassword,

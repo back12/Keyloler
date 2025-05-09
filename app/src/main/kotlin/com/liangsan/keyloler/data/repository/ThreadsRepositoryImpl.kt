@@ -87,6 +87,7 @@ class ThreadsRepositoryImpl(
         val image = descElement.getElementsByClass("capsule")[0].attribute("src")?.value!!
         val desc = descElement.text()
         val price = document.getElementsByClass("game_purchase_price price").text()
+            .takeIf { it.isNotBlank() }
         val buttonElement = document.getElementsByClass("btn_addtocart")[0]
         val buttonText = buttonElement.text()
         val gameUrl = buttonElement.getElementsByTag("a")[0].attribute("href")?.value!!

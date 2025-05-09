@@ -6,9 +6,13 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.NativeClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.core.text.HtmlCompat
@@ -23,11 +27,19 @@ val LocalSharedTransitionScope =
 val WindowInsets.Companion.Zero: WindowInsets
     get() = WindowInsets(0, 0, 0, 0)
 
-val NoCopyPasteClipboardManager = object : ClipboardManager {
-    override fun getText(): AnnotatedString? = null
+@Composable
+fun noCopyPasteClipboardManager(): Clipboard {
+    val clipboard = LocalClipboard.current
+    return remember {
+        object : Clipboard {
+            override val nativeClipboard: NativeClipboard
+                get() = clipboard.nativeClipboard
 
-    override fun setText(annotatedString: AnnotatedString) = Unit
+            override suspend fun getClipEntry(): ClipEntry? = null
 
+            override suspend fun setClipEntry(clipEntry: ClipEntry?) = Unit
+        }
+    }
 }
 
 fun String.toHTMLAnnotatedString(): AnnotatedString =
