@@ -8,7 +8,7 @@ import io.ktor.http.Cookie
 import io.ktor.http.Url
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -19,7 +19,7 @@ class PersistentCookiesStorage(
 ) : CookiesStorage {
 
     private val mutex = Mutex()
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Job())
 
     override suspend fun get(requestUrl: Url): List<Cookie> = mutex.withLock {
         val now = clock()

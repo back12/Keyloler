@@ -9,12 +9,10 @@ import com.liangsan.keyloler.domain.model.ForumWithCategoryList
 import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
 import com.liangsan.keyloler.domain.utils.Result
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class ForumCategoryRepositoryImpl(
@@ -71,6 +69,6 @@ class ForumCategoryRepositoryImpl(
                 }
             ).awaitAll()
             emit(Result.Success(forumDao.getForumsWithCategory()))
-        }.flowOn(Dispatchers.IO)
+        }
 
 }
