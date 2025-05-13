@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 -dontobfuscate
 -keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { <fields>; }
+# coil
+-keep class * extends coil3.util.DecoderServiceLoaderTarget { *; }
+-keep class * extends coil3.util.FetcherServiceLoaderTarget { *; }
