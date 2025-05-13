@@ -4,16 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.liangsan.keyloler.domain.repository.ThreadsRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pro.respawn.flowmvi.api.Container
+import pro.respawn.flowmvi.dsl.lazyStore
+import pro.respawn.flowmvi.plugins.reduce
+import pro.respawn.flowmvi.plugins.whileSubscribed
 
 class ThreadHistoryViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val threadsRepository: ThreadsRepository
-) : ViewModel() {
+) : ViewModel(), Container<ThreadHistoryState, ThreadHistoryIntent, Nothing> {
 
     companion object {
         private const val SEARCH_INPUT = "search_input"
@@ -21,41 +22,45 @@ class ThreadHistoryViewModel(
 
     private val searchInputFlow = savedStateHandle.getStateFlow(SEARCH_INPUT, "")
 
-    private val _state = MutableStateFlow(ThreadHistoryState())
-    val state = _state.asStateFlow()
-
-    init {
-        viewModelScope.launch {
+    override val store by lazyStore(
+        initial = ThreadHistoryState(),
+        scope = viewModelScope
+    ) {
+        whileSubscribed {
             searchInputFlow.collectLatest { input ->
-                _state.update {
-                    it.copy(
+                updateState {
+                    copy(
                         searchInput = input,
                         historyList = threadsRepository.getThreadHistory(input)
                     )
                 }
             }
         }
-    }
 
-    fun setSearchInput(input: String) {
-        savedStateHandle[SEARCH_INPUT] = input
-    }
+        reduce {
+            when (it) {
+                ThreadHistoryIntent.ShowDialog -> {
+                    updateState {
+                        copy(showDialog = true)
+                    }
+                }
 
-    fun showDialog() {
-        _state.update {
-            it.copy(showDialog = true)
-        }
-    }
+                ThreadHistoryIntent.DismissDialog -> {
+                    updateState {
+                        copy(showDialog = false)
+                    }
+                }
 
-    fun dismissDialog() {
-        _state.update {
-            it.copy(showDialog = false)
-        }
-    }
+                ThreadHistoryIntent.ClearHistory -> {
+                    launch {
+                        threadsRepository.clearHistory()
+                    }
+                }
 
-    fun clearHistory() {
-        viewModelScope.launch {
-            threadsRepository.clearHistory()
+                is ThreadHistoryIntent.SetSearchInput -> {
+                    savedStateHandle[SEARCH_INPUT] = it.input
+                }
+            }
         }
     }
 }

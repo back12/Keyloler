@@ -4,9 +4,10 @@ import androidx.paging.PagingData
 import com.liangsan.keyloler.domain.model.Thread
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import pro.respawn.flowmvi.api.MVIState
 
 data class ThreadHistoryState(
     val searchInput: String = "",
     val historyList: Flow<PagingData<Thread>> = emptyFlow(),
     val showDialog: Boolean = false
-)
+): MVIState

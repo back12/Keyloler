@@ -24,6 +24,7 @@ ksoup = "0.2.3"
 protobuf = "4.29.2"
 protobufGradlePlugin = "0.9.4"
 zoomimage = "0.15.1"
+flowmvi = "3.2.0-alpha01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +69,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 ksoup-lite = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 zoomimage-compose-coil3 = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version.ref = "zoomimage" }
+flowmvi-compose = { module = "pro.respawn.flowmvi:compose", version.ref = "flowmvi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -62,7 +62,9 @@ fun SteamView(modifier: Modifier = Modifier, src: String) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        data.value = repo.parseSteamIframe(src)
+        data.value?.let {
+            data.value = repo.parseSteamIframe(src)
+        }
     }
 
     data.value?.let {

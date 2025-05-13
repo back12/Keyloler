@@ -45,18 +45,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.data.remote.dto.Group
 import com.liangsan.keyloler.data.remote.dto.Medal
 import com.liangsan.keyloler.domain.model.ProfileInfo
-import com.liangsan.keyloler.domain.utils.Result
-import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.theme.LightBlue
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @Composable
 fun ProfileInfoScreen(
@@ -69,7 +67,7 @@ fun ProfileInfoScreen(
     val viewModel: ProfileInfoViewModel = koinViewModel {
         parametersOf(uid)
     }
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.store.subscribe()
 
     ProfileInfoScreenContent(
         modifier = modifier,
@@ -85,7 +83,7 @@ fun ProfileInfoScreen(
 @Composable
 private fun ProfileInfoScreenContent(
     modifier: Modifier = Modifier,
-    state: Result<ProfileInfo>,
+    state: ProfileInfoState,
     uid: String,
     avatar: String,
     nickname: String,
@@ -151,7 +149,7 @@ private fun ProfileInfoScreenContent(
                     }
                 }
             }
-            state.onSuccess { info ->
+            state.profile?.let {
                 item {
                     Card(
                         shape = RoundedCornerShape(4.dp),
@@ -160,35 +158,35 @@ private fun ProfileInfoScreenContent(
                         Row {
                             VerticalTextItem(
                                 title = stringResource(R.string.friends),
-                                value = info.friends,
+                                value = it.friends,
                                 onClick = {},
                                 modifier = Modifier.weight(1f)
                             )
                             VerticalTextItem(
                                 title = stringResource(R.string.posts_number),
-                                value = (info.posts.toInt() - info.threads.toInt()).toString(),
+                                value = (it.posts.toInt() - it.threads.toInt()).toString(),
                                 onClick = {},
                                 modifier = Modifier.weight(1f)
                             )
                             VerticalTextItem(
                                 title = stringResource(R.string.threads_number),
-                                value = info.threads,
+                                value = it.threads,
                                 onClick = {},
                                 modifier = Modifier.weight(1f)
                             )
                         }
                     }
                 }
-                if (info.medals.isNotEmpty()) {
+                if (it.medals.isNotEmpty()) {
                     item {
-                        MedalWall(medals = info.medals)
+                        MedalWall(medals = it.medals)
                     }
                 }
                 item {
-                    ActivityInfo(info = info)
+                    ActivityInfo(info = it)
                 }
                 item {
-                    StatisticInfo(info = info)
+                    StatisticInfo(info = it)
                 }
             }
         }

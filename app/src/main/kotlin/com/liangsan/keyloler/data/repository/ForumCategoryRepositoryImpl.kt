@@ -8,11 +8,10 @@ import com.liangsan.keyloler.data.remote.dto.KeylolResponse
 import com.liangsan.keyloler.domain.model.ForumWithCategoryList
 import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
 import com.liangsan.keyloler.domain.utils.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class ForumCategoryRepositoryImpl(
@@ -22,8 +21,7 @@ class ForumCategoryRepositoryImpl(
 
     private val forumDao = database.forumDao()
 
-    override fun fetchForumIndex(
-        scope: CoroutineScope,
+    override suspend fun fetchForumIndex(
         refresh: Boolean
     ): Flow<Result<ForumWithCategoryList>> =
         flow {
@@ -47,27 +45,29 @@ class ForumCategoryRepositoryImpl(
             }
 
             response as KeylolResponse.Success
-            listOf(
-                scope.async {
-                    forumDao.clearForum()
-                    val forumList = response.variables.forum.map { it.toEntity() }
-                    forumDao.insertForum(forumList)
-                },
-                scope.async {
-                    forumDao.clearForumCategory()
-                    forumDao.clearForumCategoryCrossRef()
-                    val categoryList = response.variables.category
-                        .onEach { category ->
-                            launch {
-                                forumDao.insertForumCategoryCrossRef(category.forums.map { fid ->
-                                    ForumCategoryCrossRef(category.fid.toInt(), fid.toInt())
-                                })
+            coroutineScope {
+                listOf(
+                    launch {
+                        forumDao.clearForum()
+                        val forumList = response.variables.forum.map { it.toEntity() }
+                        forumDao.insertForum(forumList)
+                    },
+                    launch {
+                        forumDao.clearForumCategory()
+                        forumDao.clearForumCategoryCrossRef()
+                        val categoryList = response.variables.category
+                            .onEach { category ->
+                                launch {
+                                    forumDao.insertForumCategoryCrossRef(category.forums.map { fid ->
+                                        ForumCategoryCrossRef(category.fid.toInt(), fid.toInt())
+                                    })
+                                }
                             }
-                        }
-                        .map { it.toEntity() }
-                    forumDao.insertForumCategory(categoryList)
-                }
-            ).awaitAll()
+                            .map { it.toEntity() }
+                        forumDao.insertForumCategory(categoryList)
+                    }
+                ).joinAll()
+            }
             emit(Result.Success(forumDao.getForumsWithCategory()))
         }
 

@@ -34,7 +34,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.liangsan.keyloler.R
@@ -45,6 +44,7 @@ import com.liangsan.keyloler.presentation.component.TopBar
 import com.liangsan.keyloler.presentation.utils.Zero
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import org.koin.androidx.compose.koinViewModel
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,43 +54,45 @@ fun ThreadHistoryScreen(
     onOpenThread: (String, String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    ThreadHistoryScreenContent(
-        modifier = modifier,
-        state = state,
-        onOpenThread = onOpenThread,
-        onSearchInputChange = viewModel::setSearchInput,
-        onClearHistory = viewModel::showDialog,
-        onNavigateUp = onNavigateUp
-    )
-
-    if (state.showDialog) {
-        BasicAlertDialog(
-            onDismissRequest = viewModel::dismissDialog
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.large,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+    with(viewModel.store) {
+        val state by subscribe()
+        ThreadHistoryScreenContent(
+            modifier = modifier,
+            state = state,
+            onOpenThread = onOpenThread,
+            onSearchInputChange = { intent(ThreadHistoryIntent.SetSearchInput(it)) },
+            onClearHistory = { intent(ThreadHistoryIntent.ShowDialog) },
+            onNavigateUp = onNavigateUp
+        )
+        if (state.showDialog) {
+            BasicAlertDialog(
+                onDismissRequest = { intent(ThreadHistoryIntent.DismissDialog) }
             ) {
-                Column(modifier = Modifier.padding(24.dp)) {
-                    Text(text = stringResource(R.string.confirm_clear_all_history))
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Row(modifier = Modifier.align(Alignment.End)) {
-                        TextButton(
-                            onClick = viewModel::dismissDialog
-                        ) { Text(stringResource(R.string.cancel)) }
-                        Spacer(Modifier.width(24.dp))
-                        TextButton(
-                            onClick = {
-                                viewModel.clearHistory()
-                                viewModel.dismissDialog()
-                            }
-                        ) { Text(stringResource(R.string.confirm)) }
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    tonalElevation = AlertDialogDefaults.TonalElevation
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(text = stringResource(R.string.confirm_clear_all_history))
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Row(modifier = Modifier.align(Alignment.End)) {
+                            TextButton(
+                                onClick = { intent(ThreadHistoryIntent.DismissDialog) }
+                            ) { Text(stringResource(R.string.cancel)) }
+                            Spacer(Modifier.width(24.dp))
+                            TextButton(
+                                onClick = {
+                                    intent(ThreadHistoryIntent.ClearHistory)
+                                    intent(ThreadHistoryIntent.DismissDialog)
+                                }
+                            ) { Text(stringResource(R.string.confirm)) }
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

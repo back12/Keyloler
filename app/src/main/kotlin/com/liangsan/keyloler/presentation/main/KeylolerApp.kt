@@ -32,7 +32,9 @@ import com.liangsan.keyloler.presentation.utils.isTopLevelDestinationInHierarchy
 import com.liangsan.keyloler.presentation.utils.navigateToTopLevel
 
 @Composable
-fun KeylolerApp() {
+fun KeylolerApp(
+    appState: AppState
+) {
     val snackbarHostState: SnackbarHostState = remember {
         SnackbarHostState()
     }
@@ -90,7 +92,8 @@ fun KeylolerApp() {
         ) {
             MainNavHost(
                 modifier = Modifier.fillMaxSize(),
-                navHostController = navHostController
+                navHostController = navHostController,
+                appState = appState
             )
             BottomNavBar(
                 modifier = Modifier.align(Alignment.BottomCenter),

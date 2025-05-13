@@ -37,16 +37,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.ForumCategory
-import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import org.koin.androidx.compose.koinViewModel
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @Composable
 fun IndexScreen(
@@ -55,7 +54,7 @@ fun IndexScreen(
     onSearchClick: () -> Unit,
     onForumClick: (Forum) -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.store.subscribe()
 
     IndexScreenContent(
         modifier = modifier
@@ -125,24 +124,22 @@ private fun IndexScreenContent(
                 }
             }
         }
-        state.forumCategoryList.onSuccess {
-            items(
-                it,
-                key = { item -> item.category.fcid },
-                contentType = { _ -> "forum_category" }
-            ) { (category, forum) ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    ForumCategoryItem(
-                        modifier = Modifier.animateItem(),
-                        category = category,
-                        forum = forum,
-                        onForumClick = onForumClick
-                    )
-                }
+        items(
+            state.forumCategoryList,
+            key = { item -> item.category.fcid },
+            contentType = { _ -> "forum_category" }
+        ) { (category, forum) ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                ForumCategoryItem(
+                    modifier = Modifier.animateItem(),
+                    category = category,
+                    forum = forum,
+                    onForumClick = onForumClick
+                )
             }
         }
     }

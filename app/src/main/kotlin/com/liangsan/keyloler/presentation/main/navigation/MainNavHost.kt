@@ -16,6 +16,7 @@ import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.Login
+import com.liangsan.keyloler.presentation.main.AppState
 import com.liangsan.keyloler.presentation.my_thread.MyThreadScreen
 import com.liangsan.keyloler.presentation.my_thread.navigation.MyThread
 import com.liangsan.keyloler.presentation.notice.NoticeScreen
@@ -41,7 +42,11 @@ import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostController) {
+fun MainNavHost(
+    modifier: Modifier = Modifier,
+    navHostController: NavHostController,
+    appState: AppState
+) {
     SharedTransitionLayout {
         CompositionLocalProvider(
             LocalSharedTransitionScope provides this
@@ -101,6 +106,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navHostController: NavHostControl
                 navigation<TopLevelDestination.Profile>(startDestination = ProfileDestination.Overview) {
                     composable<ProfileDestination.Overview> {
                         ProfileScreen(
+                            appState = appState,
                             onNavigateToLogin = {
                                 navHostController.navigate(Login())
                             },

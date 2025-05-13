@@ -28,18 +28,20 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HistoryItem
+import com.liangsan.keyloler.presentation.main.AppState
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.onTap
 import org.koin.androidx.compose.koinViewModel
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    appState: AppState,
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateToLogin: () -> Unit,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
@@ -48,13 +50,14 @@ fun ProfileScreen(
     onNavigateToMyThread: () -> Unit,
     onNavigateToNotice: () -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.store.subscribe()
     ProfileScreenContent(
         modifier = modifier.bottomBarPadding(),
         state = state,
+        appState = appState,
         onTopBarClick = {
-            if (state.uid != null) {
-                onNavigateToProfileInfo(state.uid!!, state.userAvatar, state.userNickname)
+            if (appState.uid != null) {
+                onNavigateToProfileInfo(appState.uid, appState.userAvatar, appState.userNickname)
             } else {
                 onNavigateToLogin()
             }
@@ -70,6 +73,7 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     modifier: Modifier = Modifier,
     state: ProfileState,
+    appState: AppState,
     onTopBarClick: () -> Unit,
     onNavigateToThreadHistory: () -> Unit,
     onOpenThread: (String, String) -> Unit,
@@ -82,8 +86,8 @@ private fun ProfileScreenContent(
     ) {
         item {
             ProfileTopBar(
-                avatarUrl = state.userAvatar,
-                title = if (state.uid != null) state.userNickname else stringResource(R.string.not_logged_in),
+                avatarUrl = appState.userAvatar,
+                title = if (appState.uid != null) appState.userNickname else stringResource(R.string.not_logged_in),
                 onTopBarClick = onTopBarClick
             )
         }

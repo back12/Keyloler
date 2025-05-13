@@ -4,21 +4,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.liangsan.keyloler.domain.repository.ForumCategoryRepository
 import com.liangsan.keyloler.domain.utils.onError
+import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.utils.SnackbarController
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import pro.respawn.flowmvi.api.Container
+import pro.respawn.flowmvi.dsl.lazyStore
+import pro.respawn.flowmvi.plugins.whileSubscribed
 
 class IndexViewModel(
     repository: ForumCategoryRepository
-) : ViewModel() {
+) : ViewModel(), Container<IndexState, Nothing, Nothing> {
 
-    val state = repository.fetchForumIndex(viewModelScope).map {
-        IndexState(forumCategoryList = it)
-    }.onEach {
-        it.forumCategoryList.onError {
-            SnackbarController.showSnackbar(it.toString())
+    override val store by lazyStore(
+        initial = IndexState(),
+        scope = viewModelScope
+    ) {
+        whileSubscribed {
+            repository.fetchForumIndex().onEach {
+                it.onError {
+                    SnackbarController.showSnackbar(it.toString())
+                }.onSuccess {
+                    updateState {
+                        IndexState(forumCategoryList = it)
+                    }
+                }
+            }.consume()
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), IndexState())
+    }
 }

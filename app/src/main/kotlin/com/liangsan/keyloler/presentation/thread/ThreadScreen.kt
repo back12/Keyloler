@@ -44,24 +44,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Post
-import com.liangsan.keyloler.domain.model.ThreadContent
-import com.liangsan.keyloler.domain.utils.Result
-import com.liangsan.keyloler.domain.utils.data
-import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
-import com.liangsan.keyloler.presentation.utils.ObserveAsEvents
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import org.koin.androidx.compose.koinViewModel
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @Composable
 fun ThreadScreen(
@@ -72,14 +67,10 @@ fun ThreadScreen(
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
-    val threadContent by viewModel.state.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
-
-    ObserveAsEvents(viewModel.event) {
-        when (it) {
-            is ThreadScreenEvent.JumpToPost -> {
-                lazyListState.scrollToItem(it.index)
-            }
+    val state by viewModel.store.subscribe { action ->
+        when (action) {
+            is ThreadAction.JumpToPost -> lazyListState.scrollToItem(action.index)
         }
     }
 
@@ -87,7 +78,7 @@ fun ThreadScreen(
         modifier = modifier,
         tid = tid,
         title = title,
-        content = threadContent,
+        state = state,
         lazyListState = lazyListState,
         onNavigateToProfileInfo = onNavigateToProfileInfo,
         onNavigateUp = onNavigateUp
@@ -95,7 +86,8 @@ fun ThreadScreen(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
     ExperimentalSharedTransitionApi::class
 )
 @Composable
@@ -103,7 +95,7 @@ private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
     tid: String,
     title: String,
-    content: Result<ThreadContent>,
+    state: ThreadState,
     lazyListState: LazyListState,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
@@ -127,7 +119,9 @@ private fun ThreadScreenContent(
             topBar = {
                 LargeTopAppBar(
                     title = {
-                        val completeTitle = content.data?.thread?.subject ?: title
+                        val completeTitle =
+                            (state as? ThreadState.DisplayThread)?.content?.thread?.subject
+                                ?: title
                         Text(
                             completeTitle,
                             style = MaterialTheme.typography.titleLarge,
@@ -154,31 +148,33 @@ private fun ThreadScreenContent(
                     .padding(padding)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
-                Crossfade(targetState = content) {
-                    if (it.isLoading()) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .wrapContentSize()
-                        )
-                        return@Crossfade
-                    }
-                    content.onSuccess { data ->
-                        LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
-                            items(data.postList, key = { it.pid }) {
-                                Column {
-                                    PostItem(
-                                        post = it,
-                                        onZoomImage = { zoomImageSrc = it },
-                                        onOpenProfile = {
-                                            onNavigateToProfileInfo(
-                                                it.authorId,
-                                                getAvatarUrl(it.authorId),
-                                                it.author
-                                            )
-                                        }
-                                    )
-                                    Divider()
+                Crossfade(targetState = state) {
+                    when (it) {
+                        ThreadState.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize()
+                            )
+                        }
+
+                        is ThreadState.DisplayThread -> {
+                            LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+                                items(it.content.postList, key = { it.pid }) {
+                                    Column {
+                                        PostItem(
+                                            post = it,
+                                            onZoomImage = { zoomImageSrc = it },
+                                            onOpenProfile = {
+                                                onNavigateToProfileInfo(
+                                                    it.authorId,
+                                                    getAvatarUrl(it.authorId),
+                                                    it.author
+                                                )
+                                            }
+                                        )
+                                        Divider()
+                                    }
                                 }
                             }
                         }

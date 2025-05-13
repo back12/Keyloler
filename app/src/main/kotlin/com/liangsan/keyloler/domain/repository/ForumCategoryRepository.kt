@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ForumCategoryRepository {
 
-    fun fetchForumIndex(
-        scope: CoroutineScope,
+    suspend fun fetchForumIndex(
         refresh: Boolean = false
     ): Flow<Result<ForumWithCategoryList>>
 }

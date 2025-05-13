@@ -20,10 +20,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -121,4 +121,6 @@ dependencies {
     // protobuf
     implementation(libs.protobuf.kotlin.lite)
     implementation(libs.zoomimage.compose.coil3)
+
+    implementation(libs.flowmvi.compose)
 }

@@ -3,22 +3,34 @@ package com.liangsan.keyloler.presentation.profile.profile_info
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.liangsan.keyloler.domain.repository.ProfileRepository
-import com.liangsan.keyloler.domain.utils.Result
+import com.liangsan.keyloler.domain.utils.onError
+import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.utils.SnackbarController
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import pro.respawn.flowmvi.api.Container
+import pro.respawn.flowmvi.dsl.lazyStore
+import pro.respawn.flowmvi.plugins.whileSubscribed
 
 class ProfileInfoViewModel(
     uid: String,
     profileRepository: ProfileRepository
-) : ViewModel() {
+) : ViewModel(), Container<ProfileInfoState, Nothing, Nothing> {
 
-    val state = profileRepository.getProfileInfo(uid)
-        .onEach {
-            if (it is Result.Error) {
-                SnackbarController.showSnackbar(it.toString())
-            }
+    override val store by lazyStore(
+        initial = ProfileInfoState(),
+        scope = viewModelScope
+    ) {
+        whileSubscribed {
+            profileRepository.getProfileInfo(uid)
+                .onEach {
+                    it.onError {
+                        SnackbarController.showSnackbar(it.toString())
+                    }.onSuccess {
+                        updateState {
+                            ProfileInfoState(it)
+                        }
+                    }
+                }.consume()
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Result.Loading)
+    }
 }

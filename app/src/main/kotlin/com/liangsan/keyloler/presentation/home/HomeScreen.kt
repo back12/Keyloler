@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.domain.model.Slide
 import com.liangsan.keyloler.domain.model.Thread
@@ -57,6 +56,7 @@ import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import org.koin.androidx.compose.koinViewModel
+import pro.respawn.flowmvi.compose.dsl.subscribe
 
 @Composable
 fun HomeScreen(
@@ -64,16 +64,17 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onOpenThread: (String, String) -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    HomeScreenContent(
-        modifier = modifier
-            .safeDrawingPadding()
-            .bottomBarPadding(),
-        state = state,
-        onOpenThread = onOpenThread,
-        onSelectTab = viewModel::selectTab
-    )
+    with(viewModel.store) {
+        val state by subscribe()
+        HomeScreenContent(
+            modifier = modifier
+                .safeDrawingPadding()
+                .bottomBarPadding(),
+            state = state,
+            onOpenThread = onOpenThread,
+            onSelectTab = { intent(HomeIntent.SelectTab(it)) }
+        )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
@@ -200,7 +201,7 @@ private fun IndexTabs(
             .background(MaterialTheme.colorScheme.background)
             .padding(top = 16.dp, bottom = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         items(tabs) { tab ->
