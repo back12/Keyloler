@@ -246,9 +246,10 @@ private fun SlideShow(
     ) {
         val slide = slides[it % slides.size]
         Box(
-            modifier = Modifier.clickable {
-                onSlideClick(slide.tid, slide.title)
-            }
+            modifier = Modifier
+                .clickable {
+                    onSlideClick(slide.tid, slide.title)
+                }
         ) {
             AsyncImage(
                 model = slide.img,
@@ -258,17 +259,19 @@ private fun SlideShow(
                     .fillMaxWidth()
                     .aspectRatio(1.8f)
             )
-            Text(
-                text = slide.title,
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.White,
-                maxLines = 1,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .background(Color(0x9F000000))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            )
+            slide.title.takeIf { it.isNotBlank() }?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.White,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .background(Color(0x9F000000))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
     }
 }
