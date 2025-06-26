@@ -24,9 +24,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class LoginViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -205,6 +206,7 @@ class LoginViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun observeLoginSuccess() {
         viewModelScope.launch {
             state.map { it.result }

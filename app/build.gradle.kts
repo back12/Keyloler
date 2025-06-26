@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,15 +9,21 @@ plugins {
     alias(libs.plugins.google.protobuf)
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
+
 android {
     namespace = "com.liangsan.keyloler"
-    compileSdk = 35
+    compileSdk = 36
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.liangsan.keyloler"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -42,9 +50,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         buildConfig = true
@@ -120,7 +125,7 @@ dependencies {
     implementation(libs.ksoup.lite)
     // protobuf
     implementation(libs.protobuf.kotlin.lite)
-    implementation(libs.zoomimage.compose.coil3)
+    implementation(libs.zoomable.image.coil3)
 
     implementation(libs.flowmvi.compose)
 }

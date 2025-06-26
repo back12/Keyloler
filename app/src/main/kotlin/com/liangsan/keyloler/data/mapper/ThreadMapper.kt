@@ -2,8 +2,10 @@ package com.liangsan.keyloler.data.mapper
 
 import com.liangsan.keyloler.data.local.entity.ThreadHistoryEntity
 import com.liangsan.keyloler.domain.model.Thread
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 fun Thread.toThreadHistoryEntity() = ThreadHistoryEntity(
     thread = this,
     createdTime = Clock.System.now().toEpochMilliseconds()

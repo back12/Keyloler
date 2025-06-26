@@ -1,30 +1,30 @@
 [versions]
-agp = "8.10.0"
-kotlin = "2.1.20"
-ksp = "2.1.20-2.0.1"
+agp = "8.11.0"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-koin = "4.1.0-RC1"
+koin = "4.1.0"
 datastore = "1.1.7"
-composeBom = "2025.05.01"
+composeBom = "2025.06.01"
 navigation = "2.9.0"
-room = "2.7.1"
+room = "2.7.2"
 ktor = "3.1.2"
 kotlinxSerialization = "1.8.1"
 timber = "5.0.1"
 coil3 = "3.2.0"
 paging = "3.3.6"
-datetime = "0.6.2"
+datetime = "0.7.0"
 constraintlayoutCompose = "1.1.1"
-ksoup = "0.2.3"
-protobuf = "4.29.2"
-protobufGradlePlugin = "0.9.4"
-zoomimage = "0.16.0"
-flowmvi = "3.2.0-alpha01"
+ksoup = "0.2.4"
+protobuf = "4.31.1"
+protobufGradlePlugin = "0.9.5"
+telephoto = "0.16.0"
+flowmvi = "3.2.0-alpha05"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,7 +68,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 ksoup-lite = { group = "com.fleeksoft.ksoup", name = "ksoup", version.ref = "ksoup" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
-zoomimage-compose-coil3 = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version.ref = "zoomimage" }
+zoomable-image-coil3 = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version.ref = "telephoto" }
 flowmvi-compose = { module = "pro.respawn.flowmvi:compose", version.ref = "flowmvi" }
 
 [plugins]

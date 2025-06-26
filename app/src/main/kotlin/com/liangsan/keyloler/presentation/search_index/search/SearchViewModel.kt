@@ -10,10 +10,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class SearchViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -46,6 +47,7 @@ class SearchViewModel(
         realSearch(content)
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun realSearch(history: String? = null) {
         viewModelScope.launch outerLaunch@{
             searchJob?.cancel()
