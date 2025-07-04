@@ -4,6 +4,8 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -164,21 +166,30 @@ fun MainNavHost(
                     }
                 }
 
-                composable<ThreadHistory> {
+                composable<ThreadHistory>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
                     ThreadHistoryScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
                     )
                 }
 
-                composable<MyThread> {
+                composable<MyThread>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
                     MyThreadScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
                     )
                 }
 
-                composable<Notice> {
+                composable<Notice>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
                     NoticeScreen(
                         onOpenThread = navHostController::openThread,
                         onNavigateUp = navHostController::navigateUp
