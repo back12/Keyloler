@@ -37,6 +37,7 @@ import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.liangsan.keyloler.domain.model.Slide
 import com.liangsan.keyloler.domain.model.Thread
-import com.liangsan.keyloler.domain.utils.onSuccess
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.ForumBadge
@@ -87,8 +87,8 @@ private fun HomeScreenContent(
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-    Crossfade(targetState = state.index) {
-        if (it.isLoading()) {
+    Crossfade(targetState = state.loading) {
+        if (it) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .fillMaxSize()
@@ -102,38 +102,37 @@ private fun HomeScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
-                state.index.onSuccess { index ->
-                    if (index.slides.isNotEmpty()) {
-                        item {
-                            SlideShow(slides = index.slides, onSlideClick = onOpenThread)
+                item {
+                    if (state.slides.isNotEmpty()) {
+                        SlideShow(slides = state.slides, onSlideClick = onOpenThread)
+                    }
+                }
+
+                stickyHeader(contentType = "title") {
+                    IndexTabs(
+                        tabs = state.tabs,
+                        currentTab = state.currentTab,
+                        onSelect = onSelectTab
+                    )
+                }
+                items(
+                    state.currentThreadList,
+                    key = { thread -> thread.tid },
+                    contentType = { "thread" }
+                ) { thread ->
+                    IndexThreadItem(
+                        thread = thread,
+                        modifier = Modifier
+                            .sharedBounds(
+                                rememberSharedContentState(key = "thread${thread.tid}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                resizeMode = RemeasureToBounds
+                            )
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        onClick = {
+                            onOpenThread(thread.tid, thread.subject)
                         }
-                    }
-                    stickyHeader(contentType = "title") {
-                        IndexTabs(
-                            tabs = index.threadsList.keys.toList(),
-                            currentTab = state.currentTab,
-                            onSelect = onSelectTab
-                        )
-                    }
-                    items(
-                        index.threadsList[state.currentTab] ?: emptyList(),
-                        key = { thread -> thread.tid },
-                        contentType = { "thread" }
-                    ) { thread ->
-                        IndexThreadItem(
-                            thread = thread,
-                            modifier = Modifier
-                                .sharedBounds(
-                                    rememberSharedContentState(key = "thread${thread.tid}"),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                    resizeMode = RemeasureToBounds
-                                )
-                                .padding(horizontal = 16.dp, vertical = 12.dp),
-                            onClick = {
-                                onOpenThread(thread.tid, thread.subject)
-                            }
-                        )
-                    }
+                    )
                 }
             }
         }
