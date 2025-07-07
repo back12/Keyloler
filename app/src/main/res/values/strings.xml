@@ -57,4 +57,5 @@
     <string name="cancel">取消</string>
     <string name="confirm_clear_all_history">确认清除所有历史吗？</string>
     <string name="confirm">确认</string>
+    <string name="floor_suffix">%1$d楼</string>
 </resources>

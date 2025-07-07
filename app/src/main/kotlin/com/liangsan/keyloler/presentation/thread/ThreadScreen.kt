@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.liangsan.keyloler.R
@@ -204,32 +203,41 @@ private fun PostItem(
     onZoomImage: (String?) -> Unit,
     onOpenProfile: () -> Unit,
 ) {
-    Column(
+    Row(
         modifier = modifier.padding(12.dp)
     ) {
-        Row(
+        Avatar(
+            avatarUrl = getAvatarUrl(post.authorId),
+            modifier = Modifier.onTap(onOpenProfile)
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
-                .onTap(onOpenProfile)
         ) {
-            Avatar(
-                avatarUrl = getAvatarUrl(post.authorId)
-            )
-            Spacer(Modifier.width(12.dp))
-            Column(verticalArrangement = Arrangement.SpaceAround) {
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.onTap(onOpenProfile)
+            ) {
                 Text(
                     post.author,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
                     post.dateline.toHTMLAnnotatedString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
             }
+            Spacer(Modifier.height(12.dp))
+            HtmlRichText(content = post.message, onZoomImage = onZoomImage)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.floor_suffix, post.number),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+            )
         }
-        Spacer(Modifier.height(12.dp))
-        HtmlRichText(content = post.message, onZoomImage = onZoomImage)
     }
 }

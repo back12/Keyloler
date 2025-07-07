@@ -13,5 +13,6 @@ data class Post(
     val authorId: String,
     val dateline: String,
     val message: String,
-    val username: String
+    val username: String,
+    val number: Int
 )
