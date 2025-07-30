@@ -24,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.presentation.component.Avatar
@@ -201,4 +203,18 @@ private fun IconTextButton(
         )
         Text(text)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    ProfileScreenContent(
+        appState = AppState(),
+        state = ProfileState(),
+        onNavigateToMyThread = {},
+        onNavigateToNotice = {},
+        onNavigateToThreadHistory = {},
+        onOpenThread = { _, _ -> },
+        onTopBarClick = {}
+    )
 }

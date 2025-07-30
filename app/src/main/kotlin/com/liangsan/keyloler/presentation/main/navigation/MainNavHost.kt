@@ -66,7 +66,12 @@ fun MainNavHost(
                     }
                 }
 
-                composable<ViewThread> {
+                composable<ViewThread>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
                     val route = it.toRoute<ViewThread>()
                     CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
                         ThreadScreen(
@@ -154,6 +159,10 @@ fun MainNavHost(
                 }
 
                 composable<ForumThreadList>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() },
                     typeMap = mapOf(typeOf<Forum>() to serializableType<Forum>("forum_type"))
                 ) {
                     val forum = it.toRoute<ForumThreadList>().forum
@@ -168,7 +177,9 @@ fun MainNavHost(
 
                 composable<ThreadHistory>(
                     enterTransition = { slideInHorizontally { it } + fadeIn() },
-                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
                 ) {
                     ThreadHistoryScreen(
                         onOpenThread = navHostController::openThread,
@@ -178,7 +189,9 @@ fun MainNavHost(
 
                 composable<MyThread>(
                     enterTransition = { slideInHorizontally { it } + fadeIn() },
-                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
                 ) {
                     MyThreadScreen(
                         onOpenThread = navHostController::openThread,
@@ -188,7 +201,9 @@ fun MainNavHost(
 
                 composable<Notice>(
                     enterTransition = { slideInHorizontally { it } + fadeIn() },
-                    exitTransition = { slideOutHorizontally { it } + fadeOut() }
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
                 ) {
                     NoticeScreen(
                         onOpenThread = navHostController::openThread,
