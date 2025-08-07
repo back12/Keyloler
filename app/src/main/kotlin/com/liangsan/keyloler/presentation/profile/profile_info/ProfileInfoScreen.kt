@@ -379,9 +379,17 @@ private fun VerticalTextItem(
 @Composable
 private fun TextItem(modifier: Modifier = Modifier, title: String, value: String) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Text(title, style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray))
+        Text(
+            title,
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray),
+            modifier = Modifier.alignByBaseline()
+        )
         Spacer(Modifier.width(8.dp))
-        Text(value, style = MaterialTheme.typography.bodySmall)
+        Text(
+            value,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.alignByBaseline()
+        )
     }
 }
 

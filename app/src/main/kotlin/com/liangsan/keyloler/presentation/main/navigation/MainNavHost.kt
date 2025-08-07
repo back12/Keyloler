@@ -138,7 +138,12 @@ fun MainNavHost(
                             }
                         )
                     }
-                    composable<ProfileDestination.ProfileInfo> {
+                    composable<ProfileDestination.ProfileInfo>(
+                        enterTransition = { slideInHorizontally { it } + fadeIn() },
+                        exitTransition = { fadeOut() },
+                        popEnterTransition = { fadeIn() },
+                        popExitTransition = { slideOutHorizontally { it } + fadeOut() },
+                    ) {
                         val args = it.toRoute<ProfileDestination.ProfileInfo>()
                         ProfileInfoScreen(
                             uid = args.uid,
