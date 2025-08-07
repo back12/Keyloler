@@ -37,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -216,16 +217,27 @@ private fun PostItem(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
         ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.onTap(onOpenProfile)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier.onTap(onOpenProfile)
+                ) {
+                    Text(
+                        post.author,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        post.dateline.toHTMLAnnotatedString(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                    )
+                }
                 Text(
-                    post.author,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    post.dateline.toHTMLAnnotatedString(),
+                    "#${post.number}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
@@ -233,11 +245,6 @@ private fun PostItem(
             Spacer(Modifier.height(12.dp))
             HtmlRichText(content = post.message, onZoomImage = onZoomImage)
             Spacer(Modifier.height(12.dp))
-            Text(
-                stringResource(R.string.floor_suffix, post.number),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-            )
         }
     }
 }

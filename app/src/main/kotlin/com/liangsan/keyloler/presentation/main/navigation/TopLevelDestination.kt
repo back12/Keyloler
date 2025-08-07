@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class TopLevelDestination(
-    @StringRes val name: Int,
-    @DrawableRes val icon: Int
+    @param:StringRes val name: Int,
+    @param:DrawableRes val icon: Int
 ) {
 
     @Serializable
