@@ -2,8 +2,10 @@ package com.liangsan.keyloler.presentation.thread_list.forum_thread_list
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope.ResizeMode.Companion.RemeasureToBounds
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +30,7 @@ import androidx.paging.compose.itemKey
 import com.liangsan.keyloler.R
 import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.domain.model.Thread
+import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.ThreadItem
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
@@ -70,12 +73,20 @@ private fun ForumThreadListScreenContent(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(
-                        forum.name,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Column {
+                        Text(
+                            forum.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            forum.description ?: "",
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
@@ -92,32 +103,39 @@ private fun ForumThreadListScreenContent(
         }
     ) { padding ->
         with(sharedTransitionScope) {
-            LazyColumn(
+            Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(padding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = PaddingValues(vertical = 16.dp)
+                    .padding(padding)
             ) {
-                items(
-                    threadList.itemCount,
-                    key = threadList.itemKey { thread -> thread.tid }
-                ) { index ->
-                    val thread = threadList[index]
-                    thread?.let {
-                        ThreadItem(
-                            thread = it,
-                            modifier = Modifier
-                                .sharedBounds(
-                                    rememberSharedContentState(key = "thread${thread.tid}"),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                    resizeMode = RemeasureToBounds
-                                )
-                                .padding(horizontal = 16.dp, vertical = 12.dp),
-                            onClick = {
-                                onOpenThread(thread.tid, thread.subject)
-                            }
-                        )
+                Divider()
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    items(
+                        threadList.itemCount,
+                        key = threadList.itemKey { thread -> thread.tid }
+                    ) { index ->
+                        val thread = threadList[index]
+                        thread?.let {
+                            ThreadItem(
+                                thread = it,
+                                modifier = Modifier
+                                    .sharedBounds(
+                                        rememberSharedContentState(key = "thread${thread.tid}"),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        resizeMode = RemeasureToBounds
+                                    )
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                onClick = {
+                                    onOpenThread(thread.tid, thread.subject)
+                                }
+                            )
+                        }
                     }
                 }
             }
