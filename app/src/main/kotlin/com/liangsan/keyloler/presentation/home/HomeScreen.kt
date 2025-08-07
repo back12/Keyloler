@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,6 @@ import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -219,6 +219,11 @@ private fun IndexTabs(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .background(backgroundColor.value)
+                    .border(
+                        width = 1.dp,
+                        color = if (selected) Color.Transparent else MaterialTheme.colorScheme.surfaceContainerHighest,
+                        shape = RoundedCornerShape(8.dp)
+                    )
                     .clickable(onClick = { onSelect(tab) })
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             )
