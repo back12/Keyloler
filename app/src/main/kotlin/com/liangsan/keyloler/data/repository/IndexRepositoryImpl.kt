@@ -67,7 +67,7 @@ class IndexRepositoryImpl(
                         tid = lastElement.attribute("href")?.value?.substringBefore("-")?.drop(1)
                         subject = lastElement.text()
                         lastElement.attribute("title")?.value?.let {
-                            forum = it.substringBefore("\n").substringAfter("板块: ")
+                            forum = it.substringBefore("\n").substringAfter("板块: ").trimEnd()
                             val regex = "作者.+?\\(([^)]+)\\)".toRegex()
                             dateline = regex.find(it)?.groupValues?.getOrNull(1)
                         }

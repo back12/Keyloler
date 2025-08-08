@@ -210,7 +210,10 @@ private fun IndexTabs(
                 if (it) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface
             }
             val backgroundColor = tabTransition.animateColor {
-                if (it) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceContainerHigh
+                if (it) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceContainer
+            }
+            val borderColor = tabTransition.animateColor {
+                if (it) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceContainerHighest
             }
             Text(
                 tab,
@@ -221,7 +224,7 @@ private fun IndexTabs(
                     .background(backgroundColor.value)
                     .border(
                         width = 1.dp,
-                        color = if (selected) Color.Transparent else MaterialTheme.colorScheme.surfaceContainerHighest,
+                        color = borderColor.value,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable(onClick = { onSelect(tab) })
