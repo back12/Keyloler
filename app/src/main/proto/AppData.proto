@@ -3,7 +3,9 @@ syntax = "proto3";
 option java_package = "com.liangsan.keyloler.data.preferences";
 option java_multiple_files = true;
 
-message UserData {
+message AppData {
   string uid = 1;
   int64 login_time = 2;
+  bool isDarkTheme = 3;
+  bool dynamicColor = 4;
 }

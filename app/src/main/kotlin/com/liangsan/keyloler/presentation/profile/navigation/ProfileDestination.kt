@@ -12,7 +12,7 @@ sealed class ProfileDestination : KeylolerDestination() {
     class ProfileInfo(
         val uid: String,
         val avatar: String,
-        val nickname: String
+        val username: String
     ) : ProfileDestination() {
         override val showBottomNav: Boolean = false
     }

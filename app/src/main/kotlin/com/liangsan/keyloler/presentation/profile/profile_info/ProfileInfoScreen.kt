@@ -61,7 +61,7 @@ fun ProfileInfoScreen(
     modifier: Modifier = Modifier,
     uid: String,
     avatar: String,
-    nickname: String,
+    username: String,
     onNavigateUp: () -> Unit
 ) {
     val viewModel: ProfileInfoViewModel = koinViewModel {
@@ -74,7 +74,7 @@ fun ProfileInfoScreen(
         state = state,
         uid = uid,
         avatar = avatar,
-        nickname = nickname,
+        username = username,
         onNavigateUp = onNavigateUp
     )
 }
@@ -86,7 +86,7 @@ private fun ProfileInfoScreenContent(
     state: ProfileInfoState,
     uid: String,
     avatar: String,
-    nickname: String,
+    username: String,
     onNavigateUp: () -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -96,7 +96,7 @@ private fun ProfileInfoScreenContent(
             TopAppBar(
                 title = {
                     Text(
-                        nickname,
+                        username,
                         modifier = Modifier
                             .alpha(topAppBarScrollBehavior.state.overlappedFraction)
                     )
@@ -139,7 +139,7 @@ private fun ProfileInfoScreenContent(
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Text(
-                            nickname,
+                            username,
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(

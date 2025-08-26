@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.liangsan.keyloler.data.preferences.UserData
-import com.liangsan.keyloler.data.preferences.userDataDataStore
+import com.liangsan.keyloler.data.preferences.AppData
+import com.liangsan.keyloler.data.preferences.dataStore
 import com.liangsan.keyloler.data.remote.KeylolerService
 import com.liangsan.keyloler.data.remote.data_source.MyNotePagingSource
 import com.liangsan.keyloler.domain.model.Notice
@@ -17,13 +17,13 @@ class UserRepositoryImpl(
     private val service: KeylolerService
 ) : UserRepository {
 
-    private val dataStore = context.userDataDataStore
+    private val dataStore = context.dataStore
 
-    override fun getUserData(): Flow<UserData> {
+    override fun getUserData(): Flow<AppData> {
         return dataStore.data
     }
 
-    override suspend fun updateUserData(block: suspend (userData: UserData) -> UserData) {
+    override suspend fun updateUserData(block: suspend (userData: AppData) -> AppData) {
         dataStore.updateData(block)
     }
 

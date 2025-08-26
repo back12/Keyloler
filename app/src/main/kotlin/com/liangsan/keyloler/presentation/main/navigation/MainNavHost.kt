@@ -18,7 +18,7 @@ import com.liangsan.keyloler.domain.model.Forum
 import com.liangsan.keyloler.presentation.home.HomeScreen
 import com.liangsan.keyloler.presentation.login.LoginScreen
 import com.liangsan.keyloler.presentation.login.navigation.Login
-import com.liangsan.keyloler.presentation.main.AppState
+import com.liangsan.keyloler.presentation.main.UserData
 import com.liangsan.keyloler.presentation.my_thread.MyThreadScreen
 import com.liangsan.keyloler.presentation.my_thread.navigation.MyThread
 import com.liangsan.keyloler.presentation.notice.NoticeScreen
@@ -29,6 +29,8 @@ import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoScreen
 import com.liangsan.keyloler.presentation.search_index.index.IndexScreen
 import com.liangsan.keyloler.presentation.search_index.navigation.SearchIndexDestination
 import com.liangsan.keyloler.presentation.search_index.search.SearchScreen
+import com.liangsan.keyloler.presentation.settings.SettingsScreen
+import com.liangsan.keyloler.presentation.settings.navigation.Settings
 import com.liangsan.keyloler.presentation.thread.ThreadScreen
 import com.liangsan.keyloler.presentation.thread.navigation.ViewThread
 import com.liangsan.keyloler.presentation.thread_history.ThreadHistoryScreen
@@ -47,7 +49,7 @@ import kotlin.reflect.typeOf
 fun MainNavHost(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-    appState: AppState
+    currentUser: UserData
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(
@@ -77,12 +79,12 @@ fun MainNavHost(
                         ThreadScreen(
                             tid = route.tid,
                             title = route.title,
-                            onNavigateToProfileInfo = { uid, avatar, nickname ->
+                            onNavigateToProfileInfo = { uid, avatar, username ->
                                 navHostController.navigate(
                                     ProfileDestination.ProfileInfo(
                                         uid = uid,
                                         avatar = avatar,
-                                        nickname = nickname
+                                        username = username
                                     )
                                 )
                             },
@@ -113,16 +115,16 @@ fun MainNavHost(
                 navigation<TopLevelDestination.Profile>(startDestination = ProfileDestination.Overview) {
                     composable<ProfileDestination.Overview> {
                         ProfileScreen(
-                            appState = appState,
+                            currentUser = currentUser,
                             onNavigateToLogin = {
                                 navHostController.navigate(Login())
                             },
-                            onNavigateToProfileInfo = { uid, avatar, nickname ->
+                            onNavigateToProfileInfo = {
                                 navHostController.navigate(
                                     ProfileDestination.ProfileInfo(
-                                        uid = uid,
-                                        avatar = avatar,
-                                        nickname = nickname
+                                        uid = currentUser.uid!!,
+                                        avatar = currentUser.avatar,
+                                        username = currentUser.username
                                     )
                                 )
                             },
@@ -135,6 +137,9 @@ fun MainNavHost(
                             },
                             onNavigateToNotice = {
                                 navHostController.navigate(Notice())
+                            },
+                            onNavigateToSettings = {
+                                navHostController.navigate(Settings())
                             }
                         )
                     }
@@ -148,7 +153,7 @@ fun MainNavHost(
                         ProfileInfoScreen(
                             uid = args.uid,
                             avatar = args.avatar,
-                            nickname = args.nickname,
+                            username = args.username,
                             onNavigateUp = navHostController::navigateUp
                         )
                     }
@@ -212,6 +217,17 @@ fun MainNavHost(
                 ) {
                     NoticeScreen(
                         onOpenThread = navHostController::openThread,
+                        onNavigateUp = navHostController::navigateUp
+                    )
+                }
+
+                composable<Settings>(
+                    enterTransition = { slideInHorizontally { it } + fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+                ) {
+                    SettingsScreen(
                         onNavigateUp = navHostController::navigateUp
                     )
                 }

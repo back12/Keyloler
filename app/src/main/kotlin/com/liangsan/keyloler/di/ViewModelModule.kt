@@ -9,6 +9,7 @@ import com.liangsan.keyloler.presentation.profile.profile.ProfileViewModel
 import com.liangsan.keyloler.presentation.profile.profile_info.ProfileInfoViewModel
 import com.liangsan.keyloler.presentation.search_index.index.IndexViewModel
 import com.liangsan.keyloler.presentation.search_index.search.SearchViewModel
+import com.liangsan.keyloler.presentation.settings.SettingsViewModel
 import com.liangsan.keyloler.presentation.thread.ThreadViewModel
 import com.liangsan.keyloler.presentation.thread_history.ThreadHistoryViewModel
 import com.liangsan.keyloler.presentation.thread_list.forum_thread_list.ForumThreadListViewModel
@@ -39,4 +40,6 @@ val viewModelModule = module {
     viewModelOf(::NoticeViewModel)
 
     viewModelOf(::MainViewModel)
+
+    viewModelOf(::SettingsViewModel)
 }

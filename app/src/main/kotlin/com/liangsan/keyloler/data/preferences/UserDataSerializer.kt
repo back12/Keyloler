@@ -9,23 +9,23 @@ import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
-object UserDataSerializer : Serializer<UserData> {
-    override val defaultValue: UserData = UserData.getDefaultInstance()
+object AppDataSerializer : Serializer<AppData> {
+    override val defaultValue: AppData = AppData.getDefaultInstance()
 
     @Throws(InvalidProtocolBufferException::class)
-    override suspend fun readFrom(input: InputStream): UserData {
-        return UserData.parseFrom(input)
+    override suspend fun readFrom(input: InputStream): AppData {
+        return AppData.parseFrom(input)
     }
 
-    override suspend fun writeTo(t: UserData, output: OutputStream) {
+    override suspend fun writeTo(t: AppData, output: OutputStream) {
         t.writeTo(output)
     }
 }
 
-val Context.userDataDataStore: DataStore<UserData> by dataStore(
-    fileName = "userdata.pb",
-    serializer = UserDataSerializer,
+val Context.dataStore: DataStore<AppData> by dataStore(
+    fileName = "appdata.pb",
+    serializer = AppDataSerializer,
     corruptionHandler = ReplaceFileCorruptionHandler {
-        UserData.getDefaultInstance()
+        AppData.getDefaultInstance()
     }
 )

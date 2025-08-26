@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.rememberNavController
 import com.liangsan.keyloler.presentation.theme.KeylolerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import pro.respawn.flowmvi.compose.dsl.subscribe
@@ -16,9 +18,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val appState = viewModel.store.subscribe()
-            KeylolerTheme {
-                KeylolerApp(appState = appState.value)
+            val appState by viewModel.store.subscribe()
+            val navHostController = rememberNavController()
+            KeylolerTheme(
+                darkTheme = appState.isDarkTheme,
+                dynamicColor = appState.dynamicColor
+            ) {
+                KeylolerApp(appState = appState, navHostController = navHostController)
             }
         }
     }

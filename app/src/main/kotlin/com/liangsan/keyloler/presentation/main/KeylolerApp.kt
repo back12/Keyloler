@@ -18,8 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.liangsan.keyloler.presentation.main.component.BottomNavBar
 import com.liangsan.keyloler.presentation.main.navigation.MainNavHost
@@ -33,12 +33,12 @@ import com.liangsan.keyloler.presentation.utils.navigateToTopLevel
 
 @Composable
 fun KeylolerApp(
-    appState: AppState
+    appState: AppState,
+    navHostController: NavHostController
 ) {
     val snackbarHostState: SnackbarHostState = remember {
         SnackbarHostState()
     }
-    val navHostController = rememberNavController()
     val currentBackStackEntry by navHostController.currentBackStackEntryAsState()
 
     val showBottomBar by remember {
@@ -93,7 +93,7 @@ fun KeylolerApp(
             MainNavHost(
                 modifier = Modifier.fillMaxSize(),
                 navHostController = navHostController,
-                appState = appState
+                currentUser = appState.currentUser
             )
             BottomNavBar(
                 modifier = Modifier.align(Alignment.BottomCenter),

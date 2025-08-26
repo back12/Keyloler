@@ -33,7 +33,7 @@ import com.liangsan.keyloler.R
 import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HistoryItem
-import com.liangsan.keyloler.presentation.main.AppState
+import com.liangsan.keyloler.presentation.main.UserData
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.onTap
 import org.koin.androidx.compose.koinViewModel
@@ -42,23 +42,26 @@ import pro.respawn.flowmvi.compose.dsl.subscribe
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    appState: AppState,
     viewModel: ProfileViewModel = koinViewModel(),
+    currentUser: UserData,
     onNavigateToLogin: () -> Unit,
-    onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
+    onNavigateToProfileInfo: () -> Unit,
     onNavigateToThreadHistory: () -> Unit,
     onOpenThread: (String, String) -> Unit,
     onNavigateToMyThread: () -> Unit,
-    onNavigateToNotice: () -> Unit
+    onNavigateToNotice: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val state by viewModel.store.subscribe()
     ProfileScreenContent(
         modifier = modifier.bottomBarPadding(),
         state = state,
-        appState = appState,
+        uid = currentUser.uid,
+        username = currentUser.username,
+        avatar = currentUser.avatar,
         onTopBarClick = {
-            if (appState.uid != null) {
-                onNavigateToProfileInfo(appState.uid, appState.userAvatar, appState.userNickname)
+            if (currentUser.uid != null) {
+                onNavigateToProfileInfo()
             } else {
                 onNavigateToLogin()
             }
@@ -66,7 +69,8 @@ fun ProfileScreen(
         onNavigateToThreadHistory = onNavigateToThreadHistory,
         onOpenThread = onOpenThread,
         onNavigateToMyThread = onNavigateToMyThread,
-        onNavigateToNotice = onNavigateToNotice
+        onNavigateToNotice = onNavigateToNotice,
+        onNavigateToSettings = onNavigateToSettings
     )
 }
 
@@ -74,12 +78,15 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     modifier: Modifier = Modifier,
     state: ProfileState,
-    appState: AppState,
+    uid: String?,
+    username: String,
+    avatar: String,
     onTopBarClick: () -> Unit,
     onNavigateToThreadHistory: () -> Unit,
     onOpenThread: (String, String) -> Unit,
     onNavigateToMyThread: () -> Unit,
-    onNavigateToNotice: () -> Unit
+    onNavigateToNotice: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -87,8 +94,8 @@ private fun ProfileScreenContent(
     ) {
         item {
             ProfileTopBar(
-                avatarUrl = appState.userAvatar,
-                title = if (appState.uid != null) appState.userNickname else stringResource(R.string.not_logged_in),
+                avatarUrl = avatar,
+                title = if (uid != null) username else stringResource(R.string.not_logged_in),
                 onTopBarClick = onTopBarClick
             )
         }
@@ -147,6 +154,13 @@ private fun ProfileScreenContent(
                 text = stringResource(R.string.message_notification),
                 icon = painterResource(R.drawable.round_notifications_none_24),
                 onClick = onNavigateToNotice
+            )
+        }
+        item {
+            IconTextButton(
+                text = stringResource(R.string.setting),
+                icon = painterResource(R.drawable.round_settings_24),
+                onClick = onNavigateToSettings
             )
         }
     }
@@ -208,12 +222,15 @@ private fun IconTextButton(
 @Composable
 private fun ProfileScreenPreview() {
     ProfileScreenContent(
-        appState = AppState(),
         state = ProfileState(),
+        uid = null,
+        username = "",
+        avatar = "",
         onNavigateToMyThread = {},
         onNavigateToNotice = {},
         onNavigateToThreadHistory = {},
         onOpenThread = { _, _ -> },
-        onTopBarClick = {}
+        onTopBarClick = {},
+        onNavigateToSettings = {}
     )
 }

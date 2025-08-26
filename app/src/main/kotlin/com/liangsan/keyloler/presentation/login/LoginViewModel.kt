@@ -3,7 +3,7 @@ package com.liangsan.keyloler.presentation.login
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.liangsan.keyloler.data.preferences.UserData
+import com.liangsan.keyloler.data.preferences.AppData
 import com.liangsan.keyloler.domain.model.LoginResult
 import com.liangsan.keyloler.domain.repository.LoginRepository
 import com.liangsan.keyloler.domain.repository.UserRepository
@@ -32,7 +32,7 @@ import kotlin.time.ExperimentalTime
 class LoginViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val loginRepository: LoginRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -214,7 +214,7 @@ class LoginViewModel(
                 .collectLatest { result ->
                     result as LoginResult.Success
                     userRepository.updateUserData {
-                        UserData.newBuilder()
+                        AppData.newBuilder()
                             .setUid(result.uid)
                             .setLoginTime(Clock.System.now().toEpochMilliseconds())
                             .build()
