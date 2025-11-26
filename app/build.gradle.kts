@@ -18,7 +18,7 @@ kotlin {
 android {
     namespace = "com.liangsan.keyloler"
     compileSdk = 36
-    buildToolsVersion = "35.0.0"
+    buildToolsVersion = "36.1.0"
 
     defaultConfig {
         applicationId = "com.liangsan.keyloler"

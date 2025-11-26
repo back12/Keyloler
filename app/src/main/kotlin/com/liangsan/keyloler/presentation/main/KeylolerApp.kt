@@ -68,11 +68,7 @@ fun KeylolerApp(
                         modifier = Modifier
                             .safeDrawingPadding()
                             .bottomBarPadding(showBottomBar),
-                        state = rememberSwipeToDismissBoxState(
-                            confirmValueChange = {
-                                data.dismiss(); true
-                            }
-                        ),
+                        state = rememberSwipeToDismissBoxState(),
                         backgroundContent = {}
                     ) {
                         Snackbar(
