@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.LinkInteractionListener
@@ -35,6 +35,34 @@ private val defaultLinkStyle = TextLinkStyles(
     )
 )
 
+@Stable
+data class RichTextState(
+    val elements: List<ElementComposable>
+)
+
+@Composable
+fun rememberRichTextState(
+    content: String,
+    linkStyles: TextLinkStyles? = defaultLinkStyle,
+    linkInteractionListener: LinkInteractionListener? = null
+) = produceState(
+    RichTextState(elements = emptyList())
+) {
+    withContext(Dispatchers.Default) {
+        value = value.copy(
+            elements = Html.fromHtml(
+                "<$ContentHandlerReplacementTag />$content",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+                null,
+                TagHandler
+            ).toComposable(
+                linkStyles,
+                linkInteractionListener
+            )
+        )
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HtmlRichText(
@@ -44,41 +72,32 @@ fun HtmlRichText(
     linkInteractionListener: LinkInteractionListener? = null,
     onZoomImage: (String?) -> Unit
 ) {
-    val htmlComposable = remember { mutableStateListOf<ElementComposable>() }
+    val state by rememberRichTextState(content, linkStyles, linkInteractionListener)
+    HtmlRichText(state = state, modifier = modifier, onZoomImage = onZoomImage)
+}
 
-    LaunchedEffect(content, linkStyles) {
-        if (htmlComposable.isNotEmpty()) {
-            htmlComposable.clear()
-        }
-        withContext(Dispatchers.Default) {
-            htmlComposable.addAll(
-                Html.fromHtml(
-                    "<$ContentHandlerReplacementTag />$content",
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                    null,
-                    TagHandler
-                ).toComposable(
-                    linkStyles,
-                    linkInteractionListener
-                )
-            )
-        }
-    }
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun HtmlRichText(
+    state: RichTextState,
+    modifier: Modifier = Modifier,
+    onZoomImage: (String?) -> Unit
+) {
     SelectionContainer {
         FlowRow(modifier = modifier) {
             val bottomAlignModifier = Modifier.align(Alignment.Bottom)
-            htmlComposable.fastForEach {
-                when (it) {
+            state.elements.fastForEach { element ->
+                when (element) {
                     is ImageElement -> {
-                        it(
+                        element(
                             bottomAlignModifier.onTap {
-                                onZoomImage(it.src)
+                                onZoomImage(element.src)
                             }
                         )
                     }
 
                     else -> {
-                        it(bottomAlignModifier)
+                        element(bottomAlignModifier)
                     }
                 }
             }
