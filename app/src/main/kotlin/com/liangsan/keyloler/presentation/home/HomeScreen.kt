@@ -9,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,16 +29,19 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.carousel.CarouselDefaults
-import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
+import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +59,7 @@ import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import pro.respawn.flowmvi.compose.dsl.subscribe
 
@@ -194,6 +199,17 @@ private fun IndexTabs(
     currentTab: String?,
     onSelect: (String) -> Unit
 ) {
+    val lazyListState = rememberLazyListState()
+    LaunchedEffect(currentTab) {
+        val childIndex = tabs.indexOf(currentTab).takeIf { it > -1 } ?: return@LaunchedEffect
+        val itemInfo =
+            lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == childIndex }
+                ?: return@LaunchedEffect
+        val center =
+            (lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.afterContentPadding) / 2
+        val childCenter = itemInfo.offset + itemInfo.size / 2
+        lazyListState.animateScrollBy((childCenter - center).toFloat())
+    }
     LazyRow(
         modifier = modifier
             .fillMaxWidth()
@@ -201,7 +217,8 @@ private fun IndexTabs(
             .padding(top = 16.dp, bottom = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        state = lazyListState
     ) {
         items(tabs) { tab ->
             val selected = tab == currentTab
@@ -241,12 +258,13 @@ private fun SlideShow(
     slides: List<Slide>,
     onSlideClick: (String, String) -> Unit
 ) {
-    val carouselState = rememberCarouselState { Int.MAX_VALUE }
+    val scope = rememberCoroutineScope()
+    val carouselState = rememberCarouselState(slides.size) { Int.MAX_VALUE }
 
-    HorizontalUncontainedCarousel(
+    HorizontalCenteredHeroCarousel(
         modifier = modifier,
         state = carouselState,
-        itemWidth = 300.dp,
+        maxItemWidth = 280.dp,
         itemSpacing = 12.dp,
         contentPadding = PaddingValues(horizontal = 16.dp),
         flingBehavior = CarouselDefaults.singleAdvanceFlingBehavior(state = carouselState)
@@ -255,6 +273,12 @@ private fun SlideShow(
         Box(
             modifier = Modifier
                 .clickable {
+                    if (carouselState.currentItem != it) {
+                        scope.launch {
+                            carouselState.animateScrollToItem(it)
+                        }
+                        return@clickable
+                    }
                     onSlideClick(slide.tid, slide.title)
                 }
         ) {
