@@ -1,9 +1,14 @@
 package com.liangsan.keyloler.presentation.main.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
@@ -44,7 +49,7 @@ import com.liangsan.keyloler.presentation.utils.openThread
 import com.liangsan.keyloler.presentation.utils.serializableType
 import kotlin.reflect.typeOf
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
@@ -69,10 +74,16 @@ fun MainNavHost(
                 }
 
                 composable<ViewThread>(
-                    enterTransition = { slideInHorizontally { it } + fadeIn() },
-                    exitTransition = { fadeOut() },
-                    popEnterTransition = { fadeIn() },
-                    popExitTransition = { slideOutHorizontally { it } + fadeOut() }
+                    enterTransition = {
+                        slideInHorizontally { it } +
+                                scaleIn(initialScale = 0.8f)
+                    },
+                    exitTransition = { ExitTransition.None },
+                    popEnterTransition = { EnterTransition.None },
+                    popExitTransition = {
+                        slideOutHorizontally { it } +
+                                scaleOut(targetScale = 0.8f)
+                    }
                 ) {
                     val route = it.toRoute<ViewThread>()
                     CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {

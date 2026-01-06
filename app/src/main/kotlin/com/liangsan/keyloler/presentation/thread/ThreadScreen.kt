@@ -4,13 +4,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope.ResizeMode.Companion.RemeasureToBounds
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,12 +33,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,7 +52,6 @@ import com.liangsan.keyloler.presentation.component.Avatar
 import com.liangsan.keyloler.presentation.component.Divider
 import com.liangsan.keyloler.presentation.component.HtmlRichText
 import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
-import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
@@ -73,9 +74,19 @@ fun ThreadScreen(
             is ThreadAction.JumpToPost -> lazyListState.scrollToItem(action.index)
         }
     }
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val back = remember { mutableStateOf(false) }
+    val cornerRadius = animateDpAsState(if (back.value) 30.dp else 0.dp)
+
+    SideEffect {
+        back.value = animatedVisibilityScope.transition.isRunning
+    }
 
     ThreadScreenContent(
-        modifier = modifier,
+        modifier = modifier.graphicsLayer {
+            clip = true
+            shape = RoundedCornerShape(cornerRadius.value)
+        },
         tid = tid,
         title = title,
         state = state,
@@ -100,81 +111,71 @@ private fun ThreadScreenContent(
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
     onNavigateUp: () -> Unit
 ) {
-    val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
     var zoomImageSrc by remember { mutableStateOf<String?>(null) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     BackHandler(enabled = zoomImageSrc != null) {
         zoomImageSrc = null
     }
-    with(sharedTransitionScope) {
-        Scaffold(
-            modifier = modifier
-                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                .sharedBounds(
-                    rememberSharedContentState(key = "thread${tid}"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    resizeMode = RemeasureToBounds
-                ),
-            topBar = {
-                LargeTopAppBar(
-                    title = {
-                        val completeTitle =
-                            (state as? ThreadState.DisplayThread)?.content?.thread?.subject
-                                ?: title
-                        Text(
-                            completeTitle,
-                            style = MaterialTheme.typography.titleLarge,
-                            overflow = TextOverflow.Ellipsis
+    Scaffold(
+        modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        topBar = {
+            LargeTopAppBar(
+                title = {
+                    val completeTitle =
+                        (state as? ThreadState.DisplayThread)?.content?.thread?.subject
+                            ?: title
+                    Text(
+                        completeTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onNavigateUp
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.round_arrow_back_24),
+                            contentDescription = stringResource(R.string.navigate_up)
                         )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = onNavigateUp
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.round_arrow_back_24),
-                                contentDescription = stringResource(R.string.navigate_up)
-                            )
-                        }
-                    },
-                    scrollBehavior = topAppBarScrollBehavior
-                )
-            }
-        ) { padding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Crossfade(targetState = state) {
-                    when (it) {
-                        ThreadState.Loading -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .wrapContentSize()
-                            )
-                        }
+                    }
+                },
+                scrollBehavior = topAppBarScrollBehavior
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+        ) {
+            Crossfade(targetState = state) {
+                when (it) {
+                    ThreadState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize()
+                        )
+                    }
 
-                        is ThreadState.DisplayThread -> {
-                            LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
-                                items(it.content.postList, key = { it.pid }) {
-                                    Column {
-                                        PostItem(
-                                            post = it,
-                                            onZoomImage = { zoomImageSrc = it },
-                                            onOpenProfile = {
-                                                onNavigateToProfileInfo(
-                                                    it.authorId,
-                                                    getAvatarUrl(it.authorId),
-                                                    it.author
-                                                )
-                                            }
-                                        )
-                                        Divider()
-                                    }
+                    is ThreadState.DisplayThread -> {
+                        LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+                            items(it.content.postList, key = { it.pid }) {
+                                Column {
+                                    PostItem(
+                                        post = it,
+                                        onZoomImage = { zoomImageSrc = it },
+                                        onOpenProfile = {
+                                            onNavigateToProfileInfo(
+                                                it.authorId,
+                                                getAvatarUrl(it.authorId),
+                                                it.author
+                                            )
+                                        }
+                                    )
+                                    Divider()
                                 }
                             }
                         }
@@ -204,47 +205,41 @@ private fun PostItem(
     onZoomImage: (String?) -> Unit,
     onOpenProfile: () -> Unit,
 ) {
-    Row(
+    Column(
         modifier = modifier.padding(12.dp)
     ) {
-        Avatar(
-            avatarUrl = getAvatarUrl(post.authorId),
-            modifier = Modifier.onTap(onOpenProfile)
-        )
-        Spacer(Modifier.width(12.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Max)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+            Avatar(
+                avatarUrl = getAvatarUrl(post.authorId),
+                modifier = Modifier.onTap(onOpenProfile)
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.onTap(onOpenProfile)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.onTap(onOpenProfile)
-                ) {
-                    Text(
-                        post.author,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        post.dateline.toHTMLAnnotatedString(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                    )
-                }
                 Text(
-                    "#${post.number}",
+                    post.author,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    post.dateline.toHTMLAnnotatedString(),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
             }
-            Spacer(Modifier.height(12.dp))
-            HtmlRichText(content = post.message, onZoomImage = onZoomImage)
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.weight(1f))
+            Text(
+                "#${post.number}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+            )
         }
+        Spacer(Modifier.height(12.dp))
+        HtmlRichText(content = post.message, onZoomImage = onZoomImage)
+        Spacer(Modifier.height(12.dp))
     }
 }
