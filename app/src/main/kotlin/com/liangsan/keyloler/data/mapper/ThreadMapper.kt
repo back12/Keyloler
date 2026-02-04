@@ -24,6 +24,6 @@ fun ThreadHistoryEntity.toDomain() = Thread(
     replies = thread.replies,
     digest = thread.digest,
     attachment = thread.attachment,
-    dbDateline = thread.dbDateline.toString(),
+    dbDateline = thread.dbDateline,
     dbLastPost = thread.dbLastPost,
 )

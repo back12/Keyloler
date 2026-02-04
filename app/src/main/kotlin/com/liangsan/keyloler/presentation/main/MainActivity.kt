@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             val appState by viewModel.store.subscribe()
             val navHostController = rememberNavController()
             KeylolerTheme(
-                darkTheme = appState.isDarkTheme,
+//                darkTheme = appState.isDarkTheme,
                 dynamicColor = appState.dynamicColor
             ) {
                 KeylolerApp(appState = appState, navHostController = navHostController)

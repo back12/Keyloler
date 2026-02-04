@@ -59,6 +59,11 @@ import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.LocalSharedTransitionScope
 import com.liangsan.keyloler.presentation.utils.bottomBarPadding
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import pro.respawn.flowmvi.compose.dsl.subscribe
@@ -251,7 +256,7 @@ private fun IndexTabs(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 private fun SlideShow(
     modifier: Modifier = Modifier,
@@ -260,6 +265,7 @@ private fun SlideShow(
 ) {
     val scope = rememberCoroutineScope()
     val carouselState = rememberCarouselState(slides.size) { Int.MAX_VALUE }
+    val hazeState = rememberHazeState()
 
     HorizontalCenteredHeroCarousel(
         modifier = modifier,
@@ -289,6 +295,7 @@ private fun SlideShow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.8f)
+                    .hazeSource(hazeState)
             )
             slide.title.takeIf { it.isNotBlank() }?.let {
                 Text(
@@ -297,9 +304,10 @@ private fun SlideShow(
                     color = Color.White,
                     maxLines = 1,
                     modifier = Modifier
+                        .hazeEffect(hazeState, HazeMaterials.ultraThin())
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .background(Color(0x9F000000))
+                        .background(Color(0x0FFFFFFF))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }

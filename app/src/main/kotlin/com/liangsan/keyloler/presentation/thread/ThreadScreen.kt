@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -55,6 +56,11 @@ import com.liangsan.keyloler.presentation.utils.LocalNavAnimatedVisibilityScope
 import com.liangsan.keyloler.presentation.utils.getAvatarUrl
 import com.liangsan.keyloler.presentation.utils.onTap
 import com.liangsan.keyloler.presentation.utils.toHTMLAnnotatedString
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.chrisbanes.haze.rememberHazeState
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import org.koin.androidx.compose.koinViewModel
 import pro.respawn.flowmvi.compose.dsl.subscribe
@@ -99,7 +105,7 @@ fun ThreadScreen(
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalSharedTransitionApi::class
+    ExperimentalSharedTransitionApi::class, ExperimentalHazeMaterialsApi::class
 )
 @Composable
 private fun ThreadScreenContent(
@@ -113,6 +119,9 @@ private fun ThreadScreenContent(
 ) {
     var zoomImageSrc by remember { mutableStateOf<String?>(null) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val hazeState = rememberHazeState()
+
     BackHandler(enabled = zoomImageSrc != null) {
         zoomImageSrc = null
     }
@@ -120,6 +129,11 @@ private fun ThreadScreenContent(
         modifier = modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
+                modifier = Modifier.hazeEffect(hazeState, style = HazeMaterials.regular()),
+                colors = TopAppBarDefaults.topAppBarColors().copy(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                ),
                 title = {
                     val completeTitle =
                         (state as? ThreadState.DisplayThread)?.content?.thread?.subject
@@ -127,6 +141,7 @@ private fun ThreadScreenContent(
                     Text(
                         completeTitle,
                         style = MaterialTheme.typography.titleLarge,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
@@ -147,7 +162,6 @@ private fun ThreadScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
             Crossfade(targetState = state) {
@@ -161,17 +175,26 @@ private fun ThreadScreenContent(
                     }
 
                     is ThreadState.DisplayThread -> {
-                        LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
-                            items(it.content.postList, key = { it.pid }) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .hazeSource(hazeState),
+                            state = lazyListState,
+                            contentPadding = padding
+                        ) {
+                            itemsIndexed(
+                                it.content.postList,
+                                key = { _, p -> p.pid },
+                            ) { _, p ->
                                 Column {
                                     PostItem(
-                                        post = it,
+                                        post = p,
                                         onZoomImage = { zoomImageSrc = it },
                                         onOpenProfile = {
                                             onNavigateToProfileInfo(
-                                                it.authorId,
-                                                getAvatarUrl(it.authorId),
-                                                it.author
+                                                p.authorId,
+                                                getAvatarUrl(p.authorId),
+                                                p.author
                                             )
                                         }
                                     )

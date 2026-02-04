@@ -75,14 +75,12 @@ fun MainNavHost(
 
                 composable<ViewThread>(
                     enterTransition = {
-                        slideInHorizontally { it } +
-                                scaleIn(initialScale = 0.8f)
+                        scaleIn(initialScale = 0.8f) + fadeIn()
                     },
                     exitTransition = { ExitTransition.None },
                     popEnterTransition = { EnterTransition.None },
                     popExitTransition = {
-                        slideOutHorizontally { it } +
-                                scaleOut(targetScale = 0.8f)
+                        scaleOut(targetScale = 0.8f) + fadeOut()
                     }
                 ) {
                     val route = it.toRoute<ViewThread>()
