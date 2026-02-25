@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.google.protobuf)
 }
 
 kotlin {
@@ -27,10 +26,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -56,23 +51,12 @@ android {
     }
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
-    }
-    generateProtoTasks {
-        all().configureEach {
-            builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
-
+    implementation(project(":proto"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

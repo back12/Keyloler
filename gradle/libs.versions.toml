@@ -1,6 +1,6 @@
 [versions]
 agp = "9.0.0"
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 ksp = "2.3.5"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -17,16 +17,16 @@ room = "2.8.4"
 ktor = "3.4.0"
 kotlinxSerialization = "1.10.0"
 timber = "5.0.1"
-coil3 = "3.3.0"
+coil3 = "3.4.0"
 paging = "3.4.0"
 datetime = "0.7.1"
 constraintlayoutCompose = "1.1.1"
-ksoup = "0.2.5"
-protobuf = "4.33.4"
+ksoup = "0.2.6"
+protobuf = "4.33.5"
 protobufGradlePlugin = "0.9.6"
 telephoto = "0.18.0"
 flowmvi = "3.3.0-alpha02"
-haze = "1.7.1"
+haze = "1.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -83,3 +83,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobufGradlePlugin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
