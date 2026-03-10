@@ -1,10 +1,10 @@
 package com.liangsan.keyloler.presentation.thread
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,20 +79,17 @@ fun ThreadScreen(
         }
     }
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-    val back = remember { mutableStateOf(false) }
-    val cornerRadius = animateDpAsState(if (back.value) 30.dp else 0.dp)
-
-    SideEffect {
-        back.value = animatedVisibilityScope.transition.isRunning
+    val transitionComplete = remember {
+        derivedStateOf {
+            animatedVisibilityScope.transition.currentState == EnterExitState.Visible
+        }
     }
 
     ThreadScreenContent(
-        modifier = modifier.graphicsLayer {
-            clip = true
-            shape = RoundedCornerShape(cornerRadius.value)
-        },
+        modifier = modifier,
         tid = tid,
         title = title,
+        transitionComplete = transitionComplete.value,
         state = state,
         lazyListState = lazyListState,
         onNavigateToProfileInfo = onNavigateToProfileInfo,
@@ -112,6 +107,7 @@ private fun ThreadScreenContent(
     modifier: Modifier = Modifier,
     tid: String,
     title: String,
+    transitionComplete: Boolean,
     state: ThreadState,
     lazyListState: LazyListState,
     onNavigateToProfileInfo: (uid: String, avatar: String, nickname: String) -> Unit,
@@ -164,17 +160,9 @@ private fun ThreadScreenContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
-            Crossfade(targetState = state) {
+            AnimatedContent(targetState = state) {
                 when (it) {
-                    ThreadState.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .wrapContentSize()
-                        )
-                    }
-
-                    is ThreadState.DisplayThread -> {
+                    is ThreadState.DisplayThread if transitionComplete -> {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -202,6 +190,14 @@ private fun ThreadScreenContent(
                                 }
                             }
                         }
+                    }
+
+                    else -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize()
+                        )
                     }
                 }
             }

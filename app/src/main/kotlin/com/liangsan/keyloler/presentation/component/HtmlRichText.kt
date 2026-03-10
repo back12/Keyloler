@@ -38,7 +38,11 @@ private val defaultLinkStyle = TextLinkStyles(
 @Stable
 data class RichTextState(
     val elements: List<ElementComposable>
-)
+) {
+    companion object {
+        val EMPTY = RichTextState(emptyList())
+    }
+}
 
 @Composable
 fun rememberRichTextState(
@@ -46,8 +50,9 @@ fun rememberRichTextState(
     linkStyles: TextLinkStyles? = defaultLinkStyle,
     linkInteractionListener: LinkInteractionListener? = null
 ) = produceState(
-    RichTextState(elements = emptyList())
+    RichTextState.EMPTY
 ) {
+    if (value != RichTextState.EMPTY) return@produceState
     withContext(Dispatchers.Default) {
         value = value.copy(
             elements = Html.fromHtml(
