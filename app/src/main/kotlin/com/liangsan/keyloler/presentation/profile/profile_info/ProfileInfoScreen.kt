@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
@@ -216,7 +217,9 @@ private fun MedalWall(modifier: Modifier = Modifier, medals: List<Medal>) {
                 val url = "https://keylol.com/static/image/common/${medal.image}"
                 val tooltipState = rememberTooltipState()
                 TooltipBox(
-                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Above
+                    ),
                     tooltip = {
                         RichTooltip(
                             title = {

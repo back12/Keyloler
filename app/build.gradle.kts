@@ -56,7 +56,7 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":proto"))
+    api(project(":proto"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -106,8 +106,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     // html parser
     implementation(libs.ksoup.lite)
-    // protobuf
-    implementation(libs.protobuf.kotlin.lite)
     implementation(libs.zoomable.image.coil3)
 
     implementation(libs.flowmvi.compose)
